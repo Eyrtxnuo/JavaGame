@@ -54,5 +54,4 @@ public class Rectangle extends Collision{
         g.drawRect(getX(), getY(), width, height);
         g.setColor(before);
     }
-    
 }

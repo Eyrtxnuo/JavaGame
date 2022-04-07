@@ -1,15 +1,14 @@
 package progetto;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
-import java.util.function.Function;
 import progetto.Collisions.*;
 
 public class mainFrame extends javax.swing.JFrame implements KeyListener, WindowFocusListener{
@@ -18,12 +17,13 @@ public class mainFrame extends javax.swing.JFrame implements KeyListener, Window
     private int y1;
     private int x2;
     private int y2;
-    private int width;
-    private int height;
-    private LinkedHashSet inputs = new LinkedHashSet<KeyEvent>();
-    private Collision rett1;
-    private Collision rett2;
+    private final int width;
+    private final int height;
+    private final LinkedHashSet inputs = new LinkedHashSet<KeyEvent>();
+    private final Collision rett1;
+    private final Collision rett2;
     
+    @SuppressWarnings("LeakingThisInConstructor")
     public mainFrame() {
         y1 = 100;
         x1 = 100;
@@ -32,8 +32,6 @@ public class mainFrame extends javax.swing.JFrame implements KeyListener, Window
         width= 90;
         height=90;
         initComponents();
-        addKeyListener(this);
-        addWindowFocusListener(this);
         
         rett1 =new Circle(width/2, 0, 0);
         rett1.setBorderColor(Color.BLACK);
@@ -43,6 +41,8 @@ public class mainFrame extends javax.swing.JFrame implements KeyListener, Window
         rett2.setBorderColor(Color.BLACK);
         rett2.setFillColor(Color.CYAN);
         
+        addKeyListener(this);
+        addWindowFocusListener(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -74,7 +74,10 @@ public class mainFrame extends javax.swing.JFrame implements KeyListener, Window
         
         //System.out.println(x1+ " " + y1+ "; " + x2+ " " + y2 + "  Inputs: " + ProjectLib.KeyCodeArrayToString(inputs.toArray()));
         gImmagine.clearRect(0, 0, this.getWidth(), this.getHeight());
-        //gImmagine.drawImage(ProjectLib.caricaImmagine("/resources/images/Invaders.jpg"),0 ,0, null);
+        gImmagine.drawImage(ProjectLib.caricaImmagine("/resources/images/Invaders.jpg"),0 ,0, null);
+        char[][] map= ProjectLib.readFile("/resources/maps/map1.txt");
+        System.out.println(Arrays.deepToString(map));
+        System.out.println(ProjectLib.MapArraytoString(map));
         //gImmagine.drawRect(0, 0, immagine.getWidth(this)-1, immagine.getHeight(this)-1);//Border
         /*gImmagine.setColor(Color.red);
         gImmagine.fillRect(x1, y1, 15, 15);
@@ -214,8 +217,6 @@ public class mainFrame extends javax.swing.JFrame implements KeyListener, Window
         rett2.setPosition(x2, y2);
 
     }
-
-    
     
     
     
@@ -226,11 +227,6 @@ public class mainFrame extends javax.swing.JFrame implements KeyListener, Window
         return this.getHeight()-this.getInsets().top-this.getInsets().bottom;
     }
 
-    
-
-    
-    
-    
     
     @Override
     public void windowGainedFocus(WindowEvent e) {
