@@ -61,6 +61,15 @@ public class Collision {
         return null;//NOT IMPLEMENTED FOR DEFAULT COLLISION
     }
     
+    public boolean willCollide(int x, int y, Collision c){
+        if(this instanceof Circle circle){
+            return circle.willCollide(x, y, c);
+        }else if(this instanceof Rectangle rectangle){
+            return rectangle.willCollide(x, y, c);
+        }
+        else return false;
+    }
+    
     public void paint(Graphics g){
         return;
     }

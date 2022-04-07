@@ -40,6 +40,7 @@ public class Circle extends Collision{
         return this.getCenterY()-this.getRadius();
     }
     
+    
     @Override
     public Boolean isColliding(Collision c) {
         if(c instanceof Circle circle){
@@ -48,6 +49,13 @@ public class Circle extends Collision{
             return Collision.collision(rectangle, this);
         } 
         return null;
+    }
+    
+    @Override
+    public boolean willCollide(int x, int y, Collision c){
+        Circle thisNext = new Circle(this.getRadius(), 0, 0);
+        thisNext.setPosition(x, y);
+        return thisNext.isColliding(c);
     }
     
     @Override

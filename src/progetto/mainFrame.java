@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import progetto.Collisions.*;
@@ -20,8 +21,9 @@ public class mainFrame extends javax.swing.JFrame implements KeyListener, Window
     private final int width;
     private final int height;
     private final LinkedHashSet inputs = new LinkedHashSet<KeyEvent>();
-    private final Collision rett1;
-    private final Collision rett2;
+    private final Rectangle rett1;
+    private final Circle rett2;
+    private BufferedImage sprite;
     
     @SuppressWarnings("LeakingThisInConstructor")
     public mainFrame() {
@@ -33,11 +35,15 @@ public class mainFrame extends javax.swing.JFrame implements KeyListener, Window
         height=90;
         initComponents();
         
-        rett1 =new Circle(width/2, 0, 0);
+        sprite = ProjectLib.caricaImmagine("/resources/images/Invaders.jpg");
+        char[][] map= ProjectLib.readFile("/resources/maps/map1.txt");
+        System.out.println(ProjectLib.MapArraytoString(map));
+        
+        rett1 =new Rectangle(height, width, 0, 0);
         rett1.setBorderColor(Color.BLACK);
         rett1.setFillColor(Color.MAGENTA);
         
-        rett2 =new Rectangle(height, width, 0, 0);
+        rett2 =new Circle(height/2, 0, 0);
         rett2.setBorderColor(Color.BLACK);
         rett2.setFillColor(Color.CYAN);
         
@@ -71,13 +77,10 @@ public class mainFrame extends javax.swing.JFrame implements KeyListener, Window
         Graphics gImmagine = immagine.getGraphics();
         
         
-        
         //System.out.println(x1+ " " + y1+ "; " + x2+ " " + y2 + "  Inputs: " + ProjectLib.KeyCodeArrayToString(inputs.toArray()));
         gImmagine.clearRect(0, 0, this.getWidth(), this.getHeight());
-        gImmagine.drawImage(ProjectLib.caricaImmagine("/resources/images/Invaders.jpg"),0 ,0, null);
-        char[][] map= ProjectLib.readFile("/resources/maps/map1.txt");
-        System.out.println(Arrays.deepToString(map));
-        System.out.println(ProjectLib.MapArraytoString(map));
+        
+        
         //gImmagine.drawRect(0, 0, immagine.getWidth(this)-1, immagine.getHeight(this)-1);//Border
         /*gImmagine.setColor(Color.red);
         gImmagine.fillRect(x1, y1, 15, 15);
@@ -100,10 +103,9 @@ public class mainFrame extends javax.swing.JFrame implements KeyListener, Window
         rett2.paint(gImmagine);
         
         
+        gImmagine.drawImage(sprite,rett1.getX(), rett1.getY(), rett1.getWidth(), rett1.getHeight(), null);
         
         g.drawImage(immagine, this.getInsets().left, this.getInsets().top, this);
-        
-
     }
 
     public static void main(String args[]) {
@@ -174,6 +176,16 @@ public class mainFrame extends javax.swing.JFrame implements KeyListener, Window
                 }
             }
         }
+        if(!rett1.willCollide(x1, rett1.getY(), rett2)){
+            rett1.setPosition(x1, rett1.getY());
+        }else{
+            x1=rett1.getX();
+        }
+        if(!rett1.willCollide(rett1.getX(), y1, rett2)){
+            rett1.setPosition(rett1.getX(), y1);
+        }else{
+            y1=rett1.getY();
+        }
         //Player 2
         P2x: {
             if (inputs.contains(KeyEvent.VK_L)) {
@@ -213,9 +225,16 @@ public class mainFrame extends javax.swing.JFrame implements KeyListener, Window
                 }
             }
         }
-        rett1.setPosition(x1, y1);
-        rett2.setPosition(x2, y2);
-
+        if(!rett2.willCollide(x2, rett2.getY(), rett1)){
+            rett2.setPosition(x2, rett2.getY());
+        }else{
+            x2=rett2.getX();
+        }
+        if(!rett2.willCollide(rett2.getX(), y2, rett1)){
+            rett2.setPosition(rett2.getX(), y2);
+        }else{
+            y2=rett2.getY();
+        }
     }
     
     

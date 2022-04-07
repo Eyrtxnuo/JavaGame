@@ -24,6 +24,13 @@ public class Rectangle extends Collision{
         } 
         return null;
     }
+    
+    @Override
+    public boolean willCollide(int x, int y, Collision c){
+        Rectangle thisNext = new Rectangle(this.getWidth(), getHeight(), 0, 0);
+        thisNext.setPosition(x, y);
+        return thisNext.isColliding(c);
+    }
 
     @Override
     public void setPosition(int X, int Y) {
