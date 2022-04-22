@@ -27,6 +27,7 @@ public class mainFrame extends javax.swing.JFrame implements KeyListener, Window
     
     @SuppressWarnings("LeakingThisInConstructor")
     public mainFrame() {
+        int a=10;
         y1 = 100;
         x1 = 100;
         y2= 100;
