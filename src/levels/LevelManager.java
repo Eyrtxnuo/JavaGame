@@ -4,6 +4,7 @@
  */
 package levels;
 
+import gamestates.Playing;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import main.Game;
@@ -31,7 +32,7 @@ public class LevelManager {
     }
     
     public void draw(Graphics g, float offsetX, float offsetY){
-        g.drawImage(levelOne.getBackground(), (int)offsetX, (int)offsetY, game.getLevelManager().getLevelOne().getLvlData()[0].length*game.TILES_SIZE-1 , game.GAME_HEIGHT ,null );
+        g.drawImage(levelOne.getBackground(), (int)offsetX, (int)offsetY, Playing.getLevelManager().getLevelOne().getLvlData()[0].length*game.TILES_SIZE-1 , game.GAME_HEIGHT ,null );
         for (int j = 0; j < levelOne.getLvlData().length; j++)
             for (int i = 0; i < levelOne.getLvlData()[j].length; i++) {
                 int index = levelOne.getSpriteIndex(i, j);
