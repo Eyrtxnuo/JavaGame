@@ -1,5 +1,6 @@
 package gamestates;
 
+import entities.Enemy;
 import entities.Player;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -14,6 +15,7 @@ public class Playing extends State implements Statemethods {
 
     static private LevelManager levelManager;
     private Player player;
+    private Enemy enemy;
 
     public Playing(Game game) {
         super(game);
@@ -24,6 +26,8 @@ public class Playing extends State implements Statemethods {
         levelManager = new LevelManager(game);
         player = new Player(50, 200, 64, 40);
         player.loadLvlData(levelManager.getLevelOne().getLvlData());
+        enemy = new Enemy(400, 300, 64, 40);
+        enemy.loadLvlData(levelManager.getLevelOne().getLvlData());
         //gamePanel = new GamePanel(game);
     }
 
@@ -31,16 +35,20 @@ public class Playing extends State implements Statemethods {
     public void update() {
         levelManager.update();
         player.update();
+        enemy.update(player);
     }
 
     @Override
     public void draw(Graphics g) {
         long a = System.nanoTime();
-                float xOffset = GAME_WIDTH / 2 - player.getHitbox().x * SCALE;
-                levelManager.draw(g, (xOffset <= 0) ? xOffset : 0f, 0);
+            float xOffset = GAME_WIDTH / 2 - player.getHitbox().x * SCALE;
+            levelManager.draw(g, (xOffset <= 0) ? xOffset : 0f, 0);
 
-                player.render(g, (xOffset <= 0) ? xOffset : 0, 0);
-                System.out.println(System.nanoTime() - a);
+            enemy.render(g, (xOffset <= 0) ? xOffset : 0, 0);
+            
+            player.render(g, (xOffset <= 0) ? xOffset : 0, 0);
+            
+        System.out.println(System.nanoTime() - a);
     }
 
     @Override
