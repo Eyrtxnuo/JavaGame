@@ -60,11 +60,8 @@ public class Enemy extends Entity{
         }else{*/
             if(hitbox.intersects(p.hitbox)){
                 System.out.println("DAMAGE");
-                p.hitbox.x = p.x;
-                p.hitbox.y = p.y;
-                this.hitbox.x = this.x;
-                
-                this.hitbox.y = this.y;
+                p.reset();
+                teleport(x, y);
             }
         //}
             
@@ -171,4 +168,9 @@ public class Enemy extends Entity{
         this.lvlData = data;
     }
    
+    public void teleport(float x, float y){
+        hitbox.x = x;
+        hitbox.y = y;
+        inAir=true;
+    }
 }

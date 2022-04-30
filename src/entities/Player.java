@@ -5,7 +5,6 @@
 package entities;
 
 import java.awt.Graphics;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import static utils.Constants.PlayerConstants.*;
 import utils.LoadSave;
@@ -243,6 +242,22 @@ public class Player extends Entity {
     private void resetInAir() {
         inAir = false;
         airSpeed = 0;
+    }
+    
+    public void teleport(float x, float y){
+        hitbox.x = x;
+        hitbox.y = y;
+        inAir=true;
+    }
+    
+    public void reset(){
+        teleport(x, y);
+        //resDirBools();
+        moving = false;
+        attacking = false;
+        aniTick = 0 ;
+        aniIndex = 0;
+        airSpeed=0;
     }
    
 }

@@ -48,18 +48,18 @@ public class Playing extends State implements Statemethods {
             
             player.render(g, (xOffset <= 0) ? xOffset : 0, 0);
             
-        System.out.println(System.nanoTime() - a);
+        //System.out.println(System.nanoTime() - a);
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(e.getButton() == MouseEvent.BUTTON1){
-            player.setAttacking(true);
-        }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
+        if(e.getButton() == MouseEvent.BUTTON1){
+            player.setAttacking(true);
+        }
     }
 
     @Override
