@@ -13,7 +13,7 @@ public class MenuButton {
     int xOffestCenter=B_WIDTH/2;
     Gamestate state;
     private BufferedImage[] imgs;
-    private Boolean mouseOver, mousePressed;
+    private Boolean mouseOver=false, mousePressed=false;
     private Rectangle bounds;
 
     public MenuButton(int xPos, int yPos, int rowIndex, Gamestate state) {

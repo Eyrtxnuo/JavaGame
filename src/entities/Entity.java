@@ -32,7 +32,7 @@ public abstract class Entity {
         g.drawRect((int)(hitbox.x*SCALE+ offsetX), (int)(hitbox.y*SCALE + offsetY), (int)(hitbox.width*SCALE ), (int)(hitbox.height*SCALE));
     }
     
-    protected void initHitbox(float x, float y, float width, float height) {
+    protected void initHitbox(float x, float y, int width, int height) {
         hitbox = new Rectangle2D.Float(x, y, width, height);
     }
     

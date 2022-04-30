@@ -47,7 +47,7 @@ public class Enemy extends Entity{
     
     public Enemy(float x, float y, int width, int height) {
         super(x, y, width, height);
-        initHitbox(x, y, 20f, 27f);
+        initHitbox(x, y, (int)(20f), (int)(27f));
         LoadAnimations();
     }
     
