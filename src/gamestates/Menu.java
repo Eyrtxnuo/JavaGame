@@ -5,22 +5,29 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import main.Game;
+import ui.MenuButton;
 
 public class Menu extends State implements Statemethods{
 
+    private MenuButton[] buttons=new MenuButton[3];
+    
     public Menu(Game game) {
         super(game);
+        loadButtons();
     }
     
     @Override
     public void update() {
-        
+        for(MenuButton mb:buttons){
+            mb.update();
+        }
     }
 
     @Override
     public void draw(Graphics g) {
-        g.setColor(Color.BLACK);
-        g.drawString("MENU", Game.GAME_WIDTH/2, 200);
+        for(MenuButton mb:buttons){
+            mb.draw(g);
+        }
     }
 
     @Override
@@ -53,6 +60,12 @@ public class Menu extends State implements Statemethods{
     @Override
     public void keyReleased(KeyEvent e) {
         
+    }
+
+    private void loadButtons() {
+        buttons[0]=new MenuButton(Game.GAME_WIDTH/2,(int)(150*Game.SCALE),0,Gamestate.PLAYING);
+        buttons[1]=new MenuButton(Game.GAME_WIDTH/2,(int)(220*Game.SCALE),0,Gamestate.OPTIONS);
+        buttons[2]=new MenuButton(Game.GAME_WIDTH/2,(int)(290*Game.SCALE),0,Gamestate.QUIT);
     }
 
 }
