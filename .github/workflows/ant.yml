@@ -5,9 +5,9 @@ name: Java CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ build-workflow-fix ]
   pull_request:
-    branches: [ main ]
+    branches: [ build-workflow-fix ]
 
 jobs:
   build:
