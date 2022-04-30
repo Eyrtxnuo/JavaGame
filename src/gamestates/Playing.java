@@ -1,6 +1,6 @@
 package gamestates;
 
-import entities.Enemy;
+import entities.PassiveEnemy;
 import entities.Player;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -15,7 +15,7 @@ public class Playing extends State implements Statemethods {
 
     static private LevelManager levelManager;
     private Player player;
-    private Enemy enemy;
+    private PassiveEnemy enemy;
 
     public Playing(Game game) {
         super(game);
@@ -26,7 +26,7 @@ public class Playing extends State implements Statemethods {
         levelManager = new LevelManager(game);
         player = new Player(50, 200, 64, 40);
         player.loadLvlData(levelManager.getLevelOne().getLvlData());
-        enemy = new Enemy(400, 300, 64, 40);
+        enemy = new PassiveEnemy(400, 300, 64, 40);
         enemy.loadLvlData(levelManager.getLevelOne().getLvlData());
         //gamePanel = new GamePanel(game);
     }
