@@ -70,4 +70,14 @@ public class MenuButton {
     public void applyGamestate(){
         Gamestate.state=state;
     }
+    
+    public void resetBools(){
+        mouseOver=false;
+        mousePressed=false;
+    }
+
+    public Rectangle getBounds() {
+        return bounds;
+    }
+    
 }
