@@ -3,6 +3,7 @@ package main;
 import gamestates.Gamestate;
 import gamestates.Menu;
 import gamestates.Playing;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.GraphicsDevice;
@@ -23,11 +24,13 @@ public class Game implements Runnable {
     private final int FPS_SET = 120;
     private final int UPS_SET = 200;
 
+    public static boolean manualFrameAdvancing;
+    
     private Playing playing;
     private Menu menu;
     
     public final static int TILES_DEFAULT_SIZE = 32;
-    public final static float SCALE = 1.5f;
+    public final static float SCALE = 2f;
     public final static int TILES_IN_WIDTH = 26;
     public final static int TILES_IN_HEIGHT = 14;
     public final static int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE);
@@ -75,6 +78,10 @@ public class Game implements Runnable {
         switch (Gamestate.state) {
             case PLAYING:
                 playing.draw(g);
+                if(manualFrameAdvancing){
+                    g.setColor(Color.red);
+                    g.fillOval(0, 0, (int)(10*SCALE), (int)(10*SCALE));
+                }
                 break;
             case MENU:
                 menu.draw(g);
@@ -95,31 +102,35 @@ public class Game implements Runnable {
 
         double deltaU = 0;
         double deltaF = 0;
-
-        while (true) {
+        
+        while(true){
             long currentTime = System.nanoTime();
-            deltaU += (currentTime - previousTime) / timePerUpdate;
-            deltaF += (currentTime - previousTime) / timePerFrame;
+            
+                
+            if(!manualFrameAdvancing) {
+                deltaU += (currentTime - previousTime) / timePerUpdate;
+                deltaF += (currentTime - previousTime) / timePerFrame;
+                
+                if (deltaU >= 1) {
+                    update();
+                    updates++;
+                    deltaU--;
+                }
+                if (deltaF >= 1) {
+                    gamePanel.repaint();
+                    frames++;
+                    deltaF--;
+                }
+
+                long now = System.currentTimeMillis();
+                if (now - lastCheck >= 1000) {
+                    lastCheck = now;
+                    System.out.println("FPS: " + frames + " | UPS: " + updates);
+                    frames = 0;
+                    updates = 0;
+                }
+            }
             previousTime = currentTime;
-            if (deltaU >= 1) {
-                update();
-                updates++;
-                deltaU--;
-            }
-            if (deltaF >= 1) {
-                gamePanel.repaint();
-                frames++;
-                deltaF--;
-            }
-
-            long now = System.currentTimeMillis();
-            if (now - lastCheck >= 1000) {
-                lastCheck = now;
-                System.out.println("FPS: " + frames + " | UPS: " + updates);
-                frames = 0;
-                updates = 0;
-            }
-
         }
 
     }
@@ -136,6 +147,11 @@ public class Game implements Runnable {
 
     public Playing getPlaying() {
         return playing;
+    }
+    
+    public void newFrame(){
+        update();
+        gamePanel.repaint();
     }
     
     

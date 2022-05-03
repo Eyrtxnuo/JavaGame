@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import main.Game;
+import utils.Constants;
 import static utils.Constants.PlayerConstants.GetSpriteAmount;
 import static utils.Constants.PlayerConstants.IDLE;
 import static utils.HelpMethods.CanMoveHere;
@@ -69,7 +70,9 @@ public class Enemy extends Entity{
     
     public void render(Graphics g, float offsetX, float offsetY) {
         g.drawImage(animations/*[action][aniIndex % animations[action].length]*/, (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
-        
+        if(Constants.debug){
+            drawHitbox(g, offsetX, offsetY);
+        }
     }
     
     
