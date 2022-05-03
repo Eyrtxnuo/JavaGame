@@ -69,8 +69,7 @@ public class Enemy extends Entity{
     }
     
     public void render(Graphics g, float offsetX, float offsetY) {
-        
-        if(hitbox.x + hitbox.width>-(offsetX) && hitbox.x <Game.GAME_WIDTH-(offsetX)){
+        if(hitbox.x -xDrawOffset+spriteX>-(offsetX) && hitbox.x <Game.GAME_WIDTH-(offsetX)){
             g.drawImage(animations/*[action][aniIndex % animations[action].length]*/, (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
             if(Constants.debug){
                 drawHitbox(g, offsetX, offsetY);
