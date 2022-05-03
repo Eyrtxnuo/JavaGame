@@ -41,17 +41,18 @@ public class LevelManager {
         for (int j = 0; j < levelOne.getLvlData().length; j++)
             for (int i = 0; i < levelOne.getLvlData()[j].length; i++) {
                 int index = levelOne.getSpriteIndex(i, j);
-                g.drawImage(levelSprite[index], (int)((Game.TILES_SIZE * i)+offsetX), (int)((Game.TILES_SIZE * j)+offsetY), Game.TILES_SIZE, Game.TILES_SIZE, null);
-                if(Constants.debug){
-                    if(colorRed.contains(j + i*14)){
-                        g.setColor(new Color(1f, 0f, 0f, 0.5f));
-                        g.fillRect((int)((Game.TILES_SIZE * i)+offsetX), (int)((Game.TILES_SIZE * j)+offsetY), Game.TILES_SIZE, Game.TILES_SIZE);
-                    }else if(colorOrange.contains(j + i*14)){
-                        g.setColor(new Color(0.98f, 0.584f, 0.258f, 0.5f));
-                        g.fillRect((int)((Game.TILES_SIZE * i)+offsetX), (int)((Game.TILES_SIZE * j)+offsetY), Game.TILES_SIZE, Game.TILES_SIZE);
+                if((i+1)*Game.TILES_SIZE>-(offsetX) && i*Game.TILES_SIZE<Game.GAME_WIDTH-(offsetX)){
+                    g.drawImage(levelSprite[index], (int)((Game.TILES_SIZE * i)+offsetX), (int)((Game.TILES_SIZE * j)+offsetY), Game.TILES_SIZE, Game.TILES_SIZE, null);
+                    if(Constants.debug){
+                        if(colorRed.contains(j + i*14)){
+                            g.setColor(new Color(1f, 0f, 0f, 0.5f));
+                            g.fillRect((int)((Game.TILES_SIZE * i)+offsetX), (int)((Game.TILES_SIZE * j)+offsetY), Game.TILES_SIZE, Game.TILES_SIZE);
+                        }else if(colorOrange.contains(j + i*14)){
+                            g.setColor(new Color(0.98f, 0.584f, 0.258f, 0.5f));
+                            g.fillRect((int)((Game.TILES_SIZE * i)+offsetX), (int)((Game.TILES_SIZE * j)+offsetY), Game.TILES_SIZE, Game.TILES_SIZE);
+                        }
                     }
                 }
-                
             }
     }
 
