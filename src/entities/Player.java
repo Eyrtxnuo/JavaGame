@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import static utils.Constants.PlayerConstants.*;
 import utils.LoadSave;
 import main.Game;
+import utils.Constants;
 import static utils.HelpMethods.*;
 
 /**
@@ -25,7 +26,7 @@ public class Player extends Entity {
     private int playerDir = -1;
     private boolean moving = false, attacking = false;
     private boolean left, up, right, down, jump;
-    private float playerSpeed = 1f*Game.SCALE;
+    private float playerSpeed = 1f;//*Game.SCALE;
     private int[][] lvlData;
     private float xDrawOffset = 21;
     private float yDrawOffset = 4;
@@ -54,7 +55,9 @@ public class Player extends Entity {
             g.drawImage(animations[playerAction][aniIndex % animations[playerAction].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
         }
         //g.drawImage(animations[playerAction][aniIndex % animations[playerAction].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
-        //drawHitbox(g, offsetX, offsetY);
+        if(Constants.debug){
+            drawHitbox(g, offsetX, offsetY);
+        }
     }
 
     public void setMoving(boolean moving) {
@@ -87,7 +90,7 @@ public class Player extends Entity {
         if(jump){
             jump();
         }
-        if (!left && !right && !inAir) {
+        if (left==right && !inAir) {
             return;
         }
         float xSpeed = 0, ySpeed = 0;
@@ -106,6 +109,7 @@ public class Player extends Entity {
         }
         
         if(inAir){
+            
             if(CanMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height,lvlData)){
                 hitbox.y += airSpeed;
                 airSpeed += gravity;

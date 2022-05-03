@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import main.Game;
+import utils.Constants;
 import static utils.Constants.PlayerConstants.GetSpriteAmount;
 import static utils.Constants.PlayerConstants.IDLE;
 import static utils.HelpMethods.CanMoveHere;
@@ -26,8 +27,8 @@ public class PassiveEnemy extends Entity{
     final int spriteX = 64, spriteY = 40;
     
     
-    private float xDrawOffset = 21;
-    private float yDrawOffset = 4;
+    private float xDrawOffset = 17;
+    private float yDrawOffset = 2;
     private int playerAction = IDLE;
     private int playerDir = -1;
     private boolean moving = false, attacking = false;
@@ -47,31 +48,28 @@ public class PassiveEnemy extends Entity{
     
     public PassiveEnemy(float x, float y, int width, int height) {
         super(x, y, width, height);
-        initHitbox(x, y, (int)(20f), (int)(27f));
+        initHitbox(x, y, (int)(30f), (int)(34f));
         LoadAnimations();
         resetMovements();
     }
     
     public void update(Player p) {
         updatePos(p);
-        /*if(hitbox.contains(new Point.Float(p.hitbox.x, p.hitbox.y+p.hitbox.height)) && hitbox.contains(new Point.Float(p.hitbox.x + p.hitbox.width, p.hitbox.y+p.hitbox.height))){
-            System.out.println("PROSCIUTTO");
-            
-            initHitbox(0, 0, 20f, 27f);
-        }else{*/
-            if(hitbox.intersects(p.hitbox)){
-                System.out.println("DAMAGE");
-                p.reset();
-                teleport(x, y);
-                resetMovements();
-            }
-        //}
+        
+        if(hitbox.intersects(p.hitbox)){
+            System.out.println("DAMAGE");
+            p.reset();
+            teleport(x, y);
+            resetMovements();
+        }
             
     }
     
     public void render(Graphics g, float offsetX, float offsetY) {
         g.drawImage(animations/*[action][aniIndex % animations[action].length]*/, (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
-        
+        if(Constants.debug){
+            drawHitbox(g, offsetX, offsetY);
+        }
     }
     
     

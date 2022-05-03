@@ -4,6 +4,8 @@ import main.Game;
 
 public class Constants {
 
+    public static final boolean debug = false;
+    
     public static class UI {
 
         public static class Buttons {

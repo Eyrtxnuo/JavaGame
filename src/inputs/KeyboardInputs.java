@@ -7,7 +7,9 @@ package inputs;
 import gamestates.Gamestate;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import main.Game;
 import main.GamePanel;
+import utils.Constants;
 /**
  *
  * @author matti
@@ -29,6 +31,13 @@ public class KeyboardInputs implements KeyListener{
         switch(Gamestate.state){
             case PLAYING:
                 gamePanel.getGame().getPlaying().keyPressed(e);
+                if(Constants.debug && e.getKeyChar() == 'p'){
+                    Game.manualFrameAdvancing=!Game.manualFrameAdvancing;
+                    System.out.println("Manual Frame Advancing: " + Game.manualFrameAdvancing);   
+                }
+                if(Game.manualFrameAdvancing && e.getKeyChar() == 'l'){
+                    gamePanel.getGame().newFrame();
+                }
                 break;
             case MENU:
                 gamePanel.getGame().getMenu().keyPressed(e);

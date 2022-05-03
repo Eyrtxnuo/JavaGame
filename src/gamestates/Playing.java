@@ -26,13 +26,15 @@ public class Playing extends State implements Statemethods {
         levelManager = new LevelManager(game);
         player = new Player(50, 200, 64, 40);
         player.loadLvlData(levelManager.getLevelOne().getLvlData());
-        enemy = new PassiveEnemy(1200, 300, 64, 40);
+        enemy = new PassiveEnemy(1200, 285, 64, 40);
         enemy.loadLvlData(levelManager.getLevelOne().getLvlData());
         //gamePanel = new GamePanel(game);
     }
 
     @Override
     public void update() {
+        LevelManager.colorOrange.clear();
+        LevelManager.colorRed.clear();
         levelManager.update();
         player.update();
         enemy.update(player);
