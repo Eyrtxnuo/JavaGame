@@ -10,12 +10,15 @@ import main.Game;
 import static main.Game.GAME_WIDTH;
 import static main.Game.SCALE;
 import main.GamePanel;
+import ui.PauseOverlay;
 
 public class Playing extends State implements Statemethods {
 
     static private LevelManager levelManager;
     private Player player;
     private PassiveEnemy enemy;
+    private boolean paused = true;
+    private PauseOverlay pauseOverlay;
 
     public Playing(Game game) {
         super(game);
@@ -28,6 +31,7 @@ public class Playing extends State implements Statemethods {
         player.loadLvlData(levelManager.getLevelOne().getLvlData());
         enemy = new PassiveEnemy(1200, 285, 64, 40);
         enemy.loadLvlData(levelManager.getLevelOne().getLvlData());
+        pauseOverlay=new PauseOverlay();
         //gamePanel = new GamePanel(game);
     }
 
@@ -38,6 +42,7 @@ public class Playing extends State implements Statemethods {
         levelManager.update();
         player.update();
         enemy.update(player);
+        pauseOverlay.update();
     }
 
     @Override
@@ -49,7 +54,7 @@ public class Playing extends State implements Statemethods {
             enemy.render(g, (xOffset <= 0) ? xOffset : 0, 0);
             
             player.render(g, (xOffset <= 0) ? xOffset : 0, 0);
-            
+            pauseOverlay.draw(g);
         //System.out.println(System.nanoTime() - a);
     }
 
@@ -62,14 +67,23 @@ public class Playing extends State implements Statemethods {
         if(e.getButton() == MouseEvent.BUTTON1){
             player.setAttacking(true);
         }
+        if(paused){
+            pauseOverlay.mousePressed(e);
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        if(paused){
+            pauseOverlay.mouseReleased(e);
+        }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        if(paused){
+            pauseOverlay.mouseMoved(e);
+        }
     }
 
     @Override
