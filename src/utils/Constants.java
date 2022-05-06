@@ -4,13 +4,8 @@ import main.Game;
 
 public class Constants {
 
-<<<<<<< Updated upstream
     public static final boolean debug = false;
-
-=======
-    public static final boolean debug = true;
     
->>>>>>> Stashed changes
     public static class UI {
 
         public static class Buttons {
