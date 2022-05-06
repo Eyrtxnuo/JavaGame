@@ -5,6 +5,7 @@
 package levels;
 
 import java.awt.image.BufferedImage;
+import main.Game;
 
 /**
  *
@@ -24,7 +25,13 @@ public class Level {
         this.background = background;
     }
     
-    
+    public int getHeightInTiles() {
+        return lvlData.length;
+    }
+
+    public int getWidthInTiles() {
+        return (lvlData.length>0)?lvlData[0].length:0;
+    }
     
     public int getSpriteIndex(int x, int y){
         return lvlData[y][x];
@@ -38,5 +45,7 @@ public class Level {
         return background;
     }
     
-    
+    public int getLenght(){
+        return getWidthInTiles()*Game.TILES_DEFAULT_SIZE;
+    }
 }

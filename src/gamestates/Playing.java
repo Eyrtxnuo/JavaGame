@@ -51,12 +51,14 @@ public class Playing extends State implements Statemethods {
     @Override
     public void draw(Graphics g) {
         long a = System.nanoTime();
-        float xOffset = GAME_WIDTH / 2 - player.getHitbox().x * SCALE;
-        levelManager.draw(g, (xOffset <= 0) ? xOffset : 0f, 0);
+        float xOffset = -(GAME_WIDTH / 2 - player.getHitbox().x * SCALE);
+        float maxOffset = (levelManager.getLevelOne().getLenght()*SCALE)-GAME_WIDTH;
+        float effXOffset = -((xOffset < 0) ? 0f: (xOffset > maxOffset ? maxOffset : xOffset));
+        levelManager.draw(g, effXOffset, 0);
 
-        enemy.render(g, (xOffset <= 0) ? xOffset : 0, 0);
+        enemy.render(g, effXOffset, 0);
 
-        player.render(g, (xOffset <= 0) ? xOffset : 0, 0);
+        player.render(g, effXOffset, 0);
         if (paused) {
             pauseOverlay.draw(g);
         }

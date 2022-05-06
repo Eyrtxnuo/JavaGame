@@ -26,6 +26,7 @@ public class Player extends Entity {
     private int playerDir = -1;
     private boolean moving = false, attacking = false;
     private boolean left, up, right, down, jump;
+    private boolean dirLeft = false;
     private float playerSpeed = 1f;
     private int[][] lvlData;
     private float xDrawOffset = 21;
@@ -49,7 +50,7 @@ public class Player extends Entity {
     }
 
     public void render(Graphics g, float offsetX, float offsetY) {
-        if (left) {
+        if (dirLeft) {
          g.drawImage(animations[playerAction][aniIndex % animations[playerAction].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX + spriteX * Game.SCALE ) , (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), -(int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
         } else {
             g.drawImage(animations[playerAction][aniIndex % animations[playerAction].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
@@ -96,9 +97,11 @@ public class Player extends Entity {
         float xSpeed = 0, ySpeed = 0;
 
         if (left) {
+            dirLeft = true;
             xSpeed -=playerSpeed;
         }
         if (right) {
+            dirLeft = false;
             xSpeed += playerSpeed;
         }
         

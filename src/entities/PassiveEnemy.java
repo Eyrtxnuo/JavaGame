@@ -34,6 +34,7 @@ public class PassiveEnemy extends Entity{
     private int playerDir = -1;
     private boolean moving = false, attacking = false;
     private boolean left, up, right, down, jump;
+    private boolean dirLeft = false;
     private float playerSpeed = 0.5f;
     private int[][] lvlData;
     private float airSpeed = 0f;
@@ -68,7 +69,7 @@ public class PassiveEnemy extends Entity{
     
     public void render(Graphics g, float offsetX, float offsetY) {
         if((hitbox.x-xDrawOffset+spriteX)*Game.SCALE>-(offsetX) && (hitbox.x-xDrawOffset)*Game.SCALE <Game.GAME_WIDTH-(offsetX)){
-            if(left){
+            if(dirLeft){
                 g.drawImage(animations[action][aniIndex % animations[action].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
             }else{
                 g.drawImage(animations[action][aniIndex % animations[action].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX  + spriteX * Game.SCALE), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) -(spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
@@ -106,9 +107,11 @@ public class PassiveEnemy extends Entity{
         float xSpeed = 0, ySpeed = 0;
 
         if (left) {
+            dirLeft = true;
             xSpeed -=playerSpeed;
         }
         if (right) {
+            dirLeft = false;
             xSpeed += playerSpeed;
         }
         
