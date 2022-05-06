@@ -31,7 +31,7 @@ public class Playing extends State implements Statemethods {
         player.loadLvlData(levelManager.getLevelOne().getLvlData());
         enemy = new PassiveEnemy(1200, 285);
         enemy.loadLvlData(levelManager.getLevelOne().getLvlData());
-        pauseOverlay=new PauseOverlay();
+        pauseOverlay = new PauseOverlay(this);
         //gamePanel = new GamePanel(game);
     }
 
@@ -48,13 +48,13 @@ public class Playing extends State implements Statemethods {
     @Override
     public void draw(Graphics g) {
         long a = System.nanoTime();
-            float xOffset = GAME_WIDTH / 2 - player.getHitbox().x * SCALE;
-            levelManager.draw(g, (xOffset <= 0) ? xOffset : 0f, 0);
+        float xOffset = GAME_WIDTH / 2 - player.getHitbox().x * SCALE;
+        levelManager.draw(g, (xOffset <= 0) ? xOffset : 0f, 0);
 
-            enemy.render(g, (xOffset <= 0) ? xOffset : 0, 0);
-            
-            player.render(g, (xOffset <= 0) ? xOffset : 0, 0);
-            pauseOverlay.draw(g);
+        enemy.render(g, (xOffset <= 0) ? xOffset : 0, 0);
+
+        player.render(g, (xOffset <= 0) ? xOffset : 0, 0);
+        pauseOverlay.draw(g);
         //System.out.println(System.nanoTime() - a);
     }
 
@@ -64,24 +64,24 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if(e.getButton() == MouseEvent.BUTTON1){
+        if (e.getButton() == MouseEvent.BUTTON1) {
             player.setAttacking(true);
         }
-        if(paused){
+        if (paused) {
             pauseOverlay.mousePressed(e);
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if(paused){
+        if (paused) {
             pauseOverlay.mouseReleased(e);
         }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if(paused){
+        if (paused) {
             pauseOverlay.mouseMoved(e);
         }
     }
@@ -104,8 +104,8 @@ public class Playing extends State implements Statemethods {
             case KeyEvent.VK_SPACE -> {
                 player.setJump(true);
             }
-            case KeyEvent.VK_BACK_SPACE ->{
-                Gamestate.state=Gamestate.MENU;
+            case KeyEvent.VK_BACK_SPACE -> {
+                Gamestate.state = Gamestate.MENU;
             }
         }
     }
@@ -142,5 +142,8 @@ public class Playing extends State implements Statemethods {
     static public LevelManager getLevelManager() {
         return levelManager;
     }
-    
+
+    public void unpauseGame() {
+        paused = false;
+    }
 }

@@ -26,6 +26,9 @@ public class LoadSave {
     public static final String PAUSE_BACKGROUND = "pause_menu.png";
     public static final String SOUND_BUTTONS = "sound_button.png";
     public static final String CRABBY_ATLAS = "crabby_sprite.png";
+
+    public static final String URM_BUTTONS = "urm_buttons.png";
+
     
     public static  BufferedImage GetSpriteAtlas(String atlas){
         BufferedImage img =null;
