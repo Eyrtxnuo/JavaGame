@@ -17,7 +17,7 @@ public class Playing extends State implements Statemethods {
     static private LevelManager levelManager;
     private Player player;
     private PassiveEnemy enemy;
-    private boolean paused = true;
+    private boolean paused = false;
     private PauseOverlay pauseOverlay;
 
     public Playing(Game game) {
@@ -90,27 +90,35 @@ public class Playing extends State implements Statemethods {
             pauseOverlay.mouseMoved(e);
         }
     }
+    
+    public void mouseDragged(MouseEvent e) {
+        if (paused) {
+            pauseOverlay.mouseDragged(e);
+        }
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_W -> {
-                player.setUp(true);
+        if (!paused) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_W -> {
+                    player.setUp(true);
+                }
+                case KeyEvent.VK_A -> {
+                    player.setLeft(true);
+                }
+                case KeyEvent.VK_S -> {
+                    player.setDown(true);
+                }
+                case KeyEvent.VK_D -> {
+                    player.setRight(true);
+                }
+                case KeyEvent.VK_SPACE -> {
+                    player.setJump(true);
+                }
             }
-            case KeyEvent.VK_A -> {
-                player.setLeft(true);
-            }
-            case KeyEvent.VK_S -> {
-                player.setDown(true);
-            }
-            case KeyEvent.VK_D -> {
-                player.setRight(true);
-            }
-            case KeyEvent.VK_SPACE -> {
-                player.setJump(true);
-            }
-            case KeyEvent.VK_ESCAPE -> {
-                paused=!paused;
+            if (e.getKeyCode()==KeyEvent.VK_ESCAPE) {
+                paused = !paused;
             }
         }
     }

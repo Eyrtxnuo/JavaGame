@@ -9,6 +9,7 @@ import main.Game;
 import utils.LoadSave;
 import static utils.Constants.UI.PauseButtons.*;
 import static utils.Constants.UI.URMButtons.*;
+import static utils.Constants.UI.VolumeButtons.*;
 
 public class PauseOverlay {
 
@@ -17,13 +18,14 @@ public class PauseOverlay {
     private SoundButton musicButton, sfxButton;
     private UrmButton unpauseB, replayB, menuB;
     private Playing playing;
+    private VolumeButton volumeButton;
 
     public PauseOverlay(Playing playing) {
         this.playing = playing;
         loadBackground();
         createSoundButtons();
         createUrmButtons();
-
+        createVolumeButton();
     }
 
     public void update() {
@@ -32,6 +34,7 @@ public class PauseOverlay {
         menuB.update();
         replayB.update();
         unpauseB.update();
+        volumeButton.update();
     }
 
     public void draw(Graphics g) {
@@ -41,10 +44,13 @@ public class PauseOverlay {
         menuB.draw(g);
         replayB.draw(g);
         unpauseB.draw(g);
+        volumeButton.draw(g);
     }
 
     public void mouseDragged(MouseEvent e) {
-
+        if (volumeButton.isMousePressed()) {
+            volumeButton.changeX(e.getX());
+        }
     }
 
     public void mousePressed(MouseEvent e) {
@@ -58,6 +64,8 @@ public class PauseOverlay {
             replayB.setMousePressed(true);
         } else if (isIn(e, unpauseB)) {
             unpauseB.setMousePressed(true);
+        } else if (isIn(e, volumeButton)) {
+            volumeButton.setMousePressed(true);
         }
     }
 
@@ -89,6 +97,7 @@ public class PauseOverlay {
         menuB.resetBools();
         replayB.resetBools();
         unpauseB.resetBools();
+        volumeButton.resetBools();
     }
 
     public void mouseMoved(MouseEvent e) {
@@ -97,6 +106,7 @@ public class PauseOverlay {
         menuB.setMouseOver(false);
         replayB.setMouseOver(false);
         unpauseB.setMouseOver(false);
+        volumeButton.setMouseOver(false);
         if (isIn(e, musicButton)) {
             musicButton.setMouseOver(true);
         } else if (isIn(e, sfxButton)) {
@@ -107,6 +117,8 @@ public class PauseOverlay {
             replayB.setMouseOver(true);
         } else if (isIn(e, unpauseB)) {
             unpauseB.setMouseOver(true);
+        } else if (isIn(e, volumeButton)) {
+            volumeButton.setMouseOver(true);
         }
     }
 
@@ -139,6 +151,11 @@ public class PauseOverlay {
         menuB = new UrmButton(menuX, bY, URM_SIZE, URM_SIZE, 2);
         replayB = new UrmButton(replayX, bY, URM_SIZE, URM_SIZE, 1);
         unpauseB = new UrmButton(unpauseX, bY, URM_SIZE, URM_SIZE, 0);
+    }
 
+    private void createVolumeButton() {
+        int vX = (int) (309 * Game.SCALE);
+        int vY = (int) (286 * Game.SCALE);
+        volumeButton = new VolumeButton(vX, vY, SLIDER_WIDTH, VOLUME_HEIGHT);
     }
 }
