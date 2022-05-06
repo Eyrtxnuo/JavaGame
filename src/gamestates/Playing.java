@@ -1,6 +1,8 @@
 package gamestates;
 
 import entities.PassiveEnemy;
+import entities.Enemy;
+import entities.FollowEnemy;
 import entities.Player;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -16,7 +18,7 @@ public class Playing extends State implements Statemethods {
 
     static private LevelManager levelManager;
     private Player player;
-    private PassiveEnemy enemy;
+    private Enemy enemy;
     private boolean paused = false;
     private PauseOverlay pauseOverlay;
 
@@ -29,7 +31,7 @@ public class Playing extends State implements Statemethods {
         levelManager = new LevelManager(game);
         player = new Player(50, 200);
         player.loadLvlData(levelManager.getLevelOne().getLvlData());
-        enemy = new PassiveEnemy(1200, 285);
+        enemy = new FollowEnemy(1200, 285);
         enemy.loadLvlData(levelManager.getLevelOne().getLvlData());
         pauseOverlay = new PauseOverlay(this);
         //gamePanel = new GamePanel(game);

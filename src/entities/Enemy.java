@@ -10,6 +10,8 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import main.Game;
 import utils.Constants;
+import static utils.Constants.EnemyConstants.GetSpriteAmount;
+import static utils.Constants.EnemyConstants.RUNNING;
 import static utils.Constants.PlayerConstants.GetSpriteAmount;
 import static utils.Constants.PlayerConstants.IDLE;
 import static utils.HelpMethods.CanMoveHere;
@@ -22,55 +24,60 @@ import utils.LoadSave;
  *
  * @author Bossi_Mattia
  */
-public class Enemy extends Entity{
+public abstract class Enemy extends Entity{
     
-    final int spriteX = 64, spriteY = 40;
+    protected int spriteX, spriteY;
+    
+    protected float xDrawOffset;
+    protected float yDrawOffset;
+    
+    protected static int TYPE;
+    protected int action = RUNNING;
+    protected boolean moving = false, attacking = false;
+    protected boolean left, right, jump;
+    protected boolean dirLeft = false;
+    protected int[][] lvlData;
+    protected float airSpeed = 0f;
+    protected float movSpeed=0.5f, jumpSpeed=-2.25f, gravity=0.04f;
+    
+    protected float fallSpeedAfterCollision = 0.5f;
+    protected boolean inAir = true;
+    
+    protected BufferedImage[][] animations;
     
     
-    private float xDrawOffset = 21;
-    private float yDrawOffset = 4;
-    private int playerAction = IDLE;
-    private int playerDir = -1;
-    private boolean moving = false, attacking = false;
-    private boolean left, up, right, down, jump;
-    private float playerSpeed = 0.5f;
-    private int[][] lvlData;
-    private float airSpeed = 0f;
-    private float gravity = 0.04f;
-    private float jumpSpeed = -2.5f;
+    protected int aniTick, aniIndex, aniSpeed = 25;
     
-    private float fallSpeedAfterCollision = 0.5f;
-    private boolean inAir = true;
-    
-    private BufferedImage animations;
-    private int action = IDLE;
-    private int aniIndex;
-    
-    public Enemy(float x, float y, int width, int height) {
+    public Enemy(float x, float y) {
         super(x, y);
+        initSprite();
         initHitbox(x, y, (int)(20f), (int)(27f));
-        LoadAnimations();
+    }
+    
+    private void initSprite(){
+        spriteX = Constants.EnemyConstants.CRABBY_WIDTH_DEFAULT;
+        spriteY =  Constants.EnemyConstants.CRABBY_HEIGHT_DEFAULT;
+        xDrawOffset = 26;
+        yDrawOffset = 7;
     }
     
     public void update(Player p) {
         updatePos(p);
-        /*if(hitbox.contains(new Point.Float(p.hitbox.x, p.hitbox.y+p.hitbox.height)) && hitbox.contains(new Point.Float(p.hitbox.x + p.hitbox.width, p.hitbox.y+p.hitbox.height))){
-            System.out.println("PROSCIUTTO");
-            
-            initHitbox(0, 0, 20f, 27f);
-        }else{*/
-            if(hitbox.intersects(p.hitbox)){
-                System.out.println("DAMAGE");
-                p.reset();
-                teleport(x, y);
-            }
-        //}
+        /*if(hitbox.intersects(p.hitbox)){
+            System.out.println("DAMAGE");
+            p.reset();
+            teleport(x, y);
+        }*/
             
     }
     
     public void render(Graphics g, float offsetX, float offsetY) {
-        if(hitbox.x -xDrawOffset+spriteX>-(offsetX) && hitbox.x <Game.GAME_WIDTH-(offsetX)){
-            g.drawImage(animations/*[action][aniIndex % animations[action].length]*/, (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
+        if((hitbox.x-xDrawOffset+spriteX)*Game.SCALE>-(offsetX) && (hitbox.x-xDrawOffset)*Game.SCALE <Game.GAME_WIDTH-(offsetX)){
+            if(dirLeft){
+                g.drawImage(animations[action][aniIndex % animations[action].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
+            }else{
+                g.drawImage(animations[action][aniIndex % animations[action].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX  + spriteX * Game.SCALE), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) -(spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
+            }
             if(Constants.debug){
                 drawHitbox(g, offsetX, offsetY);
             }
@@ -78,25 +85,21 @@ public class Enemy extends Entity{
     }
     
     
-    private void LoadAnimations() {
-        BufferedImage img = LoadSave.GetSpriteAtlas("enemy_sprite.png");
-        animations = img;
-        /*animations = new BufferedImage[9][];
+       protected void LoadAnimations(String path) {
+        BufferedImage img = LoadSave.GetSpriteAtlas(path);
+        
+        animations = new BufferedImage[5][];
         for (int j = 0; j < animations.length; j++) {
-            animations[j] = new BufferedImage[img.getWidth()];
+            animations[j] = new BufferedImage[Constants.EnemyConstants.GetSpriteAmount(TYPE, j)];
             for (int i = 0; i < animations[j].length; i++) {
                 animations[j][i] = img.getSubimage(i * spriteX, j * spriteY, spriteX, spriteY);
             }
-        }*/
+        }
     }
     
-    private void updatePos(Player p) {
-        resetMovements();
-        if(p.getHitbox().x > hitbox.x){
-            right=true;
-        }else if(p.getHitbox().x < hitbox.x){
-            left=true;
-        }
+    protected void updatePos(Player p) {
+        prePosUpdate(p);
+        /**/
         moving = false;
         if(jump){
             jump();
@@ -107,10 +110,12 @@ public class Enemy extends Entity{
         float xSpeed = 0, ySpeed = 0;
 
         if (left) {
-            xSpeed -=playerSpeed;
+            dirLeft = true;
+            xSpeed -=movSpeed;
         }
         if (right) {
-            xSpeed += playerSpeed;
+            dirLeft = false;
+            xSpeed += movSpeed;
         }
         
         if(!inAir){
@@ -129,6 +134,7 @@ public class Enemy extends Entity{
                 if(airSpeed > 0){
                     resetInAir();
                 }else{
+                    onRoofCealingTouch();
                     airSpeed = fallSpeedAfterCollision;
                 }
                 updateXpos(xSpeed);
@@ -145,22 +151,20 @@ public class Enemy extends Entity{
             hitbox.x += xSpeed;
         }else {
             hitbox.x = GetEntityXPosNextToWall(hitbox, xSpeed);
-            jump();
+            onWallTouch();
         }
     }
     
-    private void jump() {
+    protected void jump() {
         if(inAir)
             return;
         inAir = true;
         airSpeed = jumpSpeed;
     }
     
-    private void resetMovements(){
+    protected void resetMovements(){
         left=false;
         right=false;
-        up=false;
-        down=false;
         jump=false;
     }
     
@@ -177,5 +181,29 @@ public class Enemy extends Entity{
         hitbox.x = x;
         hitbox.y = y;
         inAir=true;
+    }
+    
+    protected void updateAnimationTick() {
+        aniTick++;
+        if (aniTick >= aniSpeed) {
+            aniTick = 0;
+            aniIndex++;//= (aniIndex + 1) % GetSpriteAmount(playerAction);
+            if (aniIndex >= GetSpriteAmount(TYPE, action)) {
+                aniIndex = 0;
+                attacking = false;
+            }
+        }
+    }
+
+    protected void onWallTouch(){
+        
+    }
+    
+    protected void onRoofCealingTouch(){
+        
+    }
+
+    protected void prePosUpdate(Player p) {
+        
     }
 }
