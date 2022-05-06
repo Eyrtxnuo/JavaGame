@@ -10,8 +10,8 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import main.Game;
 import utils.Constants;
-import static utils.Constants.PlayerConstants.GetSpriteAmount;
-import static utils.Constants.PlayerConstants.IDLE;
+import static utils.Constants.EnemyConstants.GetSpriteAmount;
+import static utils.Constants.EnemyConstants.*;
 import static utils.HelpMethods.CanMoveHere;
 import static utils.HelpMethods.GetEntityXPosNextToWall;
 import static utils.HelpMethods.GetEntityYPosUnderRoofOrAboveFloor;
@@ -24,12 +24,13 @@ import utils.LoadSave;
  */
 public class PassiveEnemy extends Entity{
     
-    final int spriteX = 64, spriteY = 40;
+    final int spriteX = Constants.EnemyConstants.CRABBY_WIDTH_DEFAULT, spriteY =  Constants.EnemyConstants.CRABBY_HEIGHT_DEFAULT;
     
+    private static int TYPE = Constants.EnemyConstants.CRABBY;
     
-    private float xDrawOffset = 17;
-    private float yDrawOffset = 2;
-    private int playerAction = IDLE;
+    private float xDrawOffset = 26;
+    private float yDrawOffset = 7;
+    private int action = RUNNING;
     private int playerDir = -1;
     private boolean moving = false, attacking = false;
     private boolean left, up, right, down, jump;
@@ -42,20 +43,20 @@ public class PassiveEnemy extends Entity{
     private float fallSpeedAfterCollision = 0.5f;
     private boolean inAir = true;
     
-    private BufferedImage animations;
-    private int action = IDLE;
-    private int aniIndex;
+    private BufferedImage[][] animations;
     
-    public PassiveEnemy(float x, float y, int width, int height) {
-        super(x, y, width, height);
-        initHitbox(x, y, (int)(30f), (int)(34f));
+    private int aniTick, aniIndex, aniSpeed = 25;
+    
+    public PassiveEnemy(float x, float y) {
+        super(x, y);
+        initHitbox(x, y, (int)(22f), (int)(23f));
         LoadAnimations();
         resetMovements();
     }
     
     public void update(Player p) {
         updatePos(p);
-        
+        updateAnimationTick();
         if(hitbox.intersects(p.hitbox)){
             System.out.println("DAMAGE");
             p.reset();
@@ -67,7 +68,12 @@ public class PassiveEnemy extends Entity{
     
     public void render(Graphics g, float offsetX, float offsetY) {
         if((hitbox.x-xDrawOffset+spriteX)*Game.SCALE>-(offsetX) && (hitbox.x-xDrawOffset)*Game.SCALE <Game.GAME_WIDTH-(offsetX)){
-            g.drawImage(animations/*[action][aniIndex % animations[action].length]*/, (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
+            if(left){
+                g.drawImage(animations[action][aniIndex % animations[action].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
+            }else{
+                g.drawImage(animations[action][aniIndex % animations[action].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX  + spriteX * Game.SCALE), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) -(spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
+            }
+            
             if(Constants.debug){
                 drawHitbox(g, offsetX, offsetY);
             }
@@ -76,15 +82,16 @@ public class PassiveEnemy extends Entity{
     
     
     private void LoadAnimations() {
-        BufferedImage img = LoadSave.GetSpriteAtlas("enemy_sprite.png");
-        animations = img;
-        /*animations = new BufferedImage[9][];
+        BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.CRABBY_ATLAS);
+        
+        animations = new BufferedImage[5][];
         for (int j = 0; j < animations.length; j++) {
-            animations[j] = new BufferedImage[img.getWidth()];
+            System.out.println(j + "  " + Constants.EnemyConstants.GetSpriteAmount(TYPE, j));
+            animations[j] = new BufferedImage[Constants.EnemyConstants.GetSpriteAmount(TYPE, j)];
             for (int i = 0; i < animations[j].length; i++) {
                 animations[j][i] = img.getSubimage(i * spriteX, j * spriteY, spriteX, spriteY);
             }
-        }*/
+        }
     }
     
     private void updatePos(Player p) {
@@ -160,6 +167,18 @@ public class PassiveEnemy extends Entity{
     private void resetInAir() {
         inAir = false;
         airSpeed = 0;
+    }
+    
+    private void updateAnimationTick() {
+        aniTick++;
+        if (aniTick >= aniSpeed) {
+            aniTick = 0;
+            aniIndex++;//= (aniIndex + 1) % GetSpriteAmount(playerAction);
+            if (aniIndex >= GetSpriteAmount(TYPE, action)) {
+                aniIndex = 0;
+                attacking = false;
+            }
+        }
     }
     
     public void loadLvlData(int[][] data) {

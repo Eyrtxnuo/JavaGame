@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import static utils.Constants.PlayerConstants.*;
 import utils.LoadSave;
 import main.Game;
+import utils.Constants;
 import static utils.HelpMethods.*;
 
 /**
@@ -35,8 +36,8 @@ public class Player extends Entity {
     private float fallSpeedAfterCollision = 0.5f;
     private boolean inAir = true;
 
-    public Player(float x, float y, int width, int height) {
-        super(x, y, width, height);
+    public Player(float x, float y) {
+        super(x, y);
         LoadAnimations();
         initHitbox(x, y, (int)(20f), (int)(27f));
     }
@@ -54,7 +55,9 @@ public class Player extends Entity {
             g.drawImage(animations[playerAction][aniIndex % animations[playerAction].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
         }
         //g.drawImage(animations[playerAction][aniIndex % animations[playerAction].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
-        //drawHitbox(g, offsetX, offsetY);
+        if(Constants.debug){
+            drawHitbox(g, offsetX, offsetY);
+        }
     }
 
     public void setMoving(boolean moving) {
