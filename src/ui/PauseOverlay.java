@@ -86,15 +86,27 @@ public class PauseOverlay {
         }
         musicButton.resetBools();
         sfxButton.resetBools();
+        menuB.resetBools();
+        replayB.resetBools();
+        unpauseB.resetBools();
     }
 
     public void mouseMoved(MouseEvent e) {
         musicButton.setMouseOver(false);
         sfxButton.setMouseOver(false);
+        menuB.setMouseOver(false);
+        replayB.setMouseOver(false);
+        unpauseB.setMouseOver(false);
         if (isIn(e, musicButton)) {
             musicButton.setMouseOver(true);
         } else if (isIn(e, sfxButton)) {
             sfxButton.setMouseOver(true);
+        } else if (isIn(e, menuB)) {
+            menuB.setMouseOver(true);
+        } else if (isIn(e, replayB)) {
+            replayB.setMouseOver(true);
+        } else if (isIn(e, unpauseB)) {
+            unpauseB.setMouseOver(true);
         }
     }
 

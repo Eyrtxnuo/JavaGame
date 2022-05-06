@@ -37,12 +37,15 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void update() {
-        LevelManager.colorOrange.clear();
-        LevelManager.colorRed.clear();
-        levelManager.update();
-        player.update();
-        enemy.update(player);
-        pauseOverlay.update();
+        if (!paused) {
+            levelManager.update();
+            player.update();
+            LevelManager.colorOrange.clear();
+            LevelManager.colorRed.clear();
+            enemy.update(player);
+        } else {
+            pauseOverlay.update();
+        }
     }
 
     @Override
@@ -54,7 +57,9 @@ public class Playing extends State implements Statemethods {
         enemy.render(g, (xOffset <= 0) ? xOffset : 0, 0);
 
         player.render(g, (xOffset <= 0) ? xOffset : 0, 0);
-        pauseOverlay.draw(g);
+        if (paused) {
+            pauseOverlay.draw(g);
+        }
         //System.out.println(System.nanoTime() - a);
     }
 
@@ -104,8 +109,8 @@ public class Playing extends State implements Statemethods {
             case KeyEvent.VK_SPACE -> {
                 player.setJump(true);
             }
-            case KeyEvent.VK_BACK_SPACE -> {
-                Gamestate.state = Gamestate.MENU;
+            case KeyEvent.VK_ESCAPE -> {
+                paused=!paused;
             }
         }
     }
