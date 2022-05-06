@@ -11,9 +11,7 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import main.Game;
 import main.GamePanel;
-import static utils.Constants.PlayerConstants.GetSpriteAmount;
 
 /**
  *
@@ -25,8 +23,12 @@ public class LoadSave {
     public static final String LEVEL_ONE_DATA = "level_one_data.png";
     public static final String MENU_BUTTONS = "button_atlas.png";
     public static final String MENU_BACKGROUND = "menu_background.png";
+<<<<<<< Updated upstream
     public static final String PAUSE_BACKGROUND = "pause_menu.png";
     public static final String SOUND_BUTTONS = "sound_button.png";
+=======
+    public static final String CRABBY_ATLAS = "crabby_sprite.png";
+>>>>>>> Stashed changes
     
     public static  BufferedImage GetSpriteAtlas(String atlas){
         BufferedImage img =null;
@@ -60,4 +62,6 @@ public class LoadSave {
         }
         return lvlData;
     }
+    
+    
 }
