@@ -4,13 +4,18 @@
  */
 package utils;
 
+import entities.Enemy;
+import entities.FollowEnemy;
+import entities.PassiveEnemy;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import main.Game;
 import main.GamePanel;
 
 /**
@@ -20,7 +25,8 @@ import main.GamePanel;
 public class LoadSave {
     public static final String PLAYER_ATLAS = "player_sprites.png";
     public static final String LEVEL_ATLAS = Constants.debug?"outside_sprites_grid.png":"outside_sprites.png";
-    public static final String LEVEL_ONE_DATA = "level_one_data.png";
+    public static final String[] LEVELS_DATA = {"level_one_data.png"};
+    public static final int LEVELS_NUMBER = LEVELS_DATA.length;
     public static final String MENU_BUTTONS = "button_atlas.png";
     public static final String MENU_BACKGROUND = "menu_background.png";
     public static final String PAUSE_BACKGROUND = "pause_menu.png";
@@ -49,8 +55,10 @@ public class LoadSave {
         return img;
     }
     
-    public static int[][] GetLevelData() {
-        BufferedImage img = GetSpriteAtlas (LEVEL_ONE_DATA);
+    public static int[][] GetLevelData(int levelN) {
+        if(levelN < 0 || levelN >= LEVELS_NUMBER)return null;
+        
+        BufferedImage img = GetSpriteAtlas (LEVELS_DATA[levelN]);
         int[][] lvlData = new int[img.getHeight()][img.getWidth()];//[Game.TILES_IN_HEIGHT][Game.TILES_IN_WIDTH];
         for (int j = 0; j < img.getHeight(); j++)
                for (int i = 0; i < img.getWidth(); i++) {
@@ -64,5 +72,28 @@ public class LoadSave {
         return lvlData;
     }
     
+    public static LinkedList<Enemy> GetLevelEnemies(int levelN) {
+        if(levelN < 0 || levelN >= LEVELS_NUMBER)return null;
+        
+        var enemies = new LinkedList<Enemy>();
+        BufferedImage img = GetSpriteAtlas (LEVELS_DATA[levelN]);
+        
+        for (int j = 0; j < img.getHeight(); j++)
+            for (int i = 0; i < img.getWidth(); i++) {
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getGreen();
+                if(value == 0)
+                    continue;
+                switch(value){
+                    case 1 -> {
+                        enemies.add(new PassiveEnemy(i*Game.TILES_SIZE, j*Game.TILES_SIZE));
+                    }
+                    case 2 -> {
+                        enemies.add(new FollowEnemy(i*Game.TILES_SIZE, j*Game.TILES_SIZE));
+                    }
+                }
+            }
+        return enemies;
+    }
     
 }

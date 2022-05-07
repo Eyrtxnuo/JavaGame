@@ -29,7 +29,7 @@ public class LevelManager {
     public LevelManager(Game game) {
         this.game = game;
         importOutsideSprites();
-        levelOne = new Level(LoadSave.GetLevelData(), LoadSave.GetSpriteAtlas("background.png"));
+        levelOne = new Level(LoadSave.GetLevelData(0), LoadSave.GetSpriteAtlas("background.png"));
     }
     
     public void update(){

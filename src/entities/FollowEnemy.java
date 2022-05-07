@@ -27,7 +27,7 @@ public class FollowEnemy extends Enemy{
         TYPE = Constants.EnemyConstants.CRABBY;
         initSprite();
         settings();
-        initHitbox(x, y, (int)(22f), (int)(23f));
+        initHitbox(x, y, (int)(22f), (int)(17f));
         LoadAnimations(LoadSave.CRABBY_ATLAS);
         jumpSpeed = -2.5f;
     }
@@ -36,7 +36,7 @@ public class FollowEnemy extends Enemy{
         spriteX = Constants.EnemyConstants.CRABBY_WIDTH_DEFAULT;
         spriteY =  Constants.EnemyConstants.CRABBY_HEIGHT_DEFAULT;
         xDrawOffset = 26;
-        yDrawOffset = 4;
+        yDrawOffset = 10;
     }
     private void settings(){
         action = RUNNING;

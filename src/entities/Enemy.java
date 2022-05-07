@@ -6,14 +6,11 @@
 package entities;
 
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import main.Game;
 import utils.Constants;
 import static utils.Constants.EnemyConstants.GetSpriteAmount;
-import static utils.Constants.EnemyConstants.RUNNING;
-import static utils.Constants.PlayerConstants.GetSpriteAmount;
-import static utils.Constants.PlayerConstants.IDLE;
+import static utils.Constants.EnemyConstants.*;
 import static utils.HelpMethods.CanMoveHere;
 import static utils.HelpMethods.GetEntityXPosNextToWall;
 import static utils.HelpMethods.GetEntityYPosUnderRoofOrAboveFloor;
@@ -31,7 +28,7 @@ public abstract class Enemy extends Entity{
     protected float xDrawOffset;
     protected float yDrawOffset;
     
-    protected static int TYPE;
+    protected int TYPE;
     protected int action = RUNNING;
     protected boolean moving = false, attacking = false;
     protected boolean left, right, jump;
@@ -53,6 +50,10 @@ public abstract class Enemy extends Entity{
         initSprite();
         initHitbox(x, y, (int)(20f), (int)(27f));
     }
+    public Enemy(float x, float y, int TYPE) {
+        this(x, y);
+        this.TYPE = TYPE;
+    }
     
     private void initSprite(){
         spriteX = Constants.EnemyConstants.CRABBY_WIDTH_DEFAULT;
@@ -63,6 +64,11 @@ public abstract class Enemy extends Entity{
     
     public void update(Player p) {
         updatePos(p);
+        if(moving){
+            action=RUNNING;
+        }else{
+            action=IDLE;
+        }
         /*if(hitbox.intersects(p.hitbox)){
             System.out.println("DAMAGE");
             p.reset();

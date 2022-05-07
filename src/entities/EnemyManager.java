@@ -4,10 +4,26 @@
  */
 package entities;
 
+import gamestates.Playing;
+import java.util.LinkedList;
+
 /**
  *
  * @author matti
  */
 public class EnemyManager {
+    LinkedList<Enemy> enemies;
+    Playing playing;
+
+    public EnemyManager(Playing playing) {
+        this.enemies = new LinkedList<>();
+        this.playing = playing;
+    }
+    
+    public void loadEnemies(LinkedList<Enemy> enemies){
+        this.enemies = enemies;
+    }
+    
+    
     
 }

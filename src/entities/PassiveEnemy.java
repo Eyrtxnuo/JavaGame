@@ -29,17 +29,25 @@ public class PassiveEnemy extends Enemy{
         TYPE = Constants.EnemyConstants.CRABBY;
         initSprite();
         settings();
-        initHitbox(x, y, (int)(22f), (int)(23f));
+        initHitbox(x, y, (int)(22f), (int)(17f));
         LoadAnimations(LoadSave.CRABBY_ATLAS);
         resetMovements();
-        left=true;
     }
+
+    @Override
+    protected void resetMovements() {
+        right=false;
+        left=true;
+        jump=false;
+    }
+    
+    
     
     private void initSprite(){
         spriteX = Constants.EnemyConstants.CRABBY_WIDTH_DEFAULT;
         spriteY =  Constants.EnemyConstants.CRABBY_HEIGHT_DEFAULT;
         xDrawOffset = 26;
-        yDrawOffset = 7;
+        yDrawOffset = 10;
     }
     
     private void settings(){
