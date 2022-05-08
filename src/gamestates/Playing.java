@@ -2,6 +2,7 @@ package gamestates;
 
 import entities.PassiveEnemy;
 import entities.Enemy;
+import entities.EnemyManager;
 import entities.FollowEnemy;
 import entities.Player;
 import java.awt.Graphics;
@@ -13,12 +14,13 @@ import static main.Game.GAME_WIDTH;
 import static main.Game.SCALE;
 import main.GamePanel;
 import ui.PauseOverlay;
+import utils.LoadSave;
 
 public class Playing extends State implements Statemethods {
 
     static private LevelManager levelManager;
     private Player player;
-    private Enemy enemy;
+    private EnemyManager enemies;
     private boolean paused = false;
     private PauseOverlay pauseOverlay;
 
@@ -31,8 +33,9 @@ public class Playing extends State implements Statemethods {
         levelManager = new LevelManager(game);
         player = new Player(50, 200);
         player.loadLvlData(levelManager.getLevelOne().getLvlData());
-        enemy = new FollowEnemy(1200, 285);
-        enemy.loadLvlData(levelManager.getLevelOne().getLvlData());
+        enemies = new EnemyManager(this);
+        enemies.loadEnemies(LoadSave.GetLevelEnemies(0));//new FollowEnemy(1200, 285);
+        //enemies.loadLvlData(levelManager.getLevelOne().getLvlData());
         pauseOverlay = new PauseOverlay(this);
         //gamePanel = new GamePanel(game);
     }
@@ -44,7 +47,9 @@ public class Playing extends State implements Statemethods {
             player.update();
             LevelManager.colorOrange.clear();
             LevelManager.colorRed.clear();
-            enemy.update(player);
+            for(Enemy en : enemies.getEnemies()){
+                en.update(player);   
+            }
         } else {
             pauseOverlay.update();
         }
@@ -58,7 +63,9 @@ public class Playing extends State implements Statemethods {
         float effXOffset = -((xOffset < 0) ? 0f: (xOffset > maxOffset ? maxOffset : xOffset));
         levelManager.draw(g, effXOffset, 0);
 
-        enemy.render(g, effXOffset, 0);
+        for(Enemy en : enemies.getEnemies()){
+            en.render(g, effXOffset, 0);
+        }
 
         player.render(g, effXOffset, 0);
         if (paused) {

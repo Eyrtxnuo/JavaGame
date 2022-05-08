@@ -74,7 +74,7 @@ public class LoadSave {
     
     public static LinkedList<Enemy> GetLevelEnemies(int levelN) {
         if(levelN < 0 || levelN >= LEVELS_NUMBER)return null;
-        
+        int[][] lvlData = GetLevelData(levelN);
         var enemies = new LinkedList<Enemy>();
         BufferedImage img = GetSpriteAtlas (LEVELS_DATA[levelN]);
         
@@ -84,14 +84,20 @@ public class LoadSave {
                 int value = color.getGreen();
                 if(value == 0)
                     continue;
+                Enemy en;
                 switch(value){
                     case 1 -> {
-                        enemies.add(new PassiveEnemy(i*Game.TILES_SIZE, j*Game.TILES_SIZE));
+                        en = new PassiveEnemy(i*Game.TILES_SIZE, j*Game.TILES_SIZE);
                     }
                     case 2 -> {
-                        enemies.add(new FollowEnemy(i*Game.TILES_SIZE, j*Game.TILES_SIZE));
+                        en = new FollowEnemy(i*Game.TILES_SIZE, j*Game.TILES_SIZE);
+                    }
+                    default ->{
+                        continue;
                     }
                 }
+                en.loadLvlData(lvlData);
+                enemies.add(en);
             }
         return enemies;
     }

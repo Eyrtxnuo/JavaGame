@@ -12,8 +12,8 @@ import java.util.LinkedList;
  * @author matti
  */
 public class EnemyManager {
-    LinkedList<Enemy> enemies;
-    Playing playing;
+    private LinkedList<Enemy> enemies;
+    private Playing playing;
 
     public EnemyManager(Playing playing) {
         this.enemies = new LinkedList<>();
@@ -23,7 +23,9 @@ public class EnemyManager {
     public void loadEnemies(LinkedList<Enemy> enemies){
         this.enemies = enemies;
     }
-    
-    
+
+    public LinkedList<Enemy> getEnemies() {
+        return enemies;
+    }
     
 }
