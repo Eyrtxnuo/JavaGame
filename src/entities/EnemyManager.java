@@ -28,4 +28,18 @@ public class EnemyManager {
         return enemies;
     }
     
+    public boolean removeEnemy(Enemy e){
+        return enemies.remove(e);
+    }
+
+    public Playing getPlaying() {
+        return playing;
+    }
+    
+    public synchronized void updateAll(Player player){
+        LinkedList<Enemy> enem = (LinkedList <Enemy>) enemies.clone();
+        for(Enemy el: enem){
+            el.update(player);
+        }
+    }    
 }

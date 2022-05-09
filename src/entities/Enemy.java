@@ -5,8 +5,10 @@
  */
 package entities;
 
+import gamestates.Playing;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.LinkedList;
 import main.Game;
 import utils.Constants;
 import static utils.Constants.EnemyConstants.GetSpriteAmount;
@@ -112,11 +114,16 @@ public abstract class Enemy extends Entity{
         }else{
             action=IDLE;
         }
-        /*if(hitbox.intersects(p.hitbox)){
-            System.out.println("DAMAGE");
-            p.reset();
-            teleport(x, y);
-        }*/
+        var muniz = (LinkedList<Projectile>)Playing.flyingAmmos.getProjectiles().clone();
+        muniz.forEach(ammo ->{
+            if(hitbox.intersects(ammo.hitbox)){
+                System.out.println("DED");
+                //p.reset();
+                //teleport(x, y);
+                Playing.enemies.removeEnemy(this);
+                Playing.flyingAmmos.removeProjectile(ammo);
+            }
+        });
             
     }
     

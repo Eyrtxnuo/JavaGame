@@ -87,10 +87,10 @@ public class LoadSave {
                 Enemy en;
                 switch(value){
                     case 1 -> {
-                        en = new PassiveEnemy(i*Game.TILES_SIZE, j*Game.TILES_SIZE);
+                        en = new PassiveEnemy(i*Game.TILES_DEFAULT_SIZE, j*Game.TILES_DEFAULT_SIZE);
                     }
                     case 2 -> {
-                        en = new FollowEnemy(i*Game.TILES_SIZE, j*Game.TILES_SIZE);
+                        en = new FollowEnemy(i*Game.TILES_DEFAULT_SIZE, j*Game.TILES_DEFAULT_SIZE);
                     }
                     default ->{
                         continue;

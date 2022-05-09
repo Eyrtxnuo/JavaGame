@@ -4,12 +4,13 @@
  */
 package entities;
 
+import gamestates.Playing;
+import java.awt.Color;
 import java.awt.Graphics;
+import javax.swing.text.PlainDocument;
+import main.Game;
 import utils.Constants;
 import static utils.HelpMethods.CanMoveHere;
-import static utils.HelpMethods.GetEntityXPosNextToWall;
-import static utils.HelpMethods.GetEntityYPosUnderRoofOrAboveFloor;
-import static utils.HelpMethods.IsEntityOnFloor;
 
 /**
  *
@@ -17,23 +18,24 @@ import static utils.HelpMethods.IsEntityOnFloor;
  */
 public class Projectile extends Entity{
     
-    private static final float SPEED = 3f;
+    private static final float SPEED = 9f;
     private float angle;
     float xSpeed, ySpeed;
     private int[][] lvlData;
-    private float gravity = 0.01f;
+    private float gravity = 0.00f;
 
-    public Projectile(float angle) {
-        super(0, 0);
-        this.angle = angle;
-        xSpeed = (float)Math.cos(x)*SPEED;
-        ySpeed = (float)Math.sin(x)*SPEED;
-        
-        initHitbox(100, 100, 5, 5);
+    public Projectile(float x, float y, float angle) {
+        super(x, y);
+        this.angle = -angle;
+        xSpeed = (float)Math.cos(this.angle)*SPEED;
+        ySpeed = (float)Math.sin(this.angle)*SPEED;
+        initHitbox(x, y, 5, 5);
     }
  
     public void render(Graphics g, float offsetX, float offsetY){
-        g.fillRect((int)(hitbox.x + offsetX), (int)(hitbox.y + offsetY), (int)hitbox.width, (int)hitbox.height);
+        
+        g.setColor(Color.black);
+        g.fillRect((int)(hitbox.x*Game.SCALE + offsetX), (int)(hitbox.y*Game.SCALE + offsetY), (int)(hitbox.width*Game.SCALE), (int)(hitbox.height*Game.SCALE));
         if(Constants.debug){
             drawHitbox(g, offsetX, offsetY);
         }
@@ -41,20 +43,20 @@ public class Projectile extends Entity{
  
     public void update(Player p) {
         updatePos();
-        if(hitbox.intersects(p.hitbox)){
+        /*if(hitbox.intersects(p.hitbox)){
             System.out.println("DAMAGE");
             p.reset();
-        }
+        }*/
     }
 
     private void updatePos() {
-        
         if(CanMoveHere(hitbox.x + xSpeed, hitbox.y + ySpeed, hitbox.width, hitbox.height, lvlData)){
             hitbox.y += ySpeed;
             hitbox.x += xSpeed;
             ySpeed += gravity;
         }else{
-            initHitbox(0, 0, 5, 5);
+            //initHitbox(0, 0, 5, 5);
+            Playing.flyingAmmos.removeProjectile(this);
         }
             
     }
