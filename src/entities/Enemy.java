@@ -17,44 +17,78 @@ import static utils.HelpMethods.GetEntityYPosUnderRoofOrAboveFloor;
 import static utils.HelpMethods.IsEntityOnFloor;
 import utils.LoadSave;
 
-/**
- *
+/**Abstract class to declare enemies
+ * 
  * @author Bossi_Mattia
+ * 
+ * Enemy class, implements collision, movements, animations of enemies, 
+ * a class that extends Enemy can override methods to create a
+ * personalized behaviour(base functions don't do anything) 
  */
 public abstract class Enemy extends Entity{
     
+    /** sprite dimensons in pixel */
     protected int spriteX, spriteY;
     
-    protected float xDrawOffset;
-    protected float yDrawOffset;
+    /** offset from sprite top-left angle and hitbox top-left angle */
+    protected float xDrawOffset, yDrawOffset;
     
+    /** enemy type */
     protected int TYPE;
-    protected int action = RUNNING;
-    protected boolean moving = false, attacking = false;
-    protected boolean left, right, jump;
-    protected boolean dirLeft = false;
-    protected int[][] lvlData;
-    protected float airSpeed = 0f;
-    protected float movSpeed=0.5f, jumpSpeed=-2.25f, gravity=0.04f;
     
-    protected float fallSpeedAfterCollision = 0.5f;
+    /** enemy action, for animations */
+    protected int action = RUNNING;
+    /** enemy actions animations */
+    protected boolean moving = false, attacking = false;
+    /** enemy movements(inputs) */
+    protected boolean left, right, jump;
+    /** direction that the enemy is looking at */
+    protected boolean dirLeft = false;
+    /** levelData for collisions, blocks as int[][] */
+    protected int[][] lvlData;
+    /** current vertical speed */
+    protected float airSpeed = 0f;
+    /** movement constaats */
+    protected float movSpeed=0.5f, jumpSpeed=-2.25f, gravity=0.04f, fallSpeedAfterCollision = 0.5f;
+    /** is Enemy in Air, for applying graavity and animations */
     protected boolean inAir = true;
     
+    /** array of animation sequences */
     protected BufferedImage[][] animations;
-    
-    
+    /** variable to track animations and update them */
     protected int aniTick, aniIndex, aniSpeed = 25;
     
+    
+    /** default enemy constructor
+    * 
+    * Initialize enemy object
+    * calls initSprite to load sprite render configuration
+    * @param x X coordinate of enemy
+    * @param y Y coordinate of enemy
+    */
     public Enemy(float x, float y) {
         super(x, y);
         initSprite();
         initHitbox(x, y, (int)(20f), (int)(27f));
     }
+    /** TYPE enemy constructor
+    * 
+    * Initialize enemy object, declaring the type
+    * calls the default constructor
+    * @param x X coordinate of enemy
+    * @param y Y coordinate of enemy
+    * @param TYPE enemy type
+    */
     public Enemy(float x, float y, int TYPE) {
         this(x, y);
         this.TYPE = TYPE;
     }
     
+    /** load sprite render configuration
+    * 
+    * Initialize spriteX, spriteY, xDrawOffset, yDrawOffset.
+    * should be overwritten by a subclass to show correctly the sprite
+    */
     private void initSprite(){
         spriteX = Constants.EnemyConstants.CRABBY_WIDTH_DEFAULT;
         spriteY =  Constants.EnemyConstants.CRABBY_HEIGHT_DEFAULT;
@@ -62,6 +96,15 @@ public abstract class Enemy extends Entity{
         yDrawOffset = 7;
     }
     
+    /** does an update cycle
+    * 
+    * moves the hitbox(and the sprite) of the enemy
+    * ¿¿maybe?? ¿¿check collision with player??
+    * 
+    * call updatePos(); to update positions
+    * 
+    * @param p player reference, could be used for collisions
+    */
     public void update(Player p) {
         updatePos(p);
         if(moving){
@@ -77,6 +120,14 @@ public abstract class Enemy extends Entity{
             
     }
     
+    /** render the enemy on Graphics g with the offset given
+     * 
+     * render the enemy on graphics if it is in the screen horizontal coordinates
+     * 
+     * @param g Graphics object to draw on
+     * @param offsetX horizontal offset of screen
+     * @param offsetY vertical offset of screen
+    */
     public void render(Graphics g, float offsetX, float offsetY) {
         if((hitbox.x-xDrawOffset+spriteX)*Game.SCALE>-(offsetX) && (hitbox.x-xDrawOffset)*Game.SCALE <Game.GAME_WIDTH-(offsetX)){
             if(dirLeft){
@@ -90,8 +141,12 @@ public abstract class Enemy extends Entity{
         }
     }
     
-    
-       protected void LoadAnimations(String path) {
+    /** load the animations
+     * 
+     * load the animations atlas, subdivide it to single animation frames
+     * @param path local path to animations atlas
+     */
+    protected void LoadAnimations(String path) {
         BufferedImage img = LoadSave.GetSpriteAtlas(path);
         
         animations = new BufferedImage[5][];
@@ -103,6 +158,18 @@ public abstract class Enemy extends Entity{
         }
     }
     
+    /** update enemy position
+    * 
+    * moves the hitbox of the enemy, based on the movements variables
+    * checks vertical moements, then horizontal movement, if a movement is blocked,
+    * the enemy is placed right beside the wall, roof/ceiling.
+    * 
+    * calls prePosUpdate(), onRoofCealingTouch(), onWallTouch() events
+    * 
+    * calls updateXpos() to handle horizontal movements
+    * 
+    * @param p player reference, can be used to get player position.
+    */
     protected void updatePos(Player p) {
         prePosUpdate(p);
         /**/
@@ -152,6 +219,16 @@ public abstract class Enemy extends Entity{
         moving = true;
     }
     
+    /** update horizontal enemy position
+    * 
+    * moves the hitbox of the enemy, based on the movements variables
+    * checks  horizontal movement, if a movement is blocked,
+    * the enemy is placed right beside the wall.
+    * 
+    * calls onWallTouch() events
+    * 
+    * @param xSpeed horizontal speed.
+    */
     private void updateXpos(float xSpeed) {
         if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
             hitbox.x += xSpeed;
@@ -161,6 +238,9 @@ public abstract class Enemy extends Entity{
         }
     }
     
+    /** jump command
+     * if not inAir, airSpeed is set to JumpSpeed, and inAir is set to true
+     */
     protected void jump() {
         if(inAir)
             return;
@@ -168,27 +248,44 @@ public abstract class Enemy extends Entity{
         airSpeed = jumpSpeed;
     }
     
+    /** reset commands
+     * reset commands variable
+     */
     protected void resetMovements(){
         left=false;
         right=false;
         jump=false;
     }
     
+    /** reset air speed
+     * reset inAir to false
+     */
     private void resetInAir() {
         inAir = false;
         airSpeed = 0;
     }
     
+     /** load level data
+      * needs to be called after object reations, needed to update
+     */
     public void loadLvlData(int[][] data) {
         this.lvlData = data;
     }
    
+    /** change enemy coordinates
+     * needs to be called after object reations, needed to update
+     * @param x new X coordinate of enemy
+     * @param y new Y coordinate of enemy
+     */
     public void teleport(float x, float y){
         hitbox.x = x;
         hitbox.y = y;
         inAir=true;
     }
     
+    /** increase animation tick
+     * increase animation tick, every aniSpeed updates, animation frame is changed
+     */
     protected void updateAnimationTick() {
         aniTick++;
         if (aniTick >= aniSpeed) {
@@ -200,15 +297,25 @@ public abstract class Enemy extends Entity{
             }
         }
     }
-
+    
+    /** event when a movement touches a wall
+     * should be overridden from a subclass to implement event
+     */
     protected void onWallTouch(){
         
     }
     
+    /** event when a movement touches a roof/ceiling
+     * should be overridden from a subclass to implement event
+     */
     protected void onRoofCealingTouch(){
         
     }
-
+    
+    /** event called every time before position update
+     * should be overridden from a subclass to implement event
+     * @param p player reference
+     */
     protected void prePosUpdate(Player p) {
         
     }
