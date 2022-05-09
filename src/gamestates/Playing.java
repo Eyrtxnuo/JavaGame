@@ -7,7 +7,10 @@ import entities.FollowEnemy;
 import entities.Player;
 import entities.Projectile;
 import entities.ProjectileManager;
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
@@ -27,6 +30,7 @@ public class Playing extends State implements Statemethods {
     private PauseOverlay pauseOverlay;
     public static ProjectileManager flyingAmmos;
     private float effXOffset;
+    private float pointerX, pointerY;
 
     public Playing(Game game) {
         super(game);
@@ -62,7 +66,7 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void draw(Graphics g) {
-        long a = System.nanoTime();
+        //long a = System.nanoTime();
         float xOffset = -(GAME_WIDTH / 2 - player.getHitbox().x * SCALE);
         float maxOffset = (levelManager.getLevelOne().getLenght()*SCALE)-GAME_WIDTH;
         effXOffset = -((xOffset < 0) ? 0f: (xOffset > maxOffset ? maxOffset : xOffset));
@@ -72,14 +76,19 @@ public class Playing extends State implements Statemethods {
         for(Enemy en : nemic){
             en.render(g, effXOffset, 0);
         }
-
-        player.render(g, effXOffset, 0);
         
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setStroke(new BasicStroke(3));
+        g2.setColor(new Color(255, 0, 0, 56));
+        g.drawLine((int)((player.getHitbox().x+player.getHitbox().width/2)*Game.SCALE + effXOffset), (int)((player.getHitbox().y+player.getHitbox().height/2)*Game.SCALE), (int)pointerX, (int)pointerY);
+
         var muniz = (LinkedList<Projectile>)flyingAmmos.getProjectiles().clone();
         
         muniz.forEach((el)->{
             el.render(g, effXOffset, 0);
         });
+        
+        player.render(g, effXOffset, 0);
         
         if (paused) {
             pauseOverlay.draw(g);
@@ -120,13 +129,20 @@ public class Playing extends State implements Statemethods {
     public void mouseMoved(MouseEvent e) {
         if (paused) {
             pauseOverlay.mouseMoved(e);
+            return;
         }
+        pointerX = e.getX();
+        pointerY = e.getY();
     }
     
     public void mouseDragged(MouseEvent e) {
         if (paused) {
             pauseOverlay.mouseDragged(e);
+            return;
         }
+        pointerX = e.getX();
+        pointerY = e.getY();
+        
     }
 
     @Override
