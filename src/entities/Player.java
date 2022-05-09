@@ -4,6 +4,7 @@
  */
 package entities;
 
+import gamestates.Playing;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import static utils.Constants.PlayerConstants.*;
@@ -50,6 +51,7 @@ public class Player extends Entity {
     }
 
     public void render(Graphics g, float offsetX, float offsetY) {
+        dirLeft = Playing.pointerX<(hitbox.x+hitbox.width/2)*Game.SCALE+offsetX;
         if (dirLeft) {
          g.drawImage(animations[playerAction][aniIndex % animations[playerAction].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX + spriteX * Game.SCALE ) , (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), -(int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
         } else {

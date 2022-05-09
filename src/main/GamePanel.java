@@ -11,6 +11,10 @@ import static main.Game.GAME_WIDTH;
 import static main.Game.GAME_HEIGHT;
 
 import inputs.MouseInputs;
+import java.awt.Point;
+import java.awt.Toolkit;
+import javax.swing.ImageIcon;
+import utils.LoadSave;
 
 
 /**
@@ -26,7 +30,15 @@ public class GamePanel extends javax.swing.JPanel {
         this.game= game;
         initComponents();
         mouseInputs = new MouseInputs(this);
-        
+        setCursor(
+                  Toolkit
+                  .getDefaultToolkit()
+                  .createCustomCursor(
+                         new ImageIcon(LoadSave.GetSpriteAtlas("pointer.png")).getImage(),
+                         new Point(15,15),
+                         "Scope Pointer"
+                  )
+             );
         setPanelSize();
         addKeyListener(new KeyboardInputs(this));
         addMouseListener(mouseInputs);

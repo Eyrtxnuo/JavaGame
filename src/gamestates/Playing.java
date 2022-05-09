@@ -30,7 +30,8 @@ public class Playing extends State implements Statemethods {
     private PauseOverlay pauseOverlay;
     public static ProjectileManager flyingAmmos;
     private float effXOffset;
-    private float pointerX, pointerY;
+    public static float pointerX, pointerY;
+    private double gunRandomnes=0.05;//in radians
 
     public Playing(Game game) {
         super(game);
@@ -47,10 +48,18 @@ public class Playing extends State implements Statemethods {
         pauseOverlay = new PauseOverlay(this);
         //gamePanel = new GamePanel(game);
         flyingAmmos = new ProjectileManager(this);
+        FollowEnemy spawn;
+        int[][] data = LoadSave.GetLevelData(0);
+        for(int i = 0; i < 0; i++){
+            spawn = new FollowEnemy(1200, 200);
+            spawn.loadLvlData(data);
+            enemies.getEnemies().add(spawn);
+        }
     }
 
     @Override
     public void update() {
+        
         if (!paused) {
             levelManager.update();
             player.update();
@@ -110,7 +119,7 @@ public class Playing extends State implements Statemethods {
         if (e.getButton() == MouseEvent.BUTTON1) {
             //if(flyingAmmos.getProjectiles().isEmpty()){
                 player.setAttacking(true);
-                Projectile flyingAmmo = new Projectile(player.getHitbox().x+player.getHitbox().width/2, player.getHitbox().y+player.getHitbox().height/2, (float)(Math.atan2(player.getHitbox().x+player.getHitbox().width/2 - (e.getX()-effXOffset)/Game.SCALE, player.getHitbox().y+player.getHitbox().height/2 - e.getY()/Game.SCALE)+Math.PI/2));
+                Projectile flyingAmmo = new Projectile(player.getHitbox().x+player.getHitbox().width/2, player.getHitbox().y+player.getHitbox().height/2, (float)(Math.atan2(player.getHitbox().x+player.getHitbox().width/2 - (e.getX()-effXOffset)/Game.SCALE, player.getHitbox().y+player.getHitbox().height/2 - e.getY()/Game.SCALE)+Math.PI/2-gunRandomnes/2+Math.random()*gunRandomnes));
                 flyingAmmo.loadLvlData(levelManager.getLevelOne().getLvlData());
                 flyingAmmos.add(flyingAmmo);
             //}
