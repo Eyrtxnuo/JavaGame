@@ -39,17 +39,17 @@ public class HelpMethods {
 
         float xIndex = x / Game.TILES_DEFAULT_SIZE;
         float yIndex = y / Game.TILES_DEFAULT_SIZE;
-        LevelManager.colorOrange.add((int)xIndex*14 + (int)yIndex);
+        LevelManager.collisionChecked.add((int)xIndex*14 + (int)yIndex);
 
         int value = lvlData[(int) yIndex][(int) xIndex];
         
         if (value >= 48 || value < 0 || value != 11) {
             
-            LevelManager.colorRed.add((int)xIndex*14 + (int)yIndex);
+            LevelManager.collisionFound.add((int)xIndex*14 + (int)yIndex);
             return true;
         }
         
-        LevelManager.colorOrange.add((int)xIndex*14 + (int)yIndex);
+        LevelManager.collisionChecked.add((int)xIndex*14 + (int)yIndex);
         return false;
     }
     

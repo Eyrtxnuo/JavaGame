@@ -31,7 +31,7 @@ public class KeyboardInputs implements KeyListener{
         switch(Gamestate.state){
             case PLAYING:
                 gamePanel.getGame().getPlaying().keyPressed(e);
-                if(Constants.debug && e.getKeyChar() == 'p'){
+                if(Constants.DEBUG && e.getKeyChar() == 'p'){
                     Game.manualFrameAdvancing=!Game.manualFrameAdvancing;
                     System.out.println("Manual Frame Advancing: " + Game.manualFrameAdvancing);   
                 }

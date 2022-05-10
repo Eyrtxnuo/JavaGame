@@ -24,7 +24,7 @@ import main.GamePanel;
  */
 public class LoadSave {
     public static final String PLAYER_ATLAS = "player_sprites.png";
-    public static final String LEVEL_ATLAS = Constants.debug?"outside_sprites_grid.png":"outside_sprites.png";
+    public static final String LEVEL_ATLAS = Constants.DEBUG?"outside_sprites_grid.png":"outside_sprites.png";
     public static final String[] LEVELS_DATA = {"level_one_data.png"};
     public static final int LEVELS_NUMBER = LEVELS_DATA.length;
     public static final String MENU_BUTTONS = "button_atlas.png";

@@ -139,7 +139,7 @@ public abstract class Enemy extends Entity{
             }else{
                 g.drawImage(animations[action][aniIndex % animations[action].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX  + spriteX * Game.SCALE), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) -(spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
             }
-            if(Constants.debug){
+            if(Constants.DEBUG){
                 drawHitbox(g, offsetX, offsetY);
             }
         }

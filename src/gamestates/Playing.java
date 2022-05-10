@@ -30,7 +30,7 @@ public class Playing extends State implements Statemethods {
     public static ProjectileManager flyingAmmos;
     private float effXOffset;
     public static float pointerX, pointerY;
-    private double gunRandomnes=0.05;//in radians
+    private final double gunRandomnes=0.05;//in radians
 
     public Playing(Game game) {
         super(game);
@@ -58,18 +58,18 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void update() {
-        
-        if (!paused) {
-            levelManager.update();
-            player.update();
-            
-            LevelManager.colorOrange.clear();
-            LevelManager.colorRed.clear(); 
-            enemies.updateAll(player);
-            flyingAmmos.updateAll(player);
-        } else {
+        if (paused) {
             pauseOverlay.update();
+            return;
         }
+        levelManager.update();
+        player.update();
+
+        LevelManager.collisionChecked.clear();
+        LevelManager.collisionFound.clear(); 
+        enemies.updateAll(player);
+        flyingAmmos.updateAll(player);
+            
     }
 
     @Override
@@ -89,7 +89,7 @@ public class Playing extends State implements Statemethods {
         g2.setStroke(new BasicStroke(3));
         g2.setColor(new Color(255, 0, 0, 56));
         g.drawLine((int)((player.getHitbox().x+player.getHitbox().width/2)*Game.SCALE + effXOffset), (int)((player.getHitbox().y+player.getHitbox().height/2)*Game.SCALE), (int)pointerX, (int)pointerY);
-
+        g2.setStroke(new BasicStroke(0));
         var muniz = (LinkedList<Projectile>)flyingAmmos.getProjectiles().clone();
         
         muniz.forEach((el)->{

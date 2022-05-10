@@ -15,6 +15,7 @@ public class Level {
     
     private int[][] lvlData;
     private BufferedImage background;
+    
 
     public Level(int[][] lvlData) {
         this.lvlData = lvlData;

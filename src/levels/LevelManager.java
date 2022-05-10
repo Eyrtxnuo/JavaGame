@@ -21,8 +21,8 @@ public class LevelManager {
  
     private Game game;
     private BufferedImage[] levelSprite; 
-    public static LinkedList<Integer> colorOrange = new LinkedList<Integer>();
-    public static LinkedList<Integer> colorRed = new LinkedList<Integer>();
+    public static LinkedList<Integer> collisionChecked = new LinkedList<>();
+    public static LinkedList<Integer> collisionFound = new LinkedList<>();
 
     private Level levelOne;
 
@@ -43,11 +43,11 @@ public class LevelManager {
                 int index = levelOne.getSpriteIndex(i, j);
                 if((i+1)*Game.TILES_SIZE>-(offsetX) && i*Game.TILES_SIZE<Game.GAME_WIDTH-(offsetX)){
                     g.drawImage(levelSprite[index], (int)((Game.TILES_SIZE * i)+offsetX), (int)((Game.TILES_SIZE * j)+offsetY), Game.TILES_SIZE, Game.TILES_SIZE, null);
-                    if(Constants.debug){
-                        if(colorRed.contains(j + i*14)){
+                    if(Constants.DEBUG){
+                        if(collisionFound.contains(j + i*14)){
                             g.setColor(new Color(1f, 0f, 0f, 0.5f));
                             g.fillRect((int)((Game.TILES_SIZE * i)+offsetX), (int)((Game.TILES_SIZE * j)+offsetY), Game.TILES_SIZE, Game.TILES_SIZE);
-                        }else if(colorOrange.contains(j + i*14)){
+                        }else if(collisionChecked.contains(j + i*14)){
                             g.setColor(new Color(0.98f, 0.584f, 0.258f, 0.5f));
                             g.fillRect((int)((Game.TILES_SIZE * i)+offsetX), (int)((Game.TILES_SIZE * j)+offsetY), Game.TILES_SIZE, Game.TILES_SIZE);
                         }
