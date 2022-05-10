@@ -1,6 +1,5 @@
 package gamestates;
 
-import entities.PassiveEnemy;
 import entities.Enemy;
 import entities.EnemyManager;
 import entities.FollowEnemy;
@@ -50,7 +49,7 @@ public class Playing extends State implements Statemethods {
         flyingAmmos = new ProjectileManager(this);
         FollowEnemy spawn;
         int[][] data = LoadSave.GetLevelData(0);
-        for(int i = 0; i < 0; i++){
+        for(int i = 0; i < 10; i++){
             spawn = new FollowEnemy(1200, 200);
             spawn.loadLvlData(data);
             enemies.getEnemies().add(spawn);

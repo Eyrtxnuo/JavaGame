@@ -1,47 +1,66 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package entities;
 
 import gamestates.Playing;
 import java.util.LinkedList;
 
-/**
- *
- * @author matti
+/** Enemy manager class, contains a list of {@link entities.Enemy Enemy}, implements functions to create, remove, update enemies in a level
+ * 
+ * @author BossiMattia
+ * @see Enemy
  */
 public class EnemyManager {
+    /** Enemy container */
     private LinkedList<Enemy> enemies;
-    private Playing playing;
+    /** Playing object reference */
+    private final Playing playing;
 
+    
+    /** Default constructor, 
+     * create a empty {@link entities.Enemy Enemy} list
+     * 
+     * @param playing Playing object reference
+     */
     public EnemyManager(Playing playing) {
         this.enemies = new LinkedList<>();
         this.playing = playing;
     }
     
+    /** Load {@link entities.Enemy Enemy} list, replace the old one
+     *@param enemies the new {@link entities.Enemy Enemy} list
+     */
     public void loadEnemies(LinkedList<Enemy> enemies){
         this.enemies = enemies;
     }
 
+    /** Get current {@link entities.Enemy Enemy} list
+     *@return the current {@link entities.Enemy Enemy} list
+     */
     public LinkedList<Enemy> getEnemies() {
         return enemies;
     }
     
-    public boolean removeEnemy(Enemy e){
-        return enemies.remove(e);
+    /**Remove a {@link entities.Enemy Enemy} from the list
+     * @param enemy the enemy to be removed
+     * @return true if the enemy has been removed, false if it wasn't contained
+     */
+    public boolean removeEnemy(Enemy enemy){
+        return enemies.remove(enemy);
     }
 
+    /** Get the {@link gamestates.Playing Playing} reference
+     * @return the loaded {@link gamestates.Playing Playing} reference
+     */
     public Playing getPlaying() {
         return playing;
     }
     
+    /** Calls Update on every {@link entities.Enemy Enemy} in the list
+     *@param player {@link entities.Player Player} reference to pass in the update function
+     */
     public synchronized void updateAll(Player player){
         LinkedList<Enemy> enem = (LinkedList <Enemy>) enemies.clone();
         for(Enemy el: enem){
             el.update(player);
         }
-    }    
-    
-    
+    }
 }

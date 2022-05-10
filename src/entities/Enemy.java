@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entities;
 
 import gamestates.Playing;
@@ -21,11 +16,13 @@ import utils.LoadSave;
 
 /**Abstract class to declare enemies
  * 
- * @author Bossi_Mattia
+ * @author BossiMattia
  * 
  * Enemy class, implements collision, movements, animations of enemies, 
  * a class that extends Enemy can override methods to create a
  * personalized behaviour(base functions don't do anything) 
+ * 
+ * @see Entity
  */
 public abstract class Enemy extends Entity{
     
@@ -61,7 +58,7 @@ public abstract class Enemy extends Entity{
     protected int aniTick, aniIndex, aniSpeed = 25;
     
     
-    /** default enemy constructor
+    /** default enemy constructor, 
     * 
     * Initialize enemy object
     * calls initSprite to load sprite render configuration
@@ -73,10 +70,10 @@ public abstract class Enemy extends Entity{
         initSprite();
         initHitbox(x, y, (int)(20f), (int)(27f));
     }
-    /** TYPE enemy constructor
+    /** TYPE enemy constructor, 
     * 
     * Initialize enemy object, declaring the type
-    * calls the default constructor
+    * calls the {@link entities.Enemy#Enemy(float, float) default constructor}
     * @param x X coordinate of enemy
     * @param y Y coordinate of enemy
     * @param TYPE enemy type
@@ -86,7 +83,7 @@ public abstract class Enemy extends Entity{
         this.TYPE = TYPE;
     }
     
-    /** load sprite render configuration
+    /** load sprite render configuration, 
     * 
     * Initialize spriteX, spriteY, xDrawOffset, yDrawOffset.
     * should be overwritten by a subclass to show correctly the sprite
@@ -98,7 +95,7 @@ public abstract class Enemy extends Entity{
         yDrawOffset = 7;
     }
     
-    /** does an update cycle
+    /** does an update cycle,
     * 
     * moves the hitbox(and the sprite) of the enemy
     * ¿¿maybe?? ¿¿check collision with player??
@@ -127,9 +124,9 @@ public abstract class Enemy extends Entity{
             
     }
     
-    /** render the enemy on Graphics g with the offset given
+    /** render the enemy on Graphics g with the offset given,
      * 
-     * render the enemy on graphics if it is in the screen horizontal coordinates
+     * if it is in the screen horizontal coordinates
      * 
      * @param g Graphics object to draw on
      * @param offsetX horizontal offset of screen
@@ -148,9 +145,7 @@ public abstract class Enemy extends Entity{
         }
     }
     
-    /** load the animations
-     * 
-     * load the animations atlas, subdivide it to single animation frames
+    /** load the animations atlas, subdivide it to single animation frames
      * @param path local path to animations atlas
      */
     protected void LoadAnimations(String path) {
@@ -290,8 +285,8 @@ public abstract class Enemy extends Entity{
         inAir=true;
     }
     
-    /** increase animation tick
-     * increase animation tick, every aniSpeed updates, animation frame is changed
+    /** increase animation tick,
+     *  every aniSpeed updates, animation frame is changed
      */
     protected void updateAnimationTick() {
         aniTick++;
@@ -305,21 +300,21 @@ public abstract class Enemy extends Entity{
         }
     }
     
-    /** event when a movement touches a wall
+    /** event when a movement touches a wall,
      * should be overridden from a subclass to implement event
      */
     protected void onWallTouch(){
         
     }
     
-    /** event when a movement touches a roof/ceiling
+    /** event when a movement touches a roof/ceiling,
      * should be overridden from a subclass to implement event
      */
     protected void onRoofCealingTouch(){
         
     }
     
-    /** event called every time before position update
+    /** event called every time before position update,
      * should be overridden from a subclass to implement event
      * @param p player reference
      */
