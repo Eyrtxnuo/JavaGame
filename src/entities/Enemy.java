@@ -114,11 +114,11 @@ public abstract class Enemy extends Entity{
         var muniz = (LinkedList<Projectile>)Playing.flyingAmmos.getProjectiles().clone();
         muniz.forEach(ammo ->{
             if(hitbox.intersects(ammo.hitbox)){
-                System.out.println("DED");
+                //System.out.println("DED");
                 //p.reset();
                 //teleport(x, y);
-                Playing.enemies.removeEnemy(this);
-                Playing.flyingAmmos.removeProjectile(ammo);
+                //Playing.enemies.removeEnemy(this);
+                //Playing.flyingAmmos.removeProjectile(ammo);
             }
         });
             

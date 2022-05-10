@@ -22,7 +22,7 @@ public class Projectile extends Entity{
     float xSpeed, ySpeed;
     private int[][] lvlData;
     private final float gravity = 0.00f;
-    private int bounces = 10;
+    private int bounces = 2;
 
     public Projectile(float x, float y, float angle) {
         super(x, y);
