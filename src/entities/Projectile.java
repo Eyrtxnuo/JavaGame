@@ -22,7 +22,7 @@ public class Projectile extends Entity{
     float xSpeed, ySpeed;
     private int[][] lvlData;
     private final float gravity = 0.00f;
-    private int bounces = 2;
+    private int bounces = 1;
 
     public Projectile(float x, float y, float angle) {
         super(x, y);
@@ -71,7 +71,7 @@ public class Projectile extends Entity{
             //initHitbox(0, 0, 5, 5);
             //;
         }
-        if(bounces==0){
+        if(bounces>0){
             Playing.flyingAmmos.removeProjectile(this);
         }
        
