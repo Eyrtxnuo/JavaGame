@@ -4,13 +4,7 @@ import gamestates.Gamestate;
 import gamestates.Menu;
 import gamestates.Playing;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
 
 /**
  *
@@ -21,8 +15,8 @@ public class Game implements Runnable {
     private GameWindow gameWindow;
     private GamePanel gamePanel;
     private Thread gameThread;
-    private final int FPS_SET = 120;
-    private final int UPS_SET = 200;
+    private static final int FPS_SET = 120;
+    public static final int UPS_SET = 200;
 
     public static boolean manualFrameAdvancing;
     
@@ -153,6 +147,7 @@ public class Game implements Runnable {
         update();
         gamePanel.repaint();
     }
+    
     
     
 }

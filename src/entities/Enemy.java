@@ -13,6 +13,7 @@ import static utils.HelpMethods.GetEntityXPosNextToWall;
 import static utils.HelpMethods.GetEntityYPosUnderRoofOrAboveFloor;
 import static utils.HelpMethods.IsEntityOnFloor;
 import utils.LoadSave;
+import utils.Updater;
 
 /**Abstract class to declare enemies
  * 
@@ -57,6 +58,9 @@ public abstract class Enemy extends Entity{
     /** variable to track animations and update them */
     protected int aniTick, aniIndex, aniSpeed = 25;
     
+    Updater updater;
+    Player p;
+    
     
     /** default enemy constructor, 
     * 
@@ -64,11 +68,14 @@ public abstract class Enemy extends Entity{
     * calls initSprite to load sprite render configuration
     * @param x X coordinate of enemy
     * @param y Y coordinate of enemy
+     * @param p player reference
     */
     public Enemy(float x, float y) {
         super(x, y);
         initSprite();
         initHitbox(x, y, (int)(20f), (int)(27f));
+        updater = new Updater(() -> {update(); return null;}, Game.UPS_SET);
+        
     }
     /** TYPE enemy constructor, 
     * 
@@ -104,8 +111,8 @@ public abstract class Enemy extends Entity{
     * 
     * @param p player reference, could be used for collisions
     */
-    public void update(Player p) {
-        updatePos(p);
+    public void update() {
+        updatePos();
         if(moving){
             action=RUNNING;
         }else{
@@ -116,9 +123,10 @@ public abstract class Enemy extends Entity{
             if(hitbox.intersects(ammo.hitbox)){
                 //System.out.println("DED");
                 //p.reset();
-                //teleport(x, y);
-                //Playing.enemies.removeEnemy(this);
-                //Playing.flyingAmmos.removeProjectile(ammo);
+                teleport(x, y);
+                updater.stopThread();
+                Playing.enemies.removeEnemy(this);
+                Playing.flyingAmmos.removeProjectile(ammo);
             }
         });
             
@@ -172,7 +180,7 @@ public abstract class Enemy extends Entity{
     * 
     * @param p player reference, can be used to get player position.
     */
-    protected void updatePos(Player p) {
+    protected void updatePos() {
         prePosUpdate(p);
         /**/
         moving = false;
@@ -269,11 +277,16 @@ public abstract class Enemy extends Entity{
     
      /** load level data
       * needs to be called after object reations, needed to update
+     * @param data the level data
      */
     public void loadLvlData(int[][] data) {
         this.lvlData = data;
     }
    
+    public void loadPlayer(Player p){
+        this.p = p;
+    }
+    
     /** change enemy coordinates
      * needs to be called after object reations, needed to update
      * @param x new X coordinate of enemy
@@ -320,5 +333,12 @@ public abstract class Enemy extends Entity{
      */
     protected void prePosUpdate(Player p) {
         
+    }
+    
+    public void StartUpdates(){
+        updater.startThread();
+    }
+    public void StopUpdates(){
+        updater.stopThread();
     }
 }

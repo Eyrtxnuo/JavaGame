@@ -59,8 +59,8 @@ public class PassiveEnemy extends Enemy{
     
     
     @Override
-    public void update(Player p) {
-        super.update(p);
+    public void update() {
+        super.update();
         updateAnimationTick();
         if(hitbox.intersects(p.hitbox)){
             System.out.println("DAMAGE");

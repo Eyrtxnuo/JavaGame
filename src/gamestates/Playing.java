@@ -2,7 +2,6 @@ package gamestates;
 
 import entities.Enemy;
 import entities.EnemyManager;
-import entities.FollowEnemy;
 import entities.Player;
 import entities.Projectile;
 import entities.ProjectileManager;
@@ -41,19 +40,22 @@ public class Playing extends State implements Statemethods {
         levelManager = new LevelManager(game);
         player = new Player(50, 200);
         player.loadLvlData(levelManager.getLevelOne().getLvlData());
+        flyingAmmos = new ProjectileManager(this);
         enemies = new EnemyManager(this);
-        enemies.loadEnemies(LoadSave.GetLevelEnemies(0));//new FollowEnemy(1200, 285);
+        enemies.loadEnemies(LoadSave.GetLevelEnemies(0));
+        enemies.startAllTrhreads();//new FollowEnemy(1200, 285);
         //enemies.loadLvlData(levelManager.getLevelOne().getLvlData());
         pauseOverlay = new PauseOverlay(this);
         //gamePanel = new GamePanel(game);
-        flyingAmmos = new ProjectileManager(this);
-        FollowEnemy spawn;
+        
+        /*FollowEnemy spawn;
         int[][] data = LoadSave.GetLevelData(0);
-        /*for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 10; i++){
             spawn = new FollowEnemy(1200, 200);
             spawn.loadLvlData(data);
             enemies.getEnemies().add(spawn);
         }*/
+        
     }
 
     @Override
@@ -67,9 +69,8 @@ public class Playing extends State implements Statemethods {
 
         LevelManager.collisionChecked.clear();
         LevelManager.collisionFound.clear(); 
-        enemies.updateAll(player);
+        //enemies.updateAll();
         flyingAmmos.updateAll(player);
-            
     }
 
     @Override
@@ -79,7 +80,6 @@ public class Playing extends State implements Statemethods {
         float maxOffset = (levelManager.getLevelOne().getLenght()*SCALE)-GAME_WIDTH;
         effXOffset = -((xOffset < 0) ? 0f: (xOffset > maxOffset ? maxOffset : xOffset));
         levelManager.draw(g, effXOffset, 0);
-
         var nemic = (LinkedList<Enemy>)enemies.getEnemies().clone();
         for(Enemy en : nemic){
             en.render(g, effXOffset, 0);
@@ -175,6 +175,9 @@ public class Playing extends State implements Statemethods {
             }
             if (e.getKeyCode()==KeyEvent.VK_ESCAPE) {
                 paused = !paused;
+                if(paused){
+                    enemies.stopAllThreads();
+                }
             }
         }
     }
@@ -211,8 +214,9 @@ public class Playing extends State implements Statemethods {
     static public LevelManager getLevelManager() {
         return levelManager;
     }
-
+    
     public void unpauseGame() {
         paused = false;
+        enemies.startAllTrhreads();
     }
 }

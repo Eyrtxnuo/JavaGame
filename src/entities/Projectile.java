@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package entities;
 
 import gamestates.Playing;
@@ -22,7 +18,7 @@ public class Projectile extends Entity{
     float xSpeed, ySpeed;
     private int[][] lvlData;
     private final float gravity = 0.00f;
-    private int bounces = 1;
+    private int bounces = 0;
 
     public Projectile(float x, float y, float angle) {
         super(x, y);

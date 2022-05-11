@@ -2,6 +2,7 @@ package entities;
 
 import gamestates.Playing;
 import java.util.LinkedList;
+import utils.Updater;
 
 /** Enemy manager class, contains a list of {@link entities.Enemy Enemy}, implements functions to create, remove, update enemies in a level
  * 
@@ -29,6 +30,9 @@ public class EnemyManager {
      *@param enemies the new {@link entities.Enemy Enemy} list
      */
     public void loadEnemies(LinkedList<Enemy> enemies){
+        for(Enemy el: enemies){
+            el.loadPlayer(playing.getPlayer());
+        }
         this.enemies = enemies;
     }
 
@@ -57,10 +61,26 @@ public class EnemyManager {
     /** Calls Update on every {@link entities.Enemy Enemy} in the list
      *@param player {@link entities.Player Player} reference to pass in the update function
      */
-    public synchronized void updateAll(Player player){
+    public synchronized void updateAll(){
         LinkedList<Enemy> enem = (LinkedList <Enemy>) enemies.clone();
         for(Enemy el: enem){
-            el.update(player);
+            el.update();
+        }
+    }
+    
+    public void startAllTrhreads(){
+        System.out.println("StartEnemyThreads");
+        LinkedList<Enemy> enem = (LinkedList <Enemy>) enemies.clone();
+        for(Enemy el: enem){
+            System.out.println("EnemyOn");
+            el.StartUpdates();
+        }
+    }
+    
+    public void stopAllThreads(){
+        LinkedList<Enemy> enem = (LinkedList <Enemy>) enemies.clone();
+        for(Enemy el: enem){
+           el.StopUpdates();
         }
     }
     
