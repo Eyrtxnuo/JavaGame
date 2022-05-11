@@ -68,7 +68,6 @@ public abstract class Enemy extends Entity{
     * calls initSprite to load sprite render configuration
     * @param x X coordinate of enemy
     * @param y Y coordinate of enemy
-     * @param p player reference
     */
     public Enemy(float x, float y) {
         super(x, y);
@@ -109,7 +108,6 @@ public abstract class Enemy extends Entity{
     * 
     * call updatePos(); to update positions
     * 
-    * @param p player reference, could be used for collisions
     */
     public void update() {
         updatePos();
@@ -177,8 +175,6 @@ public abstract class Enemy extends Entity{
     * calls prePosUpdate(), onRoofCealingTouch(), onWallTouch() events
     * 
     * calls updateXpos() to handle horizontal movements
-    * 
-    * @param p player reference, can be used to get player position.
     */
     protected void updatePos() {
         prePosUpdate(p);

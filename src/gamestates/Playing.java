@@ -43,7 +43,6 @@ public class Playing extends State implements Statemethods {
         flyingAmmos = new ProjectileManager(this);
         enemies = new EnemyManager(this);
         enemies.loadEnemies(LoadSave.GetLevelEnemies(0));
-        enemies.startAllTrhreads();//new FollowEnemy(1200, 285);
         //enemies.loadLvlData(levelManager.getLevelOne().getLvlData());
         pauseOverlay = new PauseOverlay(this);
         //gamePanel = new GamePanel(game);
@@ -60,10 +59,12 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void update() {
+        
         if (paused) {
             pauseOverlay.update();
             return;
         }
+        enemies.startAllTrhreads();
         levelManager.update();
         player.update();
 
@@ -75,6 +76,7 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void draw(Graphics g) {
+        
         //long a = System.nanoTime();
         float xOffset = -(GAME_WIDTH / 2 - player.getHitbox().x * SCALE);
         float maxOffset = (levelManager.getLevelOne().getLenght()*SCALE)-GAME_WIDTH;
@@ -135,21 +137,23 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        pointerX = e.getX();
+        pointerY = e.getY();
         if (paused) {
             pauseOverlay.mouseMoved(e);
             return;
         }
-        pointerX = e.getX();
-        pointerY = e.getY();
+       
     }
     
     public void mouseDragged(MouseEvent e) {
+        pointerX = e.getX();
+        pointerY = e.getY();
         if (paused) {
             pauseOverlay.mouseDragged(e);
             return;
         }
-        pointerX = e.getX();
-        pointerY = e.getY();
+        
         
     }
 

@@ -59,7 +59,6 @@ public class EnemyManager {
     }
     
     /** Calls Update on every {@link entities.Enemy Enemy} in the list
-     *@param player {@link entities.Player Player} reference to pass in the update function
      */
     public synchronized void updateAll(){
         LinkedList<Enemy> enem = (LinkedList <Enemy>) enemies.clone();
@@ -69,10 +68,8 @@ public class EnemyManager {
     }
     
     public void startAllTrhreads(){
-        System.out.println("StartEnemyThreads");
         LinkedList<Enemy> enem = (LinkedList <Enemy>) enemies.clone();
         for(Enemy el: enem){
-            System.out.println("EnemyOn");
             el.StartUpdates();
         }
     }

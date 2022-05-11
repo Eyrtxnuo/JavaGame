@@ -60,9 +60,11 @@ public class Updater {
     }
     
     public void startThread(){
-        Thread upd = new Thread(()->{updateThread();});
+        if(!running){
+            Thread upd = new Thread(()->{updateThread();});
         running = true;
         upd.start();
+        }
     }
     
 }
