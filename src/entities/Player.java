@@ -37,6 +37,8 @@ public class Player extends Entity {
     private float jumpSpeed = -2.25f;
     private float fallSpeedAfterCollision = 0.5f;
     private boolean inAir = true;
+    private int lives=3;
+    private int invincibilityFrame= 0;
 
     public Player(float x, float y) {
         super(x, y);
@@ -48,9 +50,13 @@ public class Player extends Entity {
         updatePos();
         updateAnimationTick();
         setAnimation();
+        if(invincibilityFrame>0){
+            invincibilityFrame--;
+        }
     }
 
     public void render(Graphics g, float offsetX, float offsetY) {
+        
         dirLeft = Playing.pointerX<(hitbox.x+hitbox.width/2)*Game.SCALE+offsetX;
         if (dirLeft) {
          g.drawImage(animations[playerAction][aniIndex % animations[playerAction].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX + spriteX * Game.SCALE ) , (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), -(int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
@@ -76,6 +82,9 @@ public class Player extends Entity {
         }
         if (attacking) {
             playerAction = ATTACK_1;
+        }
+        if(invincibilityFrame>0){
+            playerAction = HIT;
         }
 
         if (startAni != playerAction) {
@@ -267,5 +276,30 @@ public class Player extends Entity {
         aniIndex = 0;
         airSpeed=0;
     }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public void resetLives() {
+        lives=3;
+    }
+    
+    public void hit(){
+        lives--;
+        invincibilityFrame=400;
+        playerAction = Constants.PlayerConstants.HIT;
+    }
+
+    public int getInvincibilityFrame() {
+        return invincibilityFrame;
+    }
+    
+    public void resetInvincibilityFrame() {
+        invincibilityFrame=0;
+    }
+    
+    
+    
    
 }

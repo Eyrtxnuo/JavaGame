@@ -64,7 +64,7 @@ public class Playing extends State implements Statemethods {
             pauseOverlay.update();
             return;
         }
-        enemies.startAllTrhreads();
+        enemies.startAllThreads();
         levelManager.update();
         player.update();
 
@@ -221,6 +221,6 @@ public class Playing extends State implements Statemethods {
     
     public void unpauseGame() {
         paused = false;
-        enemies.startAllTrhreads();
+        enemies.startAllThreads();
     }
 }

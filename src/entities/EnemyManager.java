@@ -67,7 +67,7 @@ public class EnemyManager {
         }
     }
     
-    public void startAllTrhreads(){
+    public void startAllThreads(){
         LinkedList<Enemy> enem = (LinkedList <Enemy>) enemies.clone();
         for(Enemy el: enem){
             el.StartUpdates();
