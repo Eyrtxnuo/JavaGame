@@ -42,6 +42,7 @@ public class Updater {
                     deltaT--;
                 }
             }
+            sleepNano(Math.max((long) (timePerTick - (currentTime-previousTime)), 0));
             previousTime = currentTime;
         }
     } 
@@ -67,4 +68,11 @@ public class Updater {
         }
     }
     
+    private static void sleepNano(long nano){
+        try {
+            Thread.sleep(nano/1000000, (int) (nano%1000000));
+        } catch (InterruptedException ex) {
+            java.util.logging.Logger.getLogger(Updater.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+    }
 }
