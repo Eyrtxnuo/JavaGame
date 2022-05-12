@@ -62,7 +62,7 @@ public class Playing extends State implements Statemethods {
     
     public static void reloadLevel(){
         enemies.stopAllThreads();
-        levelManager.loadLevel(0);
+        levelManager.loadLevel(1);
         enemies = levelManager.getLoadedLevel().getEnemies();
         flyingAmmos = levelManager.getLoadedLevel().getProj();
         player.reset();
@@ -92,20 +92,21 @@ public class Playing extends State implements Statemethods {
         levelManager.drawWorld(g, effXOffset, 0);
         levelManager.drawEnemies(g, effXOffset, 0);
         Player player = levelManager.getLoadedLevel().getPlayer();
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setStroke(new BasicStroke(3));
-        g2.setColor(new Color(255, 0, 0, 56));
-        g.drawLine((int)((player.getHitbox().x+player.getHitbox().width/2)*Game.SCALE + effXOffset), (int)((player.getHitbox().y+player.getHitbox().height/2)*Game.SCALE), (int)pointerX, (int)pointerY);
-        g2.setStroke(new BasicStroke(0));
-        
+        if(!paused){
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setStroke(new BasicStroke(3));
+            g2.setColor(new Color(255, 0, 0, 56));
+            g.drawLine((int)((player.getHitbox().x+player.getHitbox().width/2)*Game.SCALE + effXOffset), (int)((player.getHitbox().y+player.getHitbox().height/2)*Game.SCALE), (int)pointerX, (int)pointerY);
+            g2.setStroke(new BasicStroke(0));
+        }
         levelManager.drawProjs(g, effXOffset, 0);
         
         player.render(g, effXOffset, 0);
         
+        
         if (paused) {
             pauseOverlay.draw(g);
         }
-        
         //System.out.println(System.nanoTime() - a);
         
     }
@@ -140,8 +141,6 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        pointerX = e.getX();
-        pointerY = e.getY();
         if (paused) {
             pauseOverlay.mouseMoved(e);
             return;
@@ -150,8 +149,6 @@ public class Playing extends State implements Statemethods {
     }
     
     public void mouseDragged(MouseEvent e) {
-        pointerX = e.getX();
-        pointerY = e.getY();
         if (paused) {
             pauseOverlay.mouseDragged(e);
             return;

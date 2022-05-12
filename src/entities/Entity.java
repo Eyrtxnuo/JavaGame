@@ -3,6 +3,7 @@ package entities;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
+import main.Game;
 import static main.Game.*;
 
 /** Abstract base entity class
@@ -22,6 +23,13 @@ public abstract class Entity {
         //this.height = height;
     }
 
+
+    void update() {
+     if(hitbox.y < -3*Game.TILES_DEFAULT_SIZE || hitbox.y > Game.COORD_HEIGHT+3*Game.TILES_DEFAULT_SIZE){
+            die();
+        }
+    }
+    
     protected void drawHitbox(Graphics g, float offsetX, float offsetY ){
         //FOR DEBUGGING
         g.setColor(Color.red);
@@ -47,5 +55,9 @@ public abstract class Entity {
 
     public Rectangle2D.Float getHitbox() {
         return hitbox;
+    }
+    
+    public void die(){
+        
     }
 }

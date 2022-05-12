@@ -5,6 +5,8 @@
 package inputs;
 
 import gamestates.Gamestate;
+import static gamestates.Playing.pointerX;
+import static gamestates.Playing.pointerY;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -71,6 +73,8 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        pointerX = e.getX();
+        pointerY = e.getY();
         switch (Gamestate.state) {
             case PLAYING:
                 gamePanel.getGame().getPlaying().mouseDragged(e);
@@ -81,6 +85,8 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        pointerX = e.getX();
+        pointerY = e.getY();
         //gamePanel.setRectPosition(e.getX(), e.getY());
         switch (Gamestate.state) {
             case PLAYING:

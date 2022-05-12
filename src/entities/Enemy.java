@@ -109,7 +109,9 @@ public abstract class Enemy extends Entity{
     * call updatePos(); to update positions
     * 
     */
+    @Override
     public void update() {
+        super.update();
         updatePos();
         if(moving){
             action=RUNNING;
@@ -120,10 +122,7 @@ public abstract class Enemy extends Entity{
         muniz.forEach(ammo ->{
             if(hitbox.intersects(ammo.hitbox)){
                 //System.out.println("DED");
-                //p.reset();
-                //teleport(x, y);
-                updater.stopThread();
-                Playing.enemies.removeEnemy(this);
+                die();
                 Playing.flyingAmmos.removeProjectile(ammo);
             }
         });
@@ -351,5 +350,12 @@ public abstract class Enemy extends Entity{
     }
     public void StopUpdates(){
         updater.stopThread();
+    }
+    
+    @Override
+    public void die(){
+        System.out.println("EnemyDeath");
+        updater.stopThread();
+        Playing.enemies.removeEnemy(this);
     }
 }

@@ -2,8 +2,6 @@
 package utils;
 
 import java.awt.geom.Rectangle2D;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import levels.LevelManager;
 import main.Game;
 
@@ -31,7 +29,7 @@ public class HelpMethods {
 
     private static boolean IsSolid(float x, float y, int[][] lvlData) {
         if (y < 0 || y >= lvlData.length*Game.TILES_DEFAULT_SIZE) {
-            return true;
+            return false;
         }
         if (x < 0 || x >= lvlData[0].length*Game.TILES_DEFAULT_SIZE) {
             return true;
@@ -40,9 +38,9 @@ public class HelpMethods {
 
         float xIndex = x / Game.TILES_DEFAULT_SIZE;
         float yIndex = y / Game.TILES_DEFAULT_SIZE;
-        LevelManager.collisionChecked.add((int)xIndex*14 + (int)yIndex);
+        LevelManager.collisionChecked.add((int)Math.floor(xIndex)*14 + (int)Math.floor(yIndex));
 
-        int value = lvlData[(int) yIndex][(int) xIndex];
+        int value = lvlData[(int)Math.floor(yIndex)][(int)Math.floor(xIndex)];
         
         if (value >= 48 || value < 0 || value != 11) {
             
@@ -58,13 +56,13 @@ public class HelpMethods {
         
         if(xSpeed > 0){
             //Right
-            int currentTile = (int)(( hitbox.x + hitbox.width ) / Game.TILES_DEFAULT_SIZE);
+            int currentTile = (int)Math.floor(( hitbox.x + hitbox.width ) / Game.TILES_DEFAULT_SIZE);
             int tileXpos = currentTile * Game.TILES_DEFAULT_SIZE;
             float xOffset = Game.TILES_DEFAULT_SIZE - hitbox.width;
             return tileXpos + xOffset -1; //
         }else{
             //Left
-            int currentTile = (int)(hitbox.x / Game.TILES_DEFAULT_SIZE);
+            int currentTile = (int)Math.floor(hitbox.x / Game.TILES_DEFAULT_SIZE);
             return currentTile * Game.TILES_DEFAULT_SIZE;
         }
     }
@@ -73,13 +71,13 @@ public class HelpMethods {
         
         if(airSpeed > 0){
             //falling - touching floor
-            int currentTile = (int)((hitbox.y + hitbox.height) / Game.TILES_DEFAULT_SIZE);
+            int currentTile = (int)Math.floor((hitbox.y + hitbox.height) / Game.TILES_DEFAULT_SIZE);
             int tileYpos = currentTile * Game.TILES_DEFAULT_SIZE;
             float yOffset = Game.TILES_DEFAULT_SIZE - hitbox.height;
             return tileYpos + yOffset -1;// 
         }else{
             //jumping
-            int currentTile = (int)(hitbox.y / Game.TILES_DEFAULT_SIZE);
+            int currentTile = (int)Math.floor(hitbox.y / Game.TILES_DEFAULT_SIZE);
             return currentTile * Game.TILES_DEFAULT_SIZE;
         }
     }
@@ -93,13 +91,12 @@ public class HelpMethods {
     }
     
     public static boolean IsAllAir(float x1, float y1, float x2, float y2, int[][] lvlData){
-        int tileX1 = (int)x1/Game.TILES_DEFAULT_SIZE;
-        int tileY1 = (int)y1/Game.TILES_DEFAULT_SIZE;
-        int tileX2 = (int)x2/Game.TILES_DEFAULT_SIZE;
-        int tileY2 = (int)y2/Game.TILES_DEFAULT_SIZE;
+        int tileX1 = (int)Math.floor(x1/Game.TILES_DEFAULT_SIZE);
+        int tileY1 = (int)Math.floor(y1/Game.TILES_DEFAULT_SIZE);
+        int tileX2 = (int)Math.floor(x2/Game.TILES_DEFAULT_SIZE);
+        int tileY2 = (int)Math.floor(y2/Game.TILES_DEFAULT_SIZE);
         for(int x = tileX1; x <= tileX2 ; x++){
             for(int y = tileY1; y <= tileY2 ; y++){
-                
                 if(IsSolid(x*Game.TILES_DEFAULT_SIZE, y*Game.TILES_DEFAULT_SIZE, lvlData)){
                     return false;
                 }

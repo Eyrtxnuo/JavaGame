@@ -46,10 +46,13 @@ public class Player extends Entity {
         initHitbox(x, y, (int)(20f), (int)(27f));
     }
 
+    @Override
     public void update() {
+        super.update();
         updatePos();
         updateAnimationTick();
         setAnimation();
+        
         if(invincibilityFrame>0){
             invincibilityFrame--;
         }
@@ -303,6 +306,11 @@ public class Player extends Entity {
         invincibilityFrame=0;
     }
     
+    @Override
+    public void die(){
+        lives=0;
+        reset();
+    }
     
     
    
