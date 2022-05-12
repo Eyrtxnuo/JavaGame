@@ -17,7 +17,7 @@ public class Updater {
     
     Callable funct;
     int tps;
-    boolean running;
+    private boolean running;
 
     public Updater(Callable funct, int tps) {
         this.funct = funct;
@@ -74,5 +74,9 @@ public class Updater {
         } catch (InterruptedException ex) {
             java.util.logging.Logger.getLogger(Updater.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 }

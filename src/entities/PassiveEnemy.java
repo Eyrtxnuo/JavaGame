@@ -57,19 +57,7 @@ public class PassiveEnemy extends Enemy {
     public void update() {
         super.update();
         updateAnimationTick();
-        if (hitbox.intersects(p.hitbox)) {
-            if (p.getInvincibilityFrame() == 0) {
-                p.hit();
-                if (p.getLives() == 0) {
-                    System.out.println("DEAD");
-                    p.reset();
-                    teleport(x, y);
-                    resetMovements();
-                    p.resetLives();
-                    p.resetInvincibilityFrame();
-                }
-            }
-        }
+        
     }
 
     @Override

@@ -127,6 +127,19 @@ public abstract class Enemy extends Entity{
                 Playing.flyingAmmos.removeProjectile(ammo);
             }
         });
+        if (updater.isRunning() && hitbox.intersects(p.hitbox)) {
+            if (p.getInvincibilityFrame() == 0) {
+                p.hit();
+                if (p.getLives() == 0) {
+                    System.out.println("DEAD");
+                    p.reset();
+                    teleport(x, y);
+                    resetMovements();
+                    p.resetLives();
+                    p.resetInvincibilityFrame();
+                }
+            }
+        }
             
     }
     
