@@ -11,18 +11,16 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.LinkedList;
 import levels.LevelManager;
 import main.Game;
 import static main.Game.GAME_WIDTH;
 import static main.Game.SCALE;
 import ui.PauseOverlay;
-import utils.LoadSave;
 
 public class Playing extends State implements Statemethods {
 
-    static private LevelManager levelManager;
-    private Player player;
+    public static LevelManager levelManager;
+    private static Player player;
     public static EnemyManager enemies;
     private boolean paused = false;
     private PauseOverlay pauseOverlay;
@@ -37,12 +35,11 @@ public class Playing extends State implements Statemethods {
     }
 
     private void initClasses() {
-        levelManager = new LevelManager(game);
         player = new Player(50, 200);
-        player.loadLvlData(levelManager.getLevelOne().getLvlData());
-        flyingAmmos = new ProjectileManager(this);
-        enemies = new EnemyManager(this);
-        enemies.loadEnemies(LoadSave.GetLevelEnemies(0));
+        
+        //flyingAmmos = new ProjectileManager(this);
+        //enemies = new EnemyManager(this);
+        //enemies.loadEnemies(LoadSave.GetLevelEnemies(0));
         //enemies.loadLvlData(levelManager.getLevelOne().getLvlData());
         pauseOverlay = new PauseOverlay(this);
         //gamePanel = new GamePanel(game);
@@ -56,53 +53,59 @@ public class Playing extends State implements Statemethods {
         }*/
         
     }
+    
+    public void connectLevel() {
+        levelManager = new LevelManager(game);
+        enemies = levelManager.getLoadedLevel().getEnemies();
+        flyingAmmos = levelManager.getLoadedLevel().getProj();
+    }
+    
+    public static void reloadLevel(){
+        enemies.stopAllThreads();
+        levelManager.loadLevel(0);
+        enemies = levelManager.getLoadedLevel().getEnemies();
+        flyingAmmos = levelManager.getLoadedLevel().getProj();
+        player.reset();
+    }
 
     @Override
     public void update() {
-        
         if (paused) {
             pauseOverlay.update();
             return;
         }
-        enemies.startAllThreads();
         levelManager.update();
-        player.update();
-
         LevelManager.collisionChecked.clear();
         LevelManager.collisionFound.clear(); 
         //enemies.updateAll();
-        flyingAmmos.updateAll(player);
     }
 
     @Override
     public void draw(Graphics g) {
         
         //long a = System.nanoTime();
-        float xOffset = -(GAME_WIDTH / 2 - player.getHitbox().x * SCALE);
-        float maxOffset = (levelManager.getLevelOne().getLenght()*SCALE)-GAME_WIDTH;
-        effXOffset = -((xOffset < 0) ? 0f: (xOffset > maxOffset ? maxOffset : xOffset));
-        levelManager.draw(g, effXOffset, 0);
-        var nemic = (LinkedList<Enemy>)enemies.getEnemies().clone();
-        for(Enemy en : nemic){
-            en.render(g, effXOffset, 0);
-        }
         
+        float xOffset = -(GAME_WIDTH / 2 - player.getHitbox().x * SCALE);
+        float maxOffset = (levelManager.getLoadedLevel().getLenght()*SCALE)-GAME_WIDTH;
+        effXOffset = -((xOffset < 0) ? 0f: (xOffset > maxOffset ? maxOffset : xOffset));
+        
+        levelManager.drawWorld(g, effXOffset, 0);
+        levelManager.drawEnemies(g, effXOffset, 0);
+        Player player = levelManager.getLoadedLevel().getPlayer();
         Graphics2D g2 = (Graphics2D) g;
         g2.setStroke(new BasicStroke(3));
         g2.setColor(new Color(255, 0, 0, 56));
         g.drawLine((int)((player.getHitbox().x+player.getHitbox().width/2)*Game.SCALE + effXOffset), (int)((player.getHitbox().y+player.getHitbox().height/2)*Game.SCALE), (int)pointerX, (int)pointerY);
         g2.setStroke(new BasicStroke(0));
-        var muniz = (LinkedList<Projectile>)flyingAmmos.getProjectiles().clone();
         
-        muniz.forEach((el)->{
-            el.render(g, effXOffset, 0);
-        });
+        levelManager.drawProjs(g, effXOffset, 0);
         
         player.render(g, effXOffset, 0);
         
         if (paused) {
             pauseOverlay.draw(g);
         }
+        
         //System.out.println(System.nanoTime() - a);
         
     }
@@ -121,7 +124,7 @@ public class Playing extends State implements Statemethods {
             //if(flyingAmmos.getProjectiles().isEmpty()){
                 player.setAttacking(true);
                 Projectile flyingAmmo = new Projectile(player.getHitbox().x+player.getHitbox().width/2, player.getHitbox().y+player.getHitbox().height/2, (float)(Math.atan2(player.getHitbox().x+player.getHitbox().width/2 - (e.getX()-effXOffset)/Game.SCALE, player.getHitbox().y+player.getHitbox().height/2 - e.getY()/Game.SCALE)+Math.PI/2-gunRandomnes/2+Math.random()*gunRandomnes));
-                flyingAmmo.loadLvlData(levelManager.getLevelOne().getLvlData());
+                flyingAmmo.loadLvlData(levelManager.getLoadedLevel().getLvlData());
                 flyingAmmos.add(flyingAmmo);
             //}
         }
@@ -223,4 +226,5 @@ public class Playing extends State implements Statemethods {
         paused = false;
         enemies.startAllThreads();
     }
+
 }

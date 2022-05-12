@@ -4,6 +4,10 @@
  */
 package levels;
 
+import entities.EnemyManager;
+import entities.Player;
+import entities.ProjectileManager;
+import static gamestates.Playing.flyingAmmos;
 import java.awt.image.BufferedImage;
 import main.Game;
 
@@ -14,16 +18,47 @@ import main.Game;
 public class Level {
     
     private int[][] lvlData;
+    private EnemyManager enemies;
+    private ProjectileManager proj;
+    private Player player; 
     private BufferedImage background;
-    
 
-    public Level(int[][] lvlData) {
+    public Level(int[][] lvlData, EnemyManager enemies, ProjectileManager proj, Player player) {
         this.lvlData = lvlData;
+        this.enemies = enemies;
+        this.proj = proj;
+        this.player = player;
+        mapInClasses();
+    }
+    
+    private void mapInClasses(){
+        player.loadLvlData(getLvlData());
     }
 
-    public Level(int[][] lvlData, BufferedImage background) {
-        this.lvlData = lvlData;
+    public Level(int[][] lvlData, EnemyManager enemies, ProjectileManager proj, Player player, BufferedImage background) {
+        this(lvlData, enemies, proj, player);
         this.background = background;
+    }
+
+    
+    
+    public void update() {
+        enemies.startAllThreads();
+        player.update();
+        flyingAmmos.updateAll(player);
+    }
+
+    
+    public EnemyManager getEnemies() {
+        return enemies;
+    }
+
+    public ProjectileManager getProj() {
+        return proj;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
     
     public int getHeightInTiles() {

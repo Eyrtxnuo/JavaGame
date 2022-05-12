@@ -121,7 +121,7 @@ public abstract class Enemy extends Entity{
             if(hitbox.intersects(ammo.hitbox)){
                 //System.out.println("DED");
                 //p.reset();
-                teleport(x, y);
+                //teleport(x, y);
                 updater.stopThread();
                 Playing.enemies.removeEnemy(this);
                 Playing.flyingAmmos.removeProjectile(ammo);
@@ -131,12 +131,14 @@ public abstract class Enemy extends Entity{
             if (p.getInvincibilityFrame() == 0) {
                 p.hit();
                 if (p.getLives() == 0) {
+                    Playing.enemies.removeAllEnemies();
                     System.out.println("DEAD");
-                    p.reset();
+                    Playing.reloadLevel();
+                    /*p.reset();
                     teleport(x, y);
                     resetMovements();
                     p.resetLives();
-                    p.resetInvincibilityFrame();
+                    p.resetInvincibilityFrame();*/
                 }
             }
         }

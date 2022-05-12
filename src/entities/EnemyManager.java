@@ -80,5 +80,10 @@ public class EnemyManager {
            el.StopUpdates();
         }
     }
+
+    void removeAllEnemies() {
+        stopAllThreads();
+        enemies.clear();
+    }
     
 }

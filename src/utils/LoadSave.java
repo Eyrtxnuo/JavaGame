@@ -5,8 +5,11 @@
 package utils;
 
 import entities.Enemy;
+import entities.EnemyManager;
 import entities.FollowEnemy;
 import entities.PassiveEnemy;
+import entities.ProjectileManager;
+import gamestates.Playing;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -26,6 +29,7 @@ public class LoadSave {
     public static final String PLAYER_ATLAS = "player_sprites.png";
     public static final String LEVEL_ATLAS = Constants.DEBUG?"outside_sprites_grid.png":"outside_sprites.png";
     public static final String[] LEVELS_DATA = {"level_one_data.png"};
+    public static final String[] LEVELS_BACKGROUND = {"background.png"};
     public static final int LEVELS_NUMBER = LEVELS_DATA.length;
     public static final String MENU_BUTTONS = "button_atlas.png";
     public static final String MENU_BACKGROUND = "menu_background.png";
@@ -102,4 +106,10 @@ public class LoadSave {
         return enemies;
     }
     
+    
+    public static levels.Level getLevel(int levelN, Playing playing){
+        EnemyManager em = new EnemyManager(playing);
+        em.loadEnemies(GetLevelEnemies(levelN));
+        return new levels.Level(GetLevelData(levelN),em , new ProjectileManager(playing),playing.getPlayer(), GetSpriteAtlas(LEVELS_BACKGROUND[levelN]));
+    }
 }

@@ -45,6 +45,7 @@ public class Game implements Runnable {
     private void initClasses() {
         menu=new Menu(this);
         playing=new Playing(this);
+        playing.connectLevel();
     }
 
     private void startGameLoop() {

@@ -21,7 +21,7 @@ public class ProjectileManager {
         this.playing = playing;
     }
     
-    public void loadEnemies(LinkedList<Projectile> projectile){
+    public void loadProjectiles(LinkedList<Projectile> projectile){
         this.projectiles = projectile;
     }
 

@@ -275,6 +275,10 @@ public class Player extends Entity {
         aniTick = 0 ;
         aniIndex = 0;
         airSpeed=0;
+        inAir=true;
+        resetLives();
+        resetAniTick();
+        resetInvincibilityFrame();
     }
 
     public int getLives() {

@@ -30,12 +30,13 @@ public class HelpMethods {
     }
 
     private static boolean IsSolid(float x, float y, int[][] lvlData) {
-        /*if (x < 0 || x >= Game.COORD_WIDTH) {
-            return true;
-        }*/
-        if (y < 0 || y >= Game.COORD_HEIGHT) {
+        if (y < 0 || y >= lvlData.length*Game.TILES_DEFAULT_SIZE) {
             return true;
         }
+        if (x < 0 || x >= lvlData[0].length*Game.TILES_DEFAULT_SIZE) {
+            return true;
+        }
+        
 
         float xIndex = x / Game.TILES_DEFAULT_SIZE;
         float yIndex = y / Game.TILES_DEFAULT_SIZE;

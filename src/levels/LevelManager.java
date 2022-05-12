@@ -4,7 +4,11 @@
  */
 package levels;
 
+import entities.Enemy;
+import entities.Projectile;
 import gamestates.Playing;
+import static gamestates.Playing.enemies;
+import static gamestates.Playing.flyingAmmos;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -24,23 +28,27 @@ public class LevelManager {
     public static LinkedList<Integer> collisionChecked = new LinkedList<>();
     public static LinkedList<Integer> collisionFound = new LinkedList<>();
 
-    private Level levelOne;
+    private Level loadedLevel;
 
     public LevelManager(Game game) {
         this.game = game;
         importOutsideSprites();
-        levelOne = new Level(LoadSave.GetLevelData(0), LoadSave.GetSpriteAtlas("background.png"));
+        loadedLevel = LoadSave.getLevel(0, game.getPlaying());
+    }
+    
+    public void loadLevel(int levelN){
+        loadedLevel = LoadSave.getLevel(levelN, game.getPlaying());
     }
     
     public void update(){
-        
+        loadedLevel.update();
     }
     
-     public void draw(Graphics g, float offsetX, float offsetY){
-        g.drawImage(levelOne.getBackground(), (int)offsetX, (int)offsetY, Playing.getLevelManager().getLevelOne().getLvlData()[0].length*game.TILES_SIZE-1 , game.GAME_HEIGHT ,null );
-        for (int j = 0; j < levelOne.getLvlData().length; j++)
-            for (int i = 0; i < levelOne.getLvlData()[j].length; i++) {
-                int index = levelOne.getSpriteIndex(i, j);
+     public void drawWorld(Graphics g, float offsetX, float offsetY){
+        g.drawImage(loadedLevel.getBackground(), (int)offsetX, (int)offsetY, Playing.getLevelManager().getLoadedLevel().getLvlData()[0].length*game.TILES_SIZE, game.GAME_HEIGHT ,null );
+        for (int j = 0; j < loadedLevel.getLvlData().length; j++)
+            for (int i = 0; i < loadedLevel.getLvlData()[j].length; i++) {
+                int index = loadedLevel.getSpriteIndex(i, j);
                 if((i+1)*Game.TILES_SIZE>-(offsetX) && i*Game.TILES_SIZE<Game.GAME_WIDTH-(offsetX)){
                     g.drawImage(levelSprite[index], (int)((Game.TILES_SIZE * i)+offsetX), (int)((Game.TILES_SIZE * j)+offsetY), Game.TILES_SIZE, Game.TILES_SIZE, null);
                     if(Constants.DEBUG){
@@ -55,6 +63,20 @@ public class LevelManager {
                 }
             }
     }
+     
+    public void drawEnemies(Graphics g, float offsetX, float offsetY){
+        var nemic = (LinkedList<Enemy>)enemies.getEnemies().clone();
+         for(Enemy en : nemic){
+             en.render(g, offsetX, offsetY);
+         }
+    }
+     
+    public void drawProjs(Graphics g, float offsetX, float offsetY){
+       var muniz = (LinkedList<Projectile>)flyingAmmos.getProjectiles().clone();
+        muniz.forEach((el)->{
+            el.render(g,  offsetX, offsetY);
+        });
+   }
 
     private void importOutsideSprites() {
         BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.LEVEL_ATLAS);
@@ -68,8 +90,8 @@ public class LevelManager {
         }
     }
 
-    public Level getLevelOne() {
-        return levelOne;
+    public Level getLoadedLevel() {
+        return loadedLevel;
     }
     
     
