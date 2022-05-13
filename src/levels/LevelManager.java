@@ -11,7 +11,9 @@ import static gamestates.Playing.enemies;
 import static gamestates.Playing.flyingAmmos;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
 import java.util.LinkedList;
 import main.Game;
 import utils.Constants;
@@ -45,23 +47,28 @@ public class LevelManager {
     }
     
      public void drawWorld(Graphics g, float offsetX, float offsetY){
-        g.drawImage(loadedLevel.getBackground(), (int)offsetX, (int)offsetY, Playing.getLevelManager().getLoadedLevel().getLvlData()[0].length*game.TILES_SIZE, game.GAME_HEIGHT ,null );
+        ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
+        ColorConvertOp op = new ColorConvertOp(cs, null);
+        g.drawImage(loadedLevel.getBackground(), (int)offsetX, (int)offsetY, (int)(Playing.getLevelManager().getLoadedLevel().getLvlData()[0].length*game.TILES_SIZE), (int)(game.GAME_HEIGHT) ,null );
         for (int j = 0; j < loadedLevel.getLvlData().length; j++)
             for (int i = 0; i < loadedLevel.getLvlData()[j].length; i++) {
                 int index = loadedLevel.getSpriteIndex(i, j);
                 if((i+1)*Game.TILES_SIZE>-(offsetX) && i*Game.TILES_SIZE<Game.GAME_WIDTH-(offsetX)){
-                    g.drawImage(levelSprite[index], (int)((Game.TILES_SIZE * i)+offsetX), (int)((Game.TILES_SIZE * j)+offsetY), Game.TILES_SIZE, Game.TILES_SIZE, null);
+                    
+                    g.drawImage(levelSprite[index], (int)((Game.TILES_SIZE * i)+offsetX), (int)((Game.TILES_SIZE * j)+offsetY), (int)Math.ceil(Game.TILES_SIZE), (int)Math.ceil(Game.TILES_SIZE), null);
+                    
                     if(Constants.DEBUG){
                         if(collisionFound.contains(j + i*14)){
                             g.setColor(new Color(1f, 0f, 0f, 0.5f));
-                            g.fillRect((int)((Game.TILES_SIZE * i)+offsetX), (int)((Game.TILES_SIZE * j)+offsetY), Game.TILES_SIZE, Game.TILES_SIZE);
+                            g.fillRect((int)((Game.TILES_SIZE * i)+offsetX), (int)((Game.TILES_SIZE * j)+offsetY), (int)(Game.TILES_SIZE), (int)(Game.TILES_SIZE));
                         }else if(collisionChecked.contains(j + i*14)){
                             g.setColor(new Color(0.98f, 0.584f, 0.258f, 0.5f));
-                            g.fillRect((int)((Game.TILES_SIZE * i)+offsetX), (int)((Game.TILES_SIZE * j)+offsetY), Game.TILES_SIZE, Game.TILES_SIZE);
+                            g.fillRect((int)((Game.TILES_SIZE * i)+offsetX), (int)((Game.TILES_SIZE * j)+offsetY), (int)(Game.TILES_SIZE), (int)(Game.TILES_SIZE));
                         }
                     }
                 }
             }
+        
     }
      
     public void drawEnemies(Graphics g, float offsetX, float offsetY){

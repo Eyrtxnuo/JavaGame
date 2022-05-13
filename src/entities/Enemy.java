@@ -52,6 +52,8 @@ public abstract class Enemy extends Entity{
     protected float movSpeed=0.5f, jumpSpeed=-2.25f, gravity=0.04f, fallSpeedAfterCollision = 0.5f;
     /** is Enemy in Air, for applying graavity and animations */
     protected boolean inAir = true;
+    /** enemy lives */
+    protected int lives = 1;
     
     /** array of animation sequences */
     protected BufferedImage[][] animations;
@@ -121,9 +123,8 @@ public abstract class Enemy extends Entity{
         var muniz = (LinkedList<Projectile>)Playing.flyingAmmos.getProjectiles().clone();
         muniz.forEach(ammo ->{
             if(hitbox.intersects(ammo.hitbox)){
-                //System.out.println("DED");
-                die();
-                Playing.flyingAmmos.removeProjectile(ammo);
+                hit();
+                ammo.die();
             }
         });
         if (updater.isRunning() && hitbox.intersects(p.hitbox)) {
@@ -357,5 +358,19 @@ public abstract class Enemy extends Entity{
         System.out.println("EnemyDeath");
         updater.stopThread();
         Playing.enemies.removeEnemy(this);
+    }
+    
+    public int getLives() {
+        return lives;
+    }
+
+    public void resetLives() {
+        lives=3;
+    }
+    
+    public void hit(){
+        if(--lives<=0){
+            die();
+        }
     }
 }

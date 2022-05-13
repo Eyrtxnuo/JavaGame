@@ -13,9 +13,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import levels.LevelManager;
 import main.Game;
-import static main.Game.GAME_WIDTH;
-import static main.Game.SCALE;
+import static main.Game.*;
 import ui.PauseOverlay;
+import static utils.LoadSave.*;
 
 public class Playing extends State implements Statemethods {
 
@@ -27,7 +27,9 @@ public class Playing extends State implements Statemethods {
     public static ProjectileManager flyingAmmos;
     private float effXOffset;
     public static float pointerX, pointerY;
-    private final double gunRandomnes=0.05;//in radians
+    private static final double gunRandomnes=0.05;//in radians
+    private static int currentLevel = 0;
+    
 
     public Playing(Game game) {
         super(game);
@@ -36,42 +38,40 @@ public class Playing extends State implements Statemethods {
 
     private void initClasses() {
         player = new Player(50, 200);
-        
-        //flyingAmmos = new ProjectileManager(this);
-        //enemies = new EnemyManager(this);
-        //enemies.loadEnemies(LoadSave.GetLevelEnemies(0));
-        //enemies.loadLvlData(levelManager.getLevelOne().getLvlData());
         pauseOverlay = new PauseOverlay(this);
-        //gamePanel = new GamePanel(game);
-        
-        /*FollowEnemy spawn;
-        int[][] data = LoadSave.GetLevelData(0);
-        for(int i = 0; i < 10; i++){
-            spawn = new FollowEnemy(1200, 200);
-            spawn.loadLvlData(data);
-            enemies.getEnemies().add(spawn);
-        }*/
-        
     }
     
-    public void connectLevel() {
+    public void initLevelManager(){
         levelManager = new LevelManager(game);
+        connectLevel();
+    }
+    
+    public static void connectLevel() {
         enemies = levelManager.getLoadedLevel().getEnemies();
         flyingAmmos = levelManager.getLoadedLevel().getProj();
     }
     
     public static void reloadLevel(){
         enemies.stopAllThreads();
-        levelManager.loadLevel(1);
-        enemies = levelManager.getLoadedLevel().getEnemies();
-        flyingAmmos = levelManager.getLoadedLevel().getProj();
+        levelManager.loadLevel(currentLevel);
+        connectLevel();
         player.reset();
+    }
+    
+    public static void loadLevel(int levelN){
+        currentLevel = levelN;
+        reloadLevel();
     }
 
     @Override
     public void update() {
         if (paused) {
             pauseOverlay.update();
+            return;
+        }
+        if (player.getHitbox().x > (levelManager.getLoadedLevel().getWidthInTiles()-4)*Game.TILES_DEFAULT_SIZE
+            && currentLevel+1 < LEVELS_NUMBER) {
+            loadLevel(++currentLevel);
             return;
         }
         levelManager.update();

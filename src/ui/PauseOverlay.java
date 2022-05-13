@@ -132,8 +132,8 @@ public class PauseOverlay {
         backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.PAUSE_BACKGROUND);
         bgW = (int) (backgroundImg.getWidth() * Game.SCALE);
         bgH = (int) (backgroundImg.getHeight() * Game.SCALE);
-        bgX = Game.GAME_WIDTH / 2 - bgW / 2;
-        bgY = Game.GAME_HEIGHT / 2 - bgH / 2;;
+        bgX = (int)(Game.GAME_WIDTH / 2 - bgW / 2);
+        bgY = (int)(Game.GAME_HEIGHT / 2 - bgH / 2);
     }
 
     private void createSoundButtons() {

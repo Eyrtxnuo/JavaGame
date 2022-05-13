@@ -42,6 +42,7 @@ public class Projectile extends Entity{
     }
  
     public void update(Player p) {
+        super.update();
         updatePos();
         /*if(hitbox.intersects(p.hitbox)){
             System.out.println("DAMAGE");
@@ -87,4 +88,10 @@ public class Projectile extends Entity{
         this.lvlData = data;
     }
 
+    @Override
+    public void die() {
+        Playing.flyingAmmos.removeProjectile(this);
+    }
+
+    
 }

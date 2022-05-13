@@ -54,8 +54,8 @@ public class GamePanel extends javax.swing.JPanel {
         
     }
 
-    private void setPanelSize() {
-        Dimension size = new Dimension(GAME_WIDTH, GAME_HEIGHT);
+    public void setPanelSize() {
+        Dimension size = new Dimension((int)GAME_WIDTH, (int)GAME_HEIGHT);
         //setMinimumSize(size);
         setPreferredSize(size);
         //setMaximumSize(size);

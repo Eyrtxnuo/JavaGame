@@ -79,5 +79,11 @@ public class MenuButton {
     public Rectangle getBounds() {
         return bounds;
     }
+
+    public Gamestate getGamestate() {
+        return state;
+    }
+    
+    
     
 }

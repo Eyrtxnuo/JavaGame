@@ -4,9 +4,8 @@
  */
 package utils;
 
-import java.lang.System.Logger;
+
 import java.util.concurrent.Callable;
-import levels.Level;
 import static main.Game.manualFrameAdvancing;
 
 /**
@@ -18,11 +17,12 @@ public class Updater {
     Callable funct;
     int tps;
     private boolean running;
+    Thread upd;
 
     public Updater(Callable funct, int tps) {
         this.funct = funct;
         this.tps = tps;
-        
+        upd = new Thread();
     }
 
     
@@ -62,9 +62,11 @@ public class Updater {
     
     public void startThread(){
         if(!running){
-            Thread upd = new Thread(()->{updateThread();});
-        running = true;
-        upd.start();
+            running = true;
+            if(!upd.isAlive()){
+                upd = new Thread(()->{updateThread();});
+                upd.start();
+            }
         }
     }
     
