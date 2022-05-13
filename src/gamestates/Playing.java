@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import levels.LevelManager;
 import main.Game;
 import static main.Game.*;
+import ui.DeathOverlay;
 import ui.PauseOverlay;
 import static utils.LoadSave.*;
 
@@ -23,7 +24,9 @@ public class Playing extends State implements Statemethods {
     private static Player player;
     public static EnemyManager enemies;
     private boolean paused = false;
+    private static boolean death=false;
     private PauseOverlay pauseOverlay;
+    private DeathOverlay deathOverlay;
     public static ProjectileManager flyingAmmos;
     private float effXOffset;
     public static float pointerX, pointerY;
@@ -39,6 +42,7 @@ public class Playing extends State implements Statemethods {
     private void initClasses() {
         player = new Player(50, 200);
         pauseOverlay = new PauseOverlay(this);
+        deathOverlay=new DeathOverlay(this);
     }
     
     public void initLevelManager(){
@@ -56,6 +60,7 @@ public class Playing extends State implements Statemethods {
         levelManager.loadLevel(currentLevel);
         connectLevel();
         player.reset();
+        death=false;
     }
     
     public static void loadLevel(int levelN){
@@ -67,6 +72,10 @@ public class Playing extends State implements Statemethods {
     public void update() {
         if (paused) {
             pauseOverlay.update();
+            return;
+        }
+        if(death){
+            deathOverlay.update();
             return;
         }
         if (player.getHitbox().x > (levelManager.getLoadedLevel().getWidthInTiles()-4)*Game.TILES_DEFAULT_SIZE
@@ -107,6 +116,9 @@ public class Playing extends State implements Statemethods {
         if (paused) {
             pauseOverlay.draw(g);
         }
+        if(death){
+            deathOverlay.draw(g);
+        }
         //System.out.println(System.nanoTime() - a);
         
     }
@@ -119,6 +131,10 @@ public class Playing extends State implements Statemethods {
     public void mousePressed(MouseEvent e) {
         if (paused) {
             pauseOverlay.mousePressed(e);
+            return;
+        }
+        if(death){
+            deathOverlay.mousePressed(e);
             return;
         }
         if (e.getButton() == MouseEvent.BUTTON1) {
@@ -137,12 +153,19 @@ public class Playing extends State implements Statemethods {
         if (paused) {
             pauseOverlay.mouseReleased(e);
         }
+        if (death) {
+            deathOverlay.mouseReleased(e);
+        }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
         if (paused) {
             pauseOverlay.mouseMoved(e);
+            return;
+        }
+        if (death) {
+            deathOverlay.mouseMoved(e);
             return;
         }
        
@@ -159,7 +182,7 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (!paused) {
+        if (!paused&&!death) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_W -> {
                     player.setUp(true);
@@ -224,4 +247,8 @@ public class Playing extends State implements Statemethods {
         enemies.startAllThreads();
     }
 
+    static public void playerDeath(){
+        death=true;
+        enemies.stopAllThreads();
+    }
 }

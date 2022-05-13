@@ -133,8 +133,9 @@ public abstract class Enemy extends Entity{
                 if (p.getLives() == 0) {
                     Playing.enemies.removeAllEnemies();
                     System.out.println("DEAD");
-                    Playing.reloadLevel();
-                    /*p.reset();
+                    Playing.playerDeath();
+                    /*Playing.reloadLevel();
+                    p.reset();
                     teleport(x, y);
                     resetMovements();
                     p.resetLives();
