@@ -4,7 +4,10 @@ import gamestates.Gamestate;
 import gamestates.Menu;
 import gamestates.Playing;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Toolkit;
+import utils.Constants;
 
 /**
  *
@@ -25,16 +28,21 @@ public class Game implements Runnable {
     
     public final static int TILES_DEFAULT_SIZE = 32;
     public static float SCALE;
-    public static int TILES_IN_WIDTH = 26;
-    public static int TILES_IN_HEIGHT = 14;
+    public static float TILES_IN_WIDTH = 26;
+    public static float TILES_IN_HEIGHT = 14;
     public static float TILES_SIZE = TILES_DEFAULT_SIZE * SCALE;
     public static float GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
     public static float GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
-    public static int COORD_WIDTH = TILES_DEFAULT_SIZE * TILES_IN_WIDTH;
-    public static int COORD_HEIGHT = TILES_DEFAULT_SIZE * TILES_IN_HEIGHT;
+    public static float COORD_WIDTH = TILES_DEFAULT_SIZE * TILES_IN_WIDTH;
+    public static float COORD_HEIGHT = TILES_DEFAULT_SIZE * TILES_IN_HEIGHT;
 
     public Game(float scale, boolean fullscreen) {
+        if(fullscreen){
+            Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+            TILES_IN_WIDTH = screen.width/(screen.height/TILES_IN_HEIGHT);
+        }
         changeScale(scale);
+        
         initClasses();
         System.out.println("Game on!");
         gamePanel = new GamePanel(this);
@@ -54,6 +62,7 @@ public class Game implements Runnable {
             gamePanel.setPanelSize();
             gameWindow.repackPanel();  
         }
+        Constants.updateScaleConsts();
     }
     
     private void initClasses() {

@@ -14,7 +14,7 @@ import static utils.Constants.UI.VolumeButtons.*;
 public class PauseOverlay {
 
     private BufferedImage backgroundImg;
-    private int bgX, bgY, bgW, bgH;
+    private int bgX/*287 base*/, bgY/*30 base*/, bgW, bgH;
     private SoundButton musicButton, sfxButton;
     private UrmButton unpauseB, replayB, menuB;
     private Playing playing;
@@ -137,17 +137,17 @@ public class PauseOverlay {
     }
 
     private void createSoundButtons() {
-        int soundX = (int) (450 * Game.SCALE);
-        int musicY = (int) (147 * Game.SCALE);
-        int sfxY = (int) (193 * Game.SCALE);
+        int soundX = (int) (((bgX/Game.SCALE)+163) * Game.SCALE);
+        int musicY = (int) (((bgY/Game.SCALE)+117) * Game.SCALE);
+        int sfxY = (int) (((bgY/Game.SCALE)+163) * Game.SCALE);
         musicButton = new SoundButton(soundX, musicY, SOUND_SIZE, SOUND_SIZE);
         sfxButton = new SoundButton(soundX, sfxY, SOUND_SIZE, SOUND_SIZE);
     }
 
     private void createUrmButtons() {
-        int menuX = (int) (315 * Game.SCALE);
-        int replayX = (int) (389 * Game.SCALE);
-        int unpauseX = (int) (464 * Game.SCALE);
+        int menuX = (int) (((bgX/Game.SCALE)+28) * Game.SCALE);
+        int replayX = (int) (((bgX/Game.SCALE)+102) * Game.SCALE);
+        int unpauseX = (int) (((bgX/Game.SCALE)+177) * Game.SCALE);
         int bY = (int) (325 * Game.SCALE);
 
         menuB = new UrmButton(menuX, bY, URM_SIZE, URM_SIZE, 2);
@@ -156,8 +156,8 @@ public class PauseOverlay {
     }
 
     private void createVolumeButton() {
-        int vX = (int) (309 * Game.SCALE);
-        int vY = (int) (286 * Game.SCALE);
+        int vX = (int) (((bgX/Game.SCALE)+22) * Game.SCALE);
+        int vY = (int) (((bgY/Game.SCALE)+256) * Game.SCALE);
         volumeButton = new VolumeButton(vX, vY, SLIDER_WIDTH, VOLUME_HEIGHT);
     }
 }

@@ -103,7 +103,7 @@ public class Playing extends State implements Statemethods {
         Player player = levelManager.getLoadedLevel().getPlayer();
         if(!paused&&!death){
             Graphics2D g2 = (Graphics2D) g;
-            g2.setStroke(new BasicStroke(3));
+            g2.setStroke(new BasicStroke(2*Game.SCALE));
             g2.setColor(new Color(255, 0, 0, 56));
             g.drawLine((int)((player.getHitbox().x+player.getHitbox().width/2)*Game.SCALE + effXOffset), (int)((player.getHitbox().y+player.getHitbox().height/2)*Game.SCALE), (int)pointerX, (int)pointerY);
             g2.setStroke(new BasicStroke(0));

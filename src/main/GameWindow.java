@@ -29,13 +29,15 @@ public class GameWindow {
                 gamePanel.getGame().windowLostFocus();
             }
         });
+        
+        jframe.setResizable(false);
         if(fullscreen){
             jframe.setUndecorated(true);
             //jframe.setAlwaysOnTop(true);
             jframe.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        }else{
+            jframe.pack();//auto-fit gamePanel
         }
-        jframe.setResizable(false);
-        //jframe.pack();//auto-fit gamePanel
         jframe.setLocationRelativeTo(null);//center on screen
         jframe.setVisible(true);//set visible - always at the end of constructor!
         

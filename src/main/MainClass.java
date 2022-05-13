@@ -23,7 +23,7 @@ public class MainClass {
         int hIntScale = (int)Math.floor(hScale);
         float scale = Math.min(vScale, hScale);
         
-        
+        System.out.println("Scale: " + vScale);
         new Game(vScale, true);
     }
 }
