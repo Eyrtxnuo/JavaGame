@@ -101,7 +101,7 @@ public class Playing extends State implements Statemethods {
         levelManager.drawWorld(g, effXOffset, 0);
         levelManager.drawEnemies(g, effXOffset, 0);
         Player player = levelManager.getLoadedLevel().getPlayer();
-        if(!paused){
+        if(!paused&&!death){
             Graphics2D g2 = (Graphics2D) g;
             g2.setStroke(new BasicStroke(3));
             g2.setColor(new Color(255, 0, 0, 56));

@@ -308,8 +308,7 @@ public class Player extends Entity {
     
     @Override
     public void die(){
-        lives=0;
-        reset();
+        Playing.playerDeath();
     }
     
     
