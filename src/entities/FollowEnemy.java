@@ -15,13 +15,6 @@ import utils.LoadSave;
  */
 public class FollowEnemy extends Enemy{
     
-    private boolean moving = false, attacking = false;
-
-    
-    private float fallSpeedAfterCollision = 0.5f;
-    
-    
-    
     public FollowEnemy(float x, float y) {
         super(x, y);
         TYPE = Constants.EnemyConstants.CRABBY;
@@ -45,12 +38,6 @@ public class FollowEnemy extends Enemy{
         jumpSpeed = -2.5f;
     }
     
-    @Override
-    public void update() {
-        super.update();
-        updateAnimationTick();
-        
-    }
     
     
     @Override

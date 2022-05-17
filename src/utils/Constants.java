@@ -1,6 +1,5 @@
 package utils;
 
-import java.awt.Button;
 import main.Game;
 
 public class Constants {

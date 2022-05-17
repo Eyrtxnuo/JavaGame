@@ -1,23 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package entities;
 
-import java.awt.image.BufferedImage;
 import utils.Constants;
-import static utils.Constants.EnemyConstants.*;
 import static utils.Constants.PlayerConstants.RUNNING;
 import utils.LoadSave;
 
-/**
- *
- * @author Bossi_Mattia
- */
-public class PassiveEnemy extends Enemy {
+public class SniperEnemy extends Enemy{
 
-    public PassiveEnemy(float x, float y) {
+    public SniperEnemy(float x, float y) {
         super(x, y);
         TYPE = Constants.EnemyConstants.CRABBY;
         initSprite();
@@ -28,12 +18,13 @@ public class PassiveEnemy extends Enemy {
     }
 
     @Override
-    protected void resetMovements() {
-        right = false;
-        left = true;
-        jump = false;
+    public void update() {
+        super.update();
+        fire();
     }
-
+    
+    
+    
     private void initSprite() {
         spriteX = Constants.EnemyConstants.CRABBY_WIDTH_DEFAULT;
         spriteY = Constants.EnemyConstants.CRABBY_HEIGHT_DEFAULT;
@@ -43,16 +34,13 @@ public class PassiveEnemy extends Enemy {
 
     private void settings() {
         action = RUNNING;
-        movSpeed = 0.5f;
+        movSpeed = 0f;
         gravity = 0.04f;
         jumpSpeed = -2.5f;
     }
 
-
-    @Override
-    protected void onWallTouch() {
-        left = !left;
-        right = !right;
+    private void fire() {
+       
     }
-
+       
 }

@@ -114,6 +114,7 @@ public abstract class Enemy extends Entity{
     @Override
     public void update() {
         super.update();
+        updateAnimationTick();
         updatePos();
         if(moving){
             action=RUNNING;
