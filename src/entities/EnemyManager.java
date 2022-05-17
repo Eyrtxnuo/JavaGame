@@ -2,7 +2,6 @@ package entities;
 
 import gamestates.Playing;
 import java.util.LinkedList;
-import utils.Updater;
 
 /** Enemy manager class, contains a list of {@link entities.Enemy Enemy}, implements functions to create, remove, update enemies in a level
  * 

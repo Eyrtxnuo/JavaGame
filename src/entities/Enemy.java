@@ -61,7 +61,9 @@ public abstract class Enemy extends Entity{
     /** variable to track animations and update them */
     protected int aniTick, aniIndex, aniSpeed = 25;
     
+    /** updater thread */
     Updater updater;
+    /** Player reference */
     Player p;
     
     
@@ -131,6 +133,7 @@ public abstract class Enemy extends Entity{
             
     }
     
+    /** calculates project collisions */
     public void projCollision(){
         var muniz = (LinkedList<Projectile>)Playing.flyingAmmos.getProjectiles().clone();
         muniz.forEach(ammo ->{
@@ -290,6 +293,8 @@ public abstract class Enemy extends Entity{
         this.lvlData = data;
     }
    
+    /** load player reference
+     * @param p player reference*/
     public void loadPlayer(Player p){
         this.p = p;
     }
@@ -342,13 +347,16 @@ public abstract class Enemy extends Entity{
         
     }
     
+    /** Start updater thread */
     public void StartUpdates(){
         updater.startThread();
     }
+    /** Stops updater thread */
     public void StopUpdates(){
         updater.stopThread();
     }
     
+    /** Override die of Entity */
     @Override
     public void die(){
         System.out.println("EnemyDeath");
@@ -356,14 +364,16 @@ public abstract class Enemy extends Entity{
         Playing.enemies.removeEnemy(this);
     }
     
+    /** get lives count
+     * @return lives count*/
     public int getLives() {
         return lives;
     }
-
+    /** reset lives to default */
     public void resetLives() {
         lives=3;
     }
-    
+    /** hit function, dies if 0 */
     public void hit(){
         if(--lives<=0){
             die();
