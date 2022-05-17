@@ -5,6 +5,7 @@
  */
 package entities;
 
+import main.Game;
 import utils.Constants;
 import static utils.Constants.PlayerConstants.*;
 import utils.LoadSave;
@@ -49,10 +50,12 @@ public class FollowEnemy extends Enemy{
     @Override
     protected void prePosUpdate(Player p) {
         resetMovements();
-        if(p.getHitbox().x > hitbox.x){
-            right=true;
-        }else if(p.getHitbox().x < hitbox.x){
-            left=true;
+        if(Math.abs(p.hitbox.x-hitbox.x)<Game.COORD_WIDTH/2-100){
+            if(p.getHitbox().x > hitbox.x){
+                right=true;
+            }else if(p.getHitbox().x < hitbox.x){
+                left=true;
+            }
         }
     }
     

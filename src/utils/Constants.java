@@ -108,6 +108,7 @@ public class Constants {
     public static class EnemyConstants {
 
         public static final int CRABBY = 0;
+        public static final int SNIPER = 1;
 
         public static final int IDLE = 0;
         public static final int RUNNING = 1;
@@ -136,6 +137,19 @@ public class Constants {
                             return 4;
                         case DEAD:
                             return 5;
+                    }
+                case SNIPER:
+                    switch (enemy_state) {
+                        case IDLE:
+                            return 1;
+                        case RUNNING:
+                            return 0;
+                        case ATTACK:
+                            return 0;
+                        case HIT:
+                            return 0;
+                        case DEAD:
+                            return 0;
                     }
             }
 

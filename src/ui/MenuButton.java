@@ -4,6 +4,7 @@ import gamestates.Gamestate;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import utils.AudioPlayer;
 import utils.LoadSave;
 import static utils.Constants.UI.Buttons.*;
 
@@ -60,6 +61,7 @@ public class MenuButton {
 
     public void setMousePressed(Boolean mousePressed) {
         this.mousePressed = mousePressed;
+        
     }
 
     private void initBounds() {
@@ -68,6 +70,7 @@ public class MenuButton {
     
     public void applyGamestate(){
         Gamestate.state=state;
+        AudioPlayer.playEffect(AudioPlayer.Effects.CLICK);
     }
     
     public void resetBools(){

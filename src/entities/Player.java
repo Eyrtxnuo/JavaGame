@@ -7,9 +7,11 @@ package entities;
 import gamestates.Playing;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.LinkedList;
 import static utils.Constants.PlayerConstants.*;
 import utils.LoadSave;
 import main.Game;
+import utils.AudioPlayer;
 import utils.Constants;
 import static utils.HelpMethods.*;
 
@@ -55,7 +57,19 @@ public class Player extends Entity {
         
         if(invincibilityFrame>0){
             invincibilityFrame--;
+        }else{
+            projCollision();
         }
+    }
+    
+    public void projCollision(){
+        var muniz = (LinkedList<Projectile>)Playing.flyingAmmos.getEnemyProjectiles().clone();
+        muniz.forEach(ammo ->{
+            if(hitbox.intersects(ammo.hitbox)){
+                hit();
+                ammo.die();
+            }
+        });
     }
 
     public void render(Graphics g, float offsetX, float offsetY) {
@@ -172,6 +186,7 @@ public class Player extends Entity {
             return;
         inAir = true;
         airSpeed = jumpSpeed;
+        AudioPlayer.playEffect(AudioPlayer.Effects.JUMP);
     }
 
     private void updateAnimationTick() {
@@ -293,9 +308,15 @@ public class Player extends Entity {
     }
     
     public void hit(){
+        System.out.println("HIT");
         lives--;
         invincibilityFrame=400;
         playerAction = Constants.PlayerConstants.HIT;
+        if (getLives() <= 0) {
+            die();
+        }else{
+            AudioPlayer.playEffect(AudioPlayer.Effects.DAMAGE);
+        }
     }
 
     public int getInvincibilityFrame() {
@@ -308,6 +329,8 @@ public class Player extends Entity {
     
     @Override
     public void die(){
+        //Playing.enemies.removeAllEnemies();
+        System.out.println("DEAD");
         Playing.playerDeath();
     }
     

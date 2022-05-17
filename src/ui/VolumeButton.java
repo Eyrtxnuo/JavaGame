@@ -2,6 +2,7 @@ package ui;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import utils.AudioPlayer;
 
 import utils.LoadSave;
 import static utils.Constants.UI.VolumeButtons.*;
@@ -64,7 +65,7 @@ public class VolumeButton extends PauseButton {
         }
 
         bounds.x = buttonX - VOLUME_WIDTH / 2;
-
+        AudioPlayer.updateMusicVolume();
     }
 
     public void resetBools() {
@@ -86,5 +87,11 @@ public class VolumeButton extends PauseButton {
 
     public void setMousePressed(boolean mousePressed) {
         this.mousePressed = mousePressed;
+    }
+    
+    public float getVolume(){
+        int val = buttonX - minX;
+        int span = maxX - minX;
+        return val/(float)span;
     }
 }

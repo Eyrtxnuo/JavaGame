@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import main.Game;
 import utils.Constants;
 import utils.LoadSave;
+import static utils.LoadSave.LEVELS_NUMBER;
 
 /**
  *
@@ -47,9 +48,13 @@ public class LevelManager {
     }
     
      public void drawWorld(Graphics g, float offsetX, float offsetY){
-        ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
-        ColorConvertOp op = new ColorConvertOp(cs, null);
-        g.drawImage(loadedLevel.getBackground(), (int)offsetX, (int)offsetY, (int)(Playing.getLevelManager().getLoadedLevel().getLvlData()[0].length*game.TILES_SIZE), (int)(game.GAME_HEIGHT) ,null );
+        
+         drawBackground(g, offsetX, offsetY);
+        if(Playing.getCurrentLevel()+1 < LEVELS_NUMBER){
+            g.setColor(new Color(255, 160, 0, 128));
+            g.fillRect((int)((loadedLevel.getWidthInTiles()-4)*Game.TILES_SIZE+offsetX), (int)(0+offsetY),(int)(4*Game.TILES_SIZE), (int) Game.GAME_HEIGHT);
+        }
+        
         for (int j = 0; j < loadedLevel.getLvlData().length; j++)
             for (int i = 0; i < loadedLevel.getLvlData()[j].length; i++) {
                 int index = loadedLevel.getSpriteIndex(i, j);
@@ -68,7 +73,14 @@ public class LevelManager {
                     }
                 }
             }
+    }
+     
+    private void drawBackground(Graphics g, float offsetX, float offsetY){
         
+        int imageWidth = (int)((loadedLevel.getBackground().getWidth()/(float)loadedLevel.getBackground().getHeight())*Game.GAME_HEIGHT);
+        for(int i = 0; i< loadedLevel.getWidthInTiles()*Game.TILES_SIZE; i+=imageWidth) {
+            g.drawImage(loadedLevel.getBackground(), (int)offsetX+i, (int)offsetY, imageWidth, (int)(Game.GAME_HEIGHT) ,null );
+        }
     }
      
     public void drawEnemies(Graphics g, float offsetX, float offsetY){
@@ -80,6 +92,10 @@ public class LevelManager {
      
     public void drawProjs(Graphics g, float offsetX, float offsetY){
        var muniz = (LinkedList<Projectile>)flyingAmmos.getProjectiles().clone();
+        muniz.forEach((el)->{
+            el.render(g,  offsetX, offsetY);
+        });
+        muniz = (LinkedList<Projectile>)flyingAmmos.getEnemyProjectiles().clone();
         muniz.forEach((el)->{
             el.render(g,  offsetX, offsetY);
         });

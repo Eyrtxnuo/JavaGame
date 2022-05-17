@@ -13,7 +13,7 @@ import static utils.HelpMethods.CanMoveHere;
  */
 public class Projectile extends Entity{
     
-    private static final float SPEED = 9f;
+    private static final float SPEED = 3f;
     private float angle;
     float xSpeed, ySpeed;
     private int[][] lvlData;
@@ -70,6 +70,7 @@ public class Projectile extends Entity{
         }
         if(bounces<0){
             Playing.flyingAmmos.removeProjectile(this);
+
         }
        
     }
@@ -93,5 +94,7 @@ public class Projectile extends Entity{
         Playing.flyingAmmos.removeProjectile(this);
     }
 
-    
+    public int getRemaningBounces() {
+        return bounces;
+    }
 }

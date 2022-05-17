@@ -7,6 +7,7 @@ import entities.Projectile;
 import entities.ProjectileManager;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -16,6 +17,8 @@ import main.Game;
 import static main.Game.*;
 import ui.DeathOverlay;
 import ui.PauseOverlay;
+import utils.AudioPlayer;
+import utils.Constants;
 import static utils.LoadSave.*;
 
 public class Playing extends State implements Statemethods {
@@ -30,7 +33,9 @@ public class Playing extends State implements Statemethods {
     public static ProjectileManager flyingAmmos;
     private float effXOffset;
     public static float pointerX, pointerY;
-    private static final double gunRandomnes=0.05;//in radians
+    private static final double PLAYER_GUN_RANDOMNESS=0.05;//in radians
+    private static final int FIRE_SPEED = 100;
+    private int fireTick = 0;
     private static int currentLevel = 0;
     
 
@@ -57,7 +62,7 @@ public class Playing extends State implements Statemethods {
     
     public static void reloadLevel(){
         enemies.stopAllThreads();
-        levelManager.loadLevel(currentLevel);
+        levelManager.loadLevel(currentLevel);//currentLevel
         connectLevel();
         player.reset();
         death=false;
@@ -82,6 +87,13 @@ public class Playing extends State implements Statemethods {
             && currentLevel+1 < LEVELS_NUMBER) {
             loadLevel(++currentLevel);
             return;
+        }
+        
+        if(Constants.DEBUG && manualFrameAdvancing){
+            enemies.updateAll();
+        }
+        if(fireTick>0){
+            fireTick--;
         }
         levelManager.update();
         LevelManager.collisionChecked.clear();
@@ -111,7 +123,9 @@ public class Playing extends State implements Statemethods {
         levelManager.drawProjs(g, effXOffset, 0);
         
         player.render(g, effXOffset, 0);
-        
+        g.setColor(Color.black);
+        g.setFont (new Font ("TimesRoman", Font.BOLD, (int)(15*Game.SCALE)));
+        g.drawString("LIVES: "+player.getLives(), (int)(2*Game.SCALE), (int)(15*Game.SCALE));
         
         if (paused) {
             pauseOverlay.draw(g);
@@ -137,13 +151,8 @@ public class Playing extends State implements Statemethods {
             deathOverlay.mousePressed(e);
             return;
         }
-        if (e.getButton() == MouseEvent.BUTTON1) {
-            //if(flyingAmmos.getProjectiles().isEmpty()){
-                player.setAttacking(true);
-                Projectile flyingAmmo = new Projectile(player.getHitbox().x+player.getHitbox().width/2, player.getHitbox().y+player.getHitbox().height/2, (float)(Math.atan2(player.getHitbox().x+player.getHitbox().width/2 - (e.getX()-effXOffset)/Game.SCALE, player.getHitbox().y+player.getHitbox().height/2 - e.getY()/Game.SCALE)+Math.PI/2-gunRandomnes/2+Math.random()*gunRandomnes));
-                flyingAmmo.loadLvlData(levelManager.getLoadedLevel().getLvlData());
-                flyingAmmos.add(flyingAmmo);
-            //}
+        if (e.getButton() == MouseEvent.BUTTON1 && fireTick<=0) {
+            playerShoot(e.getX(), e.getY());
         }
         
     }
@@ -200,12 +209,14 @@ public class Playing extends State implements Statemethods {
                     player.setJump(true);
                 }
             }
-            if (e.getKeyCode()==KeyEvent.VK_ESCAPE) {
-                paused = !paused;
-                if(paused){
-                    enemies.stopAllThreads();
-                }
+            
+        }
+        if (e.getKeyCode()==KeyEvent.VK_ESCAPE && !death) {
+            paused = !paused;
+            if(paused){
+                enemies.stopAllThreads();
             }
+            AudioPlayer.playEffect(AudioPlayer.Effects.PAUSE);
         }
     }
 
@@ -250,5 +261,30 @@ public class Playing extends State implements Statemethods {
     static public void playerDeath(){
         death=true;
         enemies.stopAllThreads();
+    }
+
+    public static int getCurrentLevel() {
+        return currentLevel;
+    }
+    
+    private void playerShoot(int x, int y){
+        fireTick=FIRE_SPEED;
+        player.setAttacking(true);
+        Projectile flyingAmmo = new Projectile(player.getHitbox().x+player.getHitbox().width/2, player.getHitbox().y+player.getHitbox().height/2, (float)(Math.atan2(player.getHitbox().x+player.getHitbox().width/2 - (x-effXOffset)/Game.SCALE, player.getHitbox().y+player.getHitbox().height/2 - y/Game.SCALE)+Math.PI/2-PLAYER_GUN_RANDOMNESS/2+Math.random()*PLAYER_GUN_RANDOMNESS));
+        flyingAmmo.loadLvlData(levelManager.getLoadedLevel().getLvlData());
+        flyingAmmos.add(flyingAmmo);
+        AudioPlayer.playEffect(AudioPlayer.Effects.FIRE);
+    }
+    
+    public float getVolume(){
+        return pauseOverlay.getVolume();
+    }
+    
+    public boolean isSfxMuted(){
+        return pauseOverlay.isSfxMuted();
+    }
+    
+    public boolean isMusicMuted(){
+        return pauseOverlay.isMusicMuted();
     }
 }

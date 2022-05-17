@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import main.Game;
+import utils.AudioPlayer;
 import utils.LoadSave;
 import static utils.Constants.UI.PauseButtons.*;
 import static utils.Constants.UI.URMButtons.*;
@@ -54,6 +55,7 @@ public class PauseOverlay {
     }
 
     public void mousePressed(MouseEvent e) {
+        
         if (isIn(e, musicButton)) {
             musicButton.setMousePressed(true);
         } else if (isIn(e, sfxButton)) {
@@ -67,31 +69,40 @@ public class PauseOverlay {
         } else if (isIn(e, volumeButton)) {
             volumeButton.setMousePressed(true);
         }
+        
+        
     }
 
     public void mouseReleased(MouseEvent e) {
+        boolean somethingGotCLicked=false;
         if (isIn(e, musicButton)) {
             if (musicButton.isMousePressed()) {
                 musicButton.setMuted(!musicButton.isMuted());
+                AudioPlayer.toggleMusic(!musicButton.isMuted());
+                somethingGotCLicked=true;
             }
         } else if (isIn(e, sfxButton)) {
             if (sfxButton.isMousePressed()) {
                 sfxButton.setMuted(!sfxButton.isMuted());
+                somethingGotCLicked=true;
             }
         } else if (isIn(e, menuB)) {
             if (menuB.isMousePressed()) {
                 Gamestate.state = Gamestate.MENU;
                 playing.unpauseGame();
+                somethingGotCLicked=true;
             }
         } else if (isIn(e, replayB)) {
             if (replayB.isMousePressed()) {
                 playing.reloadLevel();
                 playing.unpauseGame();
                 System.out.println("replay lvl!");
+                somethingGotCLicked=true;
             }
         } else if (isIn(e, unpauseB)) {
             if (unpauseB.isMousePressed()) {
                 playing.unpauseGame();
+                somethingGotCLicked=true;
             }
         }
         musicButton.resetBools();
@@ -100,6 +111,9 @@ public class PauseOverlay {
         replayB.resetBools();
         unpauseB.resetBools();
         volumeButton.resetBools();
+        if(somethingGotCLicked){
+            AudioPlayer.playEffect(AudioPlayer.Effects.CLICK);
+        }
     }
 
     public void mouseMoved(MouseEvent e) {
@@ -160,4 +174,16 @@ public class PauseOverlay {
         int vY = (int) (((bgY/Game.SCALE)+256) * Game.SCALE);
         volumeButton = new VolumeButton(vX, vY, SLIDER_WIDTH, VOLUME_HEIGHT);
     }
+
+    public float getVolume() {
+        return volumeButton.getVolume();
+    }
+    
+    public boolean isSfxMuted(){
+        return sfxButton.isMuted();
+    }
+    public boolean isMusicMuted(){
+        return musicButton.isMuted();
+    }
+    
 }

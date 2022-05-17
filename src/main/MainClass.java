@@ -6,6 +6,7 @@ package main;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import utils.AudioPlayer;
 
 /**
  *
@@ -24,6 +25,7 @@ public class MainClass {
         float scale = Math.min(vScale, hScale);
         
         System.out.println("Scale: " + vScale);
-        new Game(vScale, true);
+        AudioPlayer.loadGame(new Game(vScale, true));
+        AudioPlayer.playMusic(AudioPlayer.Musics.LEVEL_MUSIC);
     }
 }

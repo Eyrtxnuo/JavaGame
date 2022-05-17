@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import main.Game;
+import utils.AudioPlayer;
 import utils.Constants;
 import static utils.Constants.EnemyConstants.GetSpriteAmount;
 import static utils.Constants.EnemyConstants.*;
@@ -121,6 +122,16 @@ public abstract class Enemy extends Entity{
         }else{
             action=IDLE;
         }
+        projCollision();
+        if (updater.isRunning() && hitbox.intersects(p.hitbox)) {
+            if (p.getInvincibilityFrame() <= 0) {
+                p.hit();
+            }
+        }
+            
+    }
+    
+    public void projCollision(){
         var muniz = (LinkedList<Projectile>)Playing.flyingAmmos.getProjectiles().clone();
         muniz.forEach(ammo ->{
             if(hitbox.intersects(ammo.hitbox)){
@@ -128,23 +139,6 @@ public abstract class Enemy extends Entity{
                 ammo.die();
             }
         });
-        if (updater.isRunning() && hitbox.intersects(p.hitbox)) {
-            if (p.getInvincibilityFrame() == 0) {
-                p.hit();
-                if (p.getLives() == 0) {
-                    Playing.enemies.removeAllEnemies();
-                    System.out.println("DEAD");
-                    Playing.playerDeath();
-                    /*Playing.reloadLevel();
-                    p.reset();
-                    teleport(x, y);
-                    resetMovements();
-                    p.resetLives();
-                    p.resetInvincibilityFrame();*/
-                }
-            }
-        }
-            
     }
     
     /** render the enemy on Graphics g with the offset given,
@@ -374,5 +368,6 @@ public abstract class Enemy extends Entity{
         if(--lives<=0){
             die();
         }
+        AudioPlayer.playEffect(AudioPlayer.Effects.ENEMY_DEAD);
     }
 }

@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import main.Game;
+import utils.AudioPlayer;
 import static utils.Constants.UI.URMButtons.URM_SIZE;
 import utils.LoadSave;
 
@@ -31,8 +32,8 @@ public class DeathOverlay {
     }
 
     private void createUrmButtons() {
-        int menuX = (int) (313 * Game.SCALE);
-        int replayX = (int) (387 * Game.SCALE);
+        int menuX = (int) (((bgX/Game.SCALE)+76) * Game.SCALE);
+        int replayX = (int) (((bgX/Game.SCALE)+166) * Game.SCALE);
         int bY = (int) (295 * Game.SCALE);
 
         menuB = new UrmButton(menuX, bY, URM_SIZE, URM_SIZE, 2);
@@ -67,12 +68,14 @@ public class DeathOverlay {
             if (menuB.isMousePressed()) {
                 Gamestate.state = Gamestate.MENU;
                 playing.unpauseGame();
+                AudioPlayer.playEffect(AudioPlayer.Effects.CLICK);
             }
         } else if (isIn(e, replayB)) {
             if (replayB.isMousePressed()) {
                 playing.reloadLevel();
                 playing.unpauseGame();
                 System.out.println("replay lvl!");
+                AudioPlayer.playEffect(AudioPlayer.Effects.CLICK);
             }
         }
         menuB.resetBools();

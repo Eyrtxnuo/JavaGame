@@ -4,6 +4,7 @@
  */
 package utils;
 
+import entities.Sniper;
 import entities.Enemy;
 import entities.EnemyManager;
 import entities.FollowEnemy;
@@ -28,14 +29,15 @@ import main.GamePanel;
 public class LoadSave {
     public static final String PLAYER_ATLAS = "player_sprites.png";
     public static final String LEVEL_ATLAS = Constants.DEBUG?"outside_sprites_grid.png":"outside_sprites.png";
-    public static final String[] LEVELS_DATA = {"level_one_data.png", "level_two_data.png"};
-    public static final String[] LEVELS_BACKGROUND = {"background.png","background.png"};
+    public static final String[] LEVELS_DATA = {"level_one_data.png", "level_two_data.png", "level_three_data.png"};
+    public static final String[] LEVELS_BACKGROUND = {"city_background.png","city_background.png","city_background.png"};
     public static final int LEVELS_NUMBER = LEVELS_DATA.length;
     public static final String MENU_BUTTONS = "button_atlas.png";
     public static final String MENU_BACKGROUND = "menu_background.png";
     public static final String PAUSE_BACKGROUND = "pause_menu.png";
     public static final String SOUND_BUTTONS = "sound_button.png";
     public static final String CRABBY_ATLAS = "crabby_sprite.png";
+    public static final String SNIPER_ATLAS = "boss.png";
     public static final String VOLUME_BUTTONS = "volume_buttons.png";
     public static final String DEATH_OVERLAY = "death_overlay.png";
 
@@ -96,6 +98,9 @@ public class LoadSave {
                     }
                     case 2 -> {
                         en = new FollowEnemy(i*Game.TILES_DEFAULT_SIZE, j*Game.TILES_DEFAULT_SIZE);
+                    }
+                    case 9 -> {
+                        en = new Sniper(i*Game.TILES_DEFAULT_SIZE, j*Game.TILES_DEFAULT_SIZE);
                     }
                     default ->{
                         continue;
