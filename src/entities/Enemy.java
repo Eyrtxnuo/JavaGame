@@ -53,8 +53,11 @@ public abstract class Enemy extends Entity{
     protected float movSpeed=0.5f, jumpSpeed=-2.25f, gravity=0.04f, fallSpeedAfterCollision = 0.5f;
     /** is Enemy in Air, for applying graavity and animations */
     protected boolean inAir = true;
+    /** enemy max lives*/
+    protected int MAX_LIVES = 1;
     /** enemy lives */
-    protected int lives = 1;
+    protected int lives = MAX_LIVES;
+    
     
     /** array of animation sequences */
     protected BufferedImage[][] animations;
@@ -371,7 +374,7 @@ public abstract class Enemy extends Entity{
     }
     /** reset lives to default */
     public void resetLives() {
-        lives=3;
+        lives=MAX_LIVES;
     }
     /** hit function, dies if 0 */
     public void hit(){

@@ -6,6 +6,7 @@ package entities;
 
 import static gamestates.Playing.flyingAmmos;
 import static gamestates.Playing.levelManager;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import main.Game;
@@ -23,7 +24,8 @@ public class Sniper extends Enemy {
     private static final int FIRE_SPEED = 500;
     private int fireTick = 100;
     
-    private final static float xShootOffset = -20, yShootOffset = 17;
+    private final static float xShootOffset = -16, yShootOffset = 3;
+    
 
     private BufferedImage animations;
 
@@ -52,6 +54,9 @@ public class Sniper extends Enemy {
             } else {
                 g.drawImage(animations, (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX + spriteX * Game.SCALE), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) -(spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
             }
+            if(lives!=MAX_LIVES){
+                drawHealthBar(g, offsetX,  offsetY);
+            }
             if (Constants.DEBUG) {
                 drawHitbox(g, offsetX, offsetY);
             }
@@ -77,11 +82,12 @@ public class Sniper extends Enemy {
     }
 
     private void settings() {
+        MAX_LIVES = 2;
+        resetLives();
         action = RUNNING;
         movSpeed = 0.5f;
         gravity = 0.04f;
         jumpSpeed = -2.5f;
-        lives = 2;
         spriteX = 64;
         spriteY = 64;
     }
@@ -113,5 +119,19 @@ public class Sniper extends Enemy {
         flyingAmmos.enemyAdd(flyingAmmo);
 
         fireTick = FIRE_SPEED;
+    }
+
+    
+    private static final float BAR_BORDER = 1.5f;
+    private static final float BAR_HEIGHT = 3;
+    private void drawHealthBar(Graphics g, float offsetX, float offsetY) {
+        Color c = g.getColor();
+        g.setColor(Color.BLACK);
+        g.fillRect((int)((hitbox.x-BAR_BORDER)*Game.SCALE+offsetX), (int)((hitbox.y-(BAR_HEIGHT+2*BAR_BORDER))*Game.SCALE+offsetY), (int)((hitbox.width+BAR_BORDER*2)*Game.SCALE), (int) ((BAR_HEIGHT+2*BAR_BORDER)*Game.SCALE));
+        g.setColor(Color.DARK_GRAY);
+        g.fillRect((int)((hitbox.x)*Game.SCALE+offsetX), (int)((hitbox.y-(BAR_HEIGHT+BAR_BORDER))*Game.SCALE+offsetY), (int)((hitbox.width)*Game.SCALE), (int) (BAR_HEIGHT*Game.SCALE));
+        g.setColor(Color.RED);
+        g.fillRect((int)((hitbox.x)*Game.SCALE+offsetX), (int)((hitbox.y-(BAR_HEIGHT+BAR_BORDER))*Game.SCALE+offsetY), (int)((hitbox.width*(lives/(float)MAX_LIVES))*Game.SCALE), (int) (BAR_HEIGHT*Game.SCALE));
+        g.setColor(c);
     }
 }
