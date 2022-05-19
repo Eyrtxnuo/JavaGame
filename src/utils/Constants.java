@@ -5,7 +5,7 @@ import main.Game;
 public class Constants {
 
     /** is Debug enabled */
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     
     public static void updateScaleConsts(){
         UI.Buttons.B_WIDTH = (int) (UI.Buttons.B_WIDTH_DEFAULT * Game.SCALE);
@@ -109,6 +109,7 @@ public class Constants {
 
         public static final int CRABBY = 0;
         public static final int SNIPER = 1;
+        public static final int BOSS = 2;
 
         public static final int IDLE = 0;
         public static final int RUNNING = 1;
@@ -137,22 +138,24 @@ public class Constants {
                             return 4;
                         case DEAD:
                             return 5;
+                        default:
+                            return 0;
                     }
                 case SNIPER:
                     switch (enemy_state) {
                         case IDLE:
                             return 1;
-                        case RUNNING:
+                        default:
                             return 0;
-                        case ATTACK:
-                            return 0;
-                        case HIT:
-                            return 0;
-                        case DEAD:
+                    }
+                case BOSS:
+                    switch (enemy_state) {
+                        case IDLE:
+                            return 3;
+                        default:
                             return 0;
                     }
             }
-
             return 0;
 
         }

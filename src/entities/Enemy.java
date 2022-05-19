@@ -122,11 +122,7 @@ public abstract class Enemy extends Entity{
         super.update();
         updateAnimationTick();
         updatePos();
-        if(moving){
-            action=RUNNING;
-        }else{
-            action=IDLE;
-        }
+        updateAction();
         projCollision();
         if (updater.isRunning() && hitbox.intersects(p.hitbox)) {
             if (p.getInvincibilityFrame() <= 0) {
@@ -134,6 +130,14 @@ public abstract class Enemy extends Entity{
             }
         }
             
+    }
+    
+    protected void updateAction(){
+        if(moving){
+            action=RUNNING;
+        }else{
+            action=IDLE;
+        }
     }
     
     /** calculates project collisions */
