@@ -138,9 +138,9 @@ public class Boss extends Enemy {
     protected void prePosUpdate(Player p) {
         resetMovements();
         if(Math.abs(p.hitbox.x-hitbox.x)<Game.COORD_WIDTH/2){
-            if(p.getHitbox().x > hitbox.x){
+            if(p.getHitbox().x-hitbox.width/2-5 > hitbox.x){
                 right=true;
-            }else if(p.getHitbox().x < hitbox.x){
+            }else if(p.getHitbox().x-hitbox.width/2+5 < hitbox.x){
                 left=true;
             }
         }
