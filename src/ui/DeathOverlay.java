@@ -56,37 +56,38 @@ public class DeathOverlay {
     }
 
     public void mousePressed(MouseEvent e) {
-        boolean startMusic = false;
         if (isIn(e, menuB)) {
             menuB.setMousePressed(true);
-            startMusic = true;
         } else if (isIn(e, replayB)) {
             replayB.setMousePressed(true);
-            startMusic = true;
         }
         
-        if(startMusic){
-            AudioPlayer.playMusic(AudioPlayer.Musics.LEVEL_MUSIC);
-        }
     }
     
     public void mouseReleased(MouseEvent e) {
+        
+        boolean startMusic = false;
         if (isIn(e, menuB)) {
             if (menuB.isMousePressed()) {
                 Gamestate.state = Gamestate.MENU;
                 playing.unpauseGame();
-                AudioPlayer.playEffect(AudioPlayer.Effects.CLICK);
+                startMusic = true;
             }
         } else if (isIn(e, replayB)) {
             if (replayB.isMousePressed()) {
-                playing.reloadLevel();
+                Playing.reloadLevel();
                 playing.unpauseGame();
                 System.out.println("replay lvl!");
-                AudioPlayer.playEffect(AudioPlayer.Effects.CLICK);
+                startMusic = true;
             }
         }
         menuB.resetBools();
         replayB.resetBools();
+        
+        if(startMusic){
+            AudioPlayer.playEffect(AudioPlayer.Effects.CLICK);
+            AudioPlayer.playMusic(AudioPlayer.Musics.LEVEL_MUSIC);
+        }
     }
     
     public void mouseMoved(MouseEvent e) {

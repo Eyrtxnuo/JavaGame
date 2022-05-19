@@ -26,7 +26,7 @@ public class Playing extends State implements Statemethods {
     public static LevelManager levelManager;
     private static Player player;
     public static EnemyManager enemies;
-    private boolean paused = false;
+    private static boolean paused = false;
     private static boolean death=false;
     private PauseOverlay pauseOverlay;
     private DeathOverlay deathOverlay;
@@ -62,7 +62,7 @@ public class Playing extends State implements Statemethods {
     
     public static void reloadLevel(){
         enemies.stopAllThreads();
-        levelManager.loadLevel(currentLevel);//currentLevel
+        levelManager.loadLevel(currentLevel);
         connectLevel();
         player.reset();
         death=false;
@@ -290,4 +290,13 @@ public class Playing extends State implements Statemethods {
     public boolean isMusicMuted(){
         return pauseOverlay.isMusicMuted();
     }
+
+    public static boolean isPaused() {
+        return paused;
+    }
+
+    public static boolean isDeath() {
+        return death;
+    }
+    
 }

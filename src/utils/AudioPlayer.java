@@ -33,6 +33,7 @@ public class AudioPlayer {
     /** plays the Music passed
      * @param mus the music enum*/
     public static void playMusic(Musics mus){
+        if(music!=null && music.isRunning())return;
         if(!game.getPlaying().isMusicMuted()){
             playClipMusic(getMusicPath(mus),game.getPlaying().getVolume());
         }
