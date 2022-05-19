@@ -39,13 +39,13 @@ public class Player extends Entity {
     private float jumpSpeed = -2.25f;
     private float fallSpeedAfterCollision = 0.5f;
     private boolean inAir = true;
-    private int lives=3;
-    private int invincibilityFrame= 0;
+    private int lives = 3;
+    private int invincibilityFrame = 0;
 
     public Player(float x, float y) {
         super(x, y);
         LoadAnimations();
-        initHitbox(x, y, (int)(20f), (int)(27f));
+        initHitbox(x, y, (int) (20f), (int) (27f));
     }
 
     @Override
@@ -54,18 +54,18 @@ public class Player extends Entity {
         updatePos();
         updateAnimationTick();
         setAnimation();
-        
-        if(invincibilityFrame>0){
+
+        if (invincibilityFrame > 0) {
             invincibilityFrame--;
-        }else{
+        } else {
             projCollision();
         }
     }
-    
-    public void projCollision(){
-        var muniz = (LinkedList<Projectile>)Playing.flyingAmmos.getEnemyProjectiles().clone();
-        muniz.forEach(ammo ->{
-            if(hitbox.intersects(ammo.hitbox)){
+
+    public void projCollision() {
+        var muniz = (LinkedList<Projectile>) Playing.flyingAmmos.getEnemyProjectiles().clone();
+        muniz.forEach(ammo -> {
+            if (hitbox.intersects(ammo.hitbox)) {
                 hit();
                 ammo.die();
             }
@@ -73,15 +73,16 @@ public class Player extends Entity {
     }
 
     public void render(Graphics g, float offsetX, float offsetY) {
-        
-        dirLeft = Playing.pointerX<(hitbox.x+hitbox.width/2)*Game.SCALE+offsetX;
+        if (!Playing.isPaused() && !Playing.isDeath()) {
+            dirLeft = Playing.pointerX < (hitbox.x + hitbox.width / 2) * Game.SCALE + offsetX;
+        }
         if (dirLeft) {
-         g.drawImage(animations[playerAction][aniIndex % animations[playerAction].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX + spriteX * Game.SCALE ) , (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), -(int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
+            g.drawImage(animations[playerAction][aniIndex % animations[playerAction].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX + spriteX * Game.SCALE), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), -(int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
         } else {
             g.drawImage(animations[playerAction][aniIndex % animations[playerAction].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
         }
         //g.drawImage(animations[playerAction][aniIndex % animations[playerAction].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
-        if(Constants.DEBUG){
+        if (Constants.DEBUG) {
             drawHitbox(g, offsetX, offsetY);
         }
     }
@@ -100,7 +101,7 @@ public class Player extends Entity {
         if (attacking) {
             playerAction = ATTACK_1;
         }
-        if(invincibilityFrame>0){
+        if (invincibilityFrame > 0) {
             playerAction = HIT;
         }
 
@@ -116,7 +117,7 @@ public class Player extends Entity {
 
     private void updatePos() {
         moving = false;
-        if(jump){
+        if (jump) {
             jump();
         }
         if (left == right && !inAir) {
@@ -126,35 +127,35 @@ public class Player extends Entity {
 
         if (left) {
             dirLeft = true;
-            xSpeed -=playerSpeed;
+            xSpeed -= playerSpeed;
         }
         if (right) {
             dirLeft = false;
             xSpeed += playerSpeed;
         }
-        
-        if(!inAir){
-            if(!IsEntityOnFloor(hitbox, lvlData)){
-                inAir=true;
+
+        if (!inAir) {
+            if (!IsEntityOnFloor(hitbox, lvlData)) {
+                inAir = true;
             }
         }
-        
-        if(inAir){
-            if(CanMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height,lvlData)){
+
+        if (inAir) {
+            if (CanMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, lvlData)) {
                 hitbox.y += airSpeed;
                 airSpeed += gravity;
                 updateXpos(xSpeed);
-            }else{
+            } else {
                 hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
-                if(airSpeed > 0){
+                if (airSpeed > 0) {
                     resetInAir();
-                }else{
+                } else {
                     airSpeed = fallSpeedAfterCollision;
                 }
                 updateXpos(xSpeed);
-                
+
             }
-        }else{
+        } else {
             updateXpos(xSpeed);
         }
         moving = true;
@@ -165,25 +166,25 @@ public class Player extends Entity {
 //        if (down) {
 //            ySpeed += playerSpeed;
 //        }
-
 //        if(CanMoveHere(hitbox.x+xSpeed, hitbox.y+ySpeed, hitbox.width, hitbox.height, lvlData)){
 //            hitbox.x += xSpeed;
 //            hitbox.y += ySpeed;
 //            moving = true;
 //        }
     }
-    
+
     private void updateXpos(float xSpeed) {
         if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
             hitbox.x += xSpeed;
-        }else {
+        } else {
             hitbox.x = GetEntityXPosNextToWall(hitbox, xSpeed);
         }
     }
-    
+
     private void jump() {
-        if(inAir)
+        if (inAir) {
             return;
+        }
         inAir = true;
         airSpeed = jumpSpeed;
         AudioPlayer.playEffect(AudioPlayer.Effects.JUMP);
@@ -248,8 +249,6 @@ public class Player extends Entity {
     public void setJump(boolean jump) {
         this.jump = jump;
     }
-    
-    
 
     public boolean isAttacking() {
         return attacking;
@@ -278,22 +277,22 @@ public class Player extends Entity {
         inAir = false;
         airSpeed = 0;
     }
-    
-    public void teleport(float x, float y){
+
+    public void teleport(float x, float y) {
         hitbox.x = x;
         hitbox.y = y;
-        inAir=true;
+        inAir = true;
     }
-    
-    public void reset(){
+
+    public void reset() {
         teleport(x, y);
         //resDirBools();
         moving = false;
         attacking = false;
-        aniTick = 0 ;
+        aniTick = 0;
         aniIndex = 0;
-        airSpeed=0;
-        inAir=true;
+        airSpeed = 0;
+        inAir = true;
         resetLives();
         resetAniTick();
         resetInvincibilityFrame();
@@ -304,17 +303,17 @@ public class Player extends Entity {
     }
 
     public void resetLives() {
-        lives=3;
+        lives = 3;
     }
-    
-    public void hit(){
+
+    public void hit() {
         System.out.println("HIT");
         lives--;
-        invincibilityFrame=400;
+        invincibilityFrame = 400;
         playerAction = Constants.PlayerConstants.HIT;
         if (getLives() <= 0) {
             die();
-        }else{
+        } else {
             AudioPlayer.playEffect(AudioPlayer.Effects.DAMAGE);
         }
     }
@@ -322,19 +321,17 @@ public class Player extends Entity {
     public int getInvincibilityFrame() {
         return invincibilityFrame;
     }
-    
+
     public void resetInvincibilityFrame() {
-        invincibilityFrame=0;
+        invincibilityFrame = 0;
     }
-    
+
     @Override
-    public void die(){
+    public void die() {
         //Playing.enemies.removeAllEnemies();
         System.out.println("DEAD");
         Playing.playerDeath();
-        
+
     }
-    
-    
-   
+
 }
