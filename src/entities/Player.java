@@ -119,7 +119,7 @@ public class Player extends Entity {
         if(jump){
             jump();
         }
-        if (!left && !right && !inAir) {
+        if (left == right && !inAir) {
             return;
         }
         float xSpeed = 0, ySpeed = 0;
@@ -332,6 +332,7 @@ public class Player extends Entity {
         //Playing.enemies.removeAllEnemies();
         System.out.println("DEAD");
         Playing.playerDeath();
+        
     }
     
     

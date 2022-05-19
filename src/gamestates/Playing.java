@@ -261,6 +261,9 @@ public class Playing extends State implements Statemethods {
     static public void playerDeath(){
         death=true;
         enemies.stopAllThreads();
+        
+        AudioPlayer.stopMusic();
+        AudioPlayer.playEffect(AudioPlayer.Effects.DEATH);
     }
 
     public static int getCurrentLevel() {
