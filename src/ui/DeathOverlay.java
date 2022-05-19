@@ -56,10 +56,17 @@ public class DeathOverlay {
     }
 
     public void mousePressed(MouseEvent e) {
+        boolean startMusic = false;
         if (isIn(e, menuB)) {
             menuB.setMousePressed(true);
+            startMusic = true;
         } else if (isIn(e, replayB)) {
             replayB.setMousePressed(true);
+            startMusic = true;
+        }
+        
+        if(startMusic){
+            AudioPlayer.playMusic(AudioPlayer.Musics.LEVEL_MUSIC);
         }
     }
     
