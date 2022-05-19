@@ -13,18 +13,15 @@ import static main.Game.*;
 public abstract class Entity {
     
     protected float x, y;
-    //protected int width, height;
     protected Rectangle2D.Float hitbox;
 
-    public Entity(float x, float y/*, int width, int height*/) {
+    public Entity(float x, float y) {
         this.x = x;
         this.y = y;
-        //this.width = width;
-        //this.height = height;
     }
 
 
-    void update() {
+    public void update() {
      if(hitbox.y < -3*Game.TILES_DEFAULT_SIZE || hitbox.y > Game.COORD_HEIGHT+3*Game.TILES_DEFAULT_SIZE){
             die();
         }

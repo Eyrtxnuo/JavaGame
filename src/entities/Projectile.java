@@ -15,10 +15,11 @@ public class Projectile extends Entity{
     
     private static final float SPEED = 3f;
     private float angle;
-    float xSpeed, ySpeed;
+    private float xSpeed, ySpeed;
     private int[][] lvlData;
     private final float gravity = 0.00f;
     private int bounces = 0;
+    private int despawnCounter=100;
 
     public Projectile(float x, float y, float angle) {
         super(x, y);
@@ -48,6 +49,9 @@ public class Projectile extends Entity{
             System.out.println("DAMAGE");
             p.reset();
         }*/
+        if(despawnCounter--==0){
+            die();
+        }
     }
 
     private void updatePos() {
