@@ -32,7 +32,7 @@ public class Sniper extends Enemy {
         TYPE = Constants.EnemyConstants.CRABBY;
         initSprite();
         settings();
-        initHitbox(x, y, (int) (17f), (int) (43f));
+        initHitbox(x, y, (int) (24f), (int) (30f));
         //LoadAnimations(LoadSave.BOSS_ATLAS);
         animations = LoadSave.GetSpriteAtlas("zombie_atlas.png");
         resetMovements();
@@ -72,8 +72,8 @@ public class Sniper extends Enemy {
     private void initSprite() {
         spriteX = Constants.EnemyConstants.CRABBY_WIDTH_DEFAULT;
         spriteY = Constants.EnemyConstants.CRABBY_HEIGHT_DEFAULT;
-        xDrawOffset = 24;
-        yDrawOffset = 14;
+        xDrawOffset = 20;
+        yDrawOffset = 26;
     }
 
     private void settings() {
