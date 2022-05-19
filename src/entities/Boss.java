@@ -25,7 +25,8 @@ public class Boss extends Enemy {
     private static final int FIRE_SPEED = 50;
     private int fireTick = 100;
     
-    private final static float xShootOffset = -16, yShootOffset = 3;
+    private int barrel = 0;
+    private final static float[] xShootOffset = {21.5f, 54f}, yShootOffset = {117.5f, 117.5f};
     
 
 
@@ -34,7 +35,7 @@ public class Boss extends Enemy {
         TYPE = Constants.EnemyConstants.BOSS;
         initSprite();
         settings();
-        initHitbox(x, y, (int) (38f), (int) (30f));
+        initHitbox(x, y, (int) (76f), (int) (60f));
         LoadAnimations(LoadSave.BOSS_ATLAS);
         resetMovements();
     }
@@ -42,19 +43,19 @@ public class Boss extends Enemy {
     private void initSprite() {
         spriteX = Constants.EnemyConstants.CRABBY_WIDTH_DEFAULT;
         spriteY = Constants.EnemyConstants.CRABBY_HEIGHT_DEFAULT;
-        xDrawOffset = 17;
-        yDrawOffset = 13;
+        xDrawOffset = 34;
+        yDrawOffset = 26;
     }
     
     private void settings() {
         MAX_LIVES = 20;
         resetLives();
         action = RUNNING;
-        movSpeed = 0.5f;
+        movSpeed = 0.2f;
         gravity = 0.0f;
         jumpSpeed = -2.5f;
-        spriteX = 72;
-        spriteY = 72;
+        spriteX = 144;
+        spriteY = 144;
         aniSpeed = 50;
     }
     
@@ -79,8 +80,10 @@ public class Boss extends Enemy {
                 drawHitbox(g, offsetX, offsetY);
             }
             if (Math.abs(p.hitbox.x - hitbox.x) < Game.COORD_WIDTH / 2 - 100) {
-                g.drawLine((int) ((getHitbox().x + xShootOffset) * Game.SCALE + offsetX), (int) ((getHitbox().y + yShootOffset) * Game.SCALE), (int) ((p.getHitbox().x + p.getHitbox().width / 2) * Game.SCALE + offsetX), (int) ((p.getHitbox().y + p.getHitbox().height / 2) * Game.SCALE));
-            }
+                for(int i = 0; i< xShootOffset.length; i++){ 
+                    g.drawLine((int) ((getHitbox().x + xShootOffset[i]) * Game.SCALE + offsetX), (int) ((getHitbox().y + yShootOffset[i]) * Game.SCALE), (int) ((p.getHitbox().x + p.getHitbox().width / 2) * Game.SCALE + offsetX), (int) ((p.getHitbox().y + p.getHitbox().height / 2) * Game.SCALE));
+                }
+             }
         }
     }
     
@@ -105,25 +108,41 @@ public class Boss extends Enemy {
     
     /** Fires a projectile */
     public void fire() {
-        Projectile flyingAmmo = new Projectile(getHitbox().x - xDrawOffset, getHitbox().y + getHitbox().height / 2,
-                (float) (Math.atan2((getHitbox().x + xShootOffset) - (p.getHitbox().x + yShootOffset), (getHitbox().y + getHitbox().height / 2) - (p.getHitbox().y + p.getHitbox().height / 2)) + Math.PI / 2 - GUN_RANDOMNESS / 2 + Math.random() * GUN_RANDOMNESS));
+        //for(int i = 0; i< xShootOffset.length; i++)
+        
+        Projectile flyingAmmo = new Projectile(getHitbox().x + xShootOffset[barrel], getHitbox().y + yShootOffset[barrel],
+            (float) (Math.atan2((getHitbox().x + xShootOffset[barrel]) - (p.getHitbox().x+p.getHitbox().width/2), (getHitbox().y +  yShootOffset[barrel]) - (p.getHitbox().y + p.getHitbox().height / 2)) + Math.PI / 2 - GUN_RANDOMNESS / 2 + Math.random() * GUN_RANDOMNESS));
         flyingAmmo.loadLvlData(levelManager.getLoadedLevel().getLvlData());
         flyingAmmos.enemyAdd(flyingAmmo);
-
+        barrel = ++barrel%xShootOffset.length;
         fireTick = FIRE_SPEED;
     }
     
     
     private static final float BAR_BORDER = 1.5f;
     private static final float BAR_HEIGHT = 3;
+    private static final float BAR_DISTANCE = 15;
+
     private void drawHealthBar(Graphics g, float offsetX, float offsetY) {
         Color c = g.getColor();
         g.setColor(Color.BLACK);
-        g.fillRect((int)((hitbox.x-BAR_BORDER)*Game.SCALE+offsetX), (int)((hitbox.y-(BAR_HEIGHT+2*BAR_BORDER))*Game.SCALE+offsetY), (int)((hitbox.width+BAR_BORDER*2)*Game.SCALE), (int) ((BAR_HEIGHT+2*BAR_BORDER)*Game.SCALE));
+        g.fillRect((int)((hitbox.x-BAR_BORDER)*Game.SCALE+offsetX), (int)((hitbox.y-(BAR_HEIGHT+2*BAR_BORDER+BAR_DISTANCE))*Game.SCALE+offsetY), (int)((hitbox.width+BAR_BORDER*2)*Game.SCALE), (int) ((BAR_HEIGHT+2*BAR_BORDER)*Game.SCALE));
         g.setColor(Color.DARK_GRAY);
-        g.fillRect((int)((hitbox.x)*Game.SCALE+offsetX), (int)((hitbox.y-(BAR_HEIGHT+BAR_BORDER))*Game.SCALE+offsetY), (int)((hitbox.width)*Game.SCALE), (int) (BAR_HEIGHT*Game.SCALE));
+        g.fillRect((int)((hitbox.x)*Game.SCALE+offsetX), (int)((hitbox.y-(BAR_HEIGHT+BAR_BORDER+BAR_DISTANCE))*Game.SCALE+offsetY), (int)((hitbox.width)*Game.SCALE), (int) (BAR_HEIGHT*Game.SCALE));
         g.setColor(Color.RED);
-        g.fillRect((int)((hitbox.x)*Game.SCALE+offsetX), (int)((hitbox.y-(BAR_HEIGHT+BAR_BORDER))*Game.SCALE+offsetY), (int)((hitbox.width*(lives/(float)MAX_LIVES))*Game.SCALE), (int) (BAR_HEIGHT*Game.SCALE));
+        g.fillRect((int)((hitbox.x)*Game.SCALE+offsetX), (int)((hitbox.y-(BAR_HEIGHT+BAR_BORDER+BAR_DISTANCE))*Game.SCALE+offsetY), (int)((hitbox.width*(lives/(float)MAX_LIVES))*Game.SCALE), (int) (BAR_HEIGHT*Game.SCALE));
         g.setColor(c);
+    }
+    
+    @Override
+    protected void prePosUpdate(Player p) {
+        resetMovements();
+        if(Math.abs(p.hitbox.x-hitbox.x)<Game.COORD_WIDTH/2){
+            if(p.getHitbox().x > hitbox.x){
+                right=true;
+            }else if(p.getHitbox().x < hitbox.x){
+                left=true;
+            }
+        }
     }
 }

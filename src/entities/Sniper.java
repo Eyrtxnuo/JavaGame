@@ -113,8 +113,8 @@ public class Sniper extends Enemy {
 
     /** Fires a projectile */
     public void fire() {
-        Projectile flyingAmmo = new Projectile(getHitbox().x - xDrawOffset, getHitbox().y + getHitbox().height / 2,
-                (float) (Math.atan2((getHitbox().x + xShootOffset) - (p.getHitbox().x + yShootOffset), (getHitbox().y + getHitbox().height / 2) - (p.getHitbox().y + p.getHitbox().height / 2)) + Math.PI / 2 - GUN_RANDOMNESS / 2 + Math.random() * GUN_RANDOMNESS));
+        Projectile flyingAmmo = new Projectile(getHitbox().x - xShootOffset, getHitbox().y + yShootOffset,
+                (float) (Math.atan2((getHitbox().x + xShootOffset) - (p.getHitbox().x +p.getHitbox().width/2), (getHitbox().y + yShootOffset) - (p.getHitbox().y + p.getHitbox().height / 2)) + Math.PI / 2 - GUN_RANDOMNESS / 2 + Math.random() * GUN_RANDOMNESS));
         flyingAmmo.loadLvlData(levelManager.getLoadedLevel().getLvlData());
         flyingAmmos.enemyAdd(flyingAmmo);
 

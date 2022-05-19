@@ -32,6 +32,7 @@ public class FollowEnemy extends Enemy{
         xDrawOffset = 26;
         yDrawOffset = 10;
     }
+    
     private void settings(){
         action = RUNNING;
         movSpeed = 0.5f;

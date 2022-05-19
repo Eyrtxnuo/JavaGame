@@ -5,7 +5,7 @@ import main.Game;
 public class Constants {
 
     /** is Debug enabled */
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     
     public static void updateScaleConsts(){
         UI.Buttons.B_WIDTH = (int) (UI.Buttons.B_WIDTH_DEFAULT * Game.SCALE);
