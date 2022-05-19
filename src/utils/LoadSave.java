@@ -99,7 +99,7 @@ public class LoadSave {
                     case 2 -> {
                         en = new FollowEnemy(i*Game.TILES_DEFAULT_SIZE, j*Game.TILES_DEFAULT_SIZE);
                     }
-                    case 9 -> {
+                    case 3 -> {
                         en = new Sniper(i*Game.TILES_DEFAULT_SIZE, j*Game.TILES_DEFAULT_SIZE);
                     }
                     default ->{
