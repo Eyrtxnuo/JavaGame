@@ -56,7 +56,7 @@ public class Boss extends Enemy {
     
     /**Initialize enemy options */
     private void settings() {
-        MAX_LIVES = 2;
+        MAX_LIVES = 20;
         resetLives();
         action = RUNNING;
         movSpeed = 0.2f;

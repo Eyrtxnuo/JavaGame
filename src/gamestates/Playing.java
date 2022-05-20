@@ -156,7 +156,7 @@ public class Playing extends State implements Statemethods {
      * @param levelN
      */
     public static void loadLevel(int levelN) {
-        currentLevel = 3;
+        currentLevel = levelN;
         reloadLevel();
     }
 
