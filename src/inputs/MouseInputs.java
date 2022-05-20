@@ -13,17 +13,25 @@ import java.awt.event.MouseMotionListener;
 import main.GamePanel;
 
 /**
- *
+ * Class Implements MouseListener, MouseMotionListener, calls correct gamestate listeners
  * @author matti
  */
 public class MouseInputs implements MouseListener, MouseMotionListener {
 
+    /** GamePanel reference */
     private GamePanel gamePanel;
-
+    
+    /**
+     * constructor, require gamePaner reference
+     * @param gamePanel gamePanel reference
+     */
     public MouseInputs(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }
 
+    /** MouseClicked event implementation
+     * @param e MouseEvent
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
         switch (Gamestate.state) {
@@ -34,7 +42,10 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
 
         }
     }
-
+    
+    /** MousePressed event implementation
+     * @param e MouseEvent
+     */
     @Override
     public void mousePressed(MouseEvent e) {
         switch (Gamestate.state) {
@@ -48,7 +59,10 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
 
         }
     }
-
+    
+    /** MouseReleased event implementation
+     * @param e MouseEvent
+     */
     @Override
     public void mouseReleased(MouseEvent e) {
         switch (Gamestate.state) {
@@ -63,14 +77,23 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
         }
     }
 
+    /** MouseEntered event implementation
+     * @param e MouseEvent
+     */
     @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    /** MouseExited event implementation
+     * @param e MouseEvent
+     */
     @Override
     public void mouseExited(MouseEvent e) {
     }
 
+    /** MouseDragged event implementation
+     * @param e MouseEvent
+     */
     @Override
     public void mouseDragged(MouseEvent e) {
         pointerX = e.getX();
@@ -83,6 +106,9 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
         }
     }
 
+    /** MouseMoved event implementation
+     * @param e MouseEvent
+     */
     @Override
     public void mouseMoved(MouseEvent e) {
         pointerX = e.getX();

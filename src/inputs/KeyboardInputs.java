@@ -11,21 +11,32 @@ import main.Game;
 import main.GamePanel;
 import utils.Constants;
 /**
- *
+ * Class Implements KeyListener, calls correct gamestate keylistener 
  * @author matti
  */
 public class KeyboardInputs implements KeyListener{
 
+    /** GamePanel reference */
     private GamePanel gamePanel;
 
+    /**
+     * constructor, require gamePaner reference
+     * @param gamePanel gamePanel reference
+     */
     public KeyboardInputs(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }
     
+    /** KeyTyped event implementation
+     * @param e KeyEvent
+     */
     @Override
     public void keyTyped(KeyEvent e) {
     }
-
+    
+    /** KeyPressed event implementation
+     * @param e KeyEvent
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         switch(Gamestate.state){
@@ -47,6 +58,9 @@ public class KeyboardInputs implements KeyListener{
         }
     }
 
+    /** KeyReleased event implementation
+     * @param e KeyEvent
+     */
     @Override
     public void keyReleased(KeyEvent e) {
         switch(Gamestate.state){

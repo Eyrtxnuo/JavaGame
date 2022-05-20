@@ -9,12 +9,18 @@ import java.awt.event.WindowFocusListener;
 import javax.swing.JFrame;
 
 /**
- *
+ * Window class
  * @author matti
  */
 public class GameWindow {
+    /** window object */
     JFrame jframe;
     
+    /**
+     * Constructor, need reference to gamePanel, and if it should be fullscreen
+     * @param gamePanel
+     * @param fullscreen 
+     */
     public GameWindow(GamePanel gamePanel,boolean fullscreen) {
         jframe = new JFrame("Night of Monsters");
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,6 +49,9 @@ public class GameWindow {
         
     }
     
+    /**
+     * Set dimension of window to the frame ones, center the window
+     */
     public void repackPanel(){
         jframe.pack();//auto-fit gamePanel
         jframe.setLocationRelativeTo(null);//center on screen

@@ -18,14 +18,20 @@ import utils.LoadSave;
 
 
 /**
- *
+ * Panel class
  * @author matti
  */
 public class GamePanel extends javax.swing.JPanel {
 
+    /** mouse inputs interface */
     private MouseInputs mouseInputs;
+    /** game reference */
     private Game game;
 
+    /**
+     * Constructor, need game refence
+     * @param game Game reference
+     */
     public GamePanel(Game game) {
         this.game= game;
         initComponents();
@@ -46,7 +52,10 @@ public class GamePanel extends javax.swing.JPanel {
         setFocusable(true);
     }
 
-    
+    /**
+     * Paint geme on repaint
+     * @param g Graphics of frame
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -54,20 +63,22 @@ public class GamePanel extends javax.swing.JPanel {
         
     }
 
+    /**
+     * Panel sizes are set
+     */
     public void setPanelSize() {
         Dimension size = new Dimension((int)GAME_WIDTH, (int)GAME_HEIGHT);
-        //setMinimumSize(size);
         setPreferredSize(size);
-        //setMaximumSize(size);
         System.out.println("size : " + GAME_WIDTH + " : " + GAME_HEIGHT);
 
     }
 
      
-
+    /** update function */
     public void updateGame() {
     }
 
+    /** get Game reference */
     public Game getGame() {
         return game;
     }

@@ -10,32 +10,54 @@ import java.awt.Toolkit;
 import utils.Constants;
 
 /**
- *
+ * Game class, contains everything, game root
  * @author matti
  */
 public class Game implements Runnable {
-
+    /** window object */
     private GameWindow gameWindow;
+    /** panel object */
     private GamePanel gamePanel;
+    /** game thread, updater */
     private Thread gameThread;
+    /** Frame updates per second */
     private static final int FPS_SET = 120;
+    /** entities updates per second */
     public static final int UPS_SET = 200;
 
+    /** debug variable, is manual frame advancing enabled*/
     public static boolean manualFrameAdvancing;
     
+    /** Playing object */
     private Playing playing;
+    /** Menu object */
     private Menu menu;
     
+    /** Tiles size at scale 1 */
     public final static int TILES_DEFAULT_SIZE = 32;
+    /** game scale, zoom */
     public static float SCALE;
+    /** default windowed world tiles width, in fullscreen height has priority */
     public static float TILES_IN_WIDTH = 26;
+    /** default  world tiles height */
     public static float TILES_IN_HEIGHT = 14;
+    /** actual tiles size */
     public static float TILES_SIZE = TILES_DEFAULT_SIZE * SCALE;
+    /** window calculated width */
     public static float GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
+    /** window calculated height */
     public static float GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
+    /** game calculated cordiantes in width */
     public static float COORD_WIDTH = TILES_DEFAULT_SIZE * TILES_IN_WIDTH;
+    /** game calculated cordiantes in height */
     public static float COORD_HEIGHT = TILES_DEFAULT_SIZE * TILES_IN_HEIGHT;
 
+    
+    /**
+     * Constructor, need game scale and fullscreen status
+     * @param scale
+     * @param fullscreen 
+     */
     public Game(float scale, boolean fullscreen) {
         if(fullscreen){
             Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -51,6 +73,8 @@ public class Game implements Runnable {
         startGameLoop();
     }
     
+    
+    /** change game scale, resize panel and recalculate sizes */
     public void changeScale(float scale){
         SCALE = scale;
         TILES_SIZE = TILES_DEFAULT_SIZE * SCALE;
@@ -65,17 +89,22 @@ public class Game implements Runnable {
         Constants.updateScaleConsts();
     }
     
+    /** initialises classes */
     private void initClasses() {
         menu=new Menu(this);
         playing=new Playing(this);
         playing.initLevelManager();
     }
 
+    /** Generate a new thread, that will execute the run() function, then starts it */
     private void startGameLoop() {
         gameThread = new Thread(this);
         gameThread.start();
     }
 
+    /**
+     * Update method, redirect call to active Gamestate
+     */
     public void update() {
         switch (Gamestate.state) {
             case PLAYING:
@@ -92,6 +121,10 @@ public class Game implements Runnable {
         }
     }
 
+    /**
+     * Render the current Gamestate
+     * @param g Graphics the game is rendered to
+     */
     public void render(Graphics g) {
         switch (Gamestate.state) {
             case PLAYING:
@@ -109,6 +142,7 @@ public class Game implements Runnable {
         }
     }
 
+    /** Thread methods, calls updates and repaints when needed */
     @Override
     public void run() {
         double timePerFrame = 1000000000 / FPS_SET;
@@ -153,20 +187,24 @@ public class Game implements Runnable {
 
     }
     
+    /** Event on window lost focus, reset player movements, if playing */
     public void windowLostFocus() {
         if(Gamestate.state==Gamestate.PLAYING){
             playing.getPlayer().resDirBools();
         }
     }
 
+    /** get menu reference */
     public Menu getMenu() {
         return menu;
     }
 
+    /** get playing reference */
     public Playing getPlaying() {
         return playing;
     }
     
+    /** debug use only, updates and paint the update instantly */
     public void newFrame(){
         update();
         gamePanel.repaint();
