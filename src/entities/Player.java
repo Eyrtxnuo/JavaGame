@@ -21,33 +21,57 @@ import static utils.HelpMethods.*;
  */
 public class Player extends Entity {
 
+    /** sprite atlas pixels */
     final int spriteX = 64, spriteY = 40;
 
+    /** animations sprites */
     private BufferedImage[][] animations;
+    /** ticks to change animations */
     private int aniTick, aniIndex, aniSpeed = 25;
+    /** current action to display */
     private int playerAction = IDLE;
-    private int playerDir = -1;
+    /** booleans of actions */
     private boolean moving = false, attacking = false;
+    /** inputs pressed variables */
     private boolean left, up, right, down, jump;
+    /** facing direction */
     private boolean dirLeft = false;
+    /** speed per frame */
     private float playerSpeed = 1f;
+    /** level tiles data */
     private int[][] lvlData;
-    private float xDrawOffset = 21;
-    private float yDrawOffset = 4;
+    /** texture offset */
+    private float xDrawOffset = 21, yDrawOffset = 4;
+    /** current air vertical speed */
     private float airSpeed = 0f;
+    /** gravity applied every frame */
     private float gravity = 0.04f;
+    /** vertical speed applied on jump */ 
     private float jumpSpeed = -2.25f;
+    /** vertical speed applied on roof touch */ 
     private float fallSpeedAfterCollision = 0.5f;
+    /** if player is in air */
     private boolean inAir = true;
-    private int lives = 3;
+    
+    /** player max lives*/
+    protected int MAX_LIVES = 3;
+    /** current lives */
+    protected int lives = MAX_LIVES;
+    
+    /** frames to be invincibile for */
     private int invincibilityFrame = 0;
 
+    /** constructor
+     * @param x coordinates x
+     * @param y coordinates y
+     */
     public Player(float x, float y) {
         super(x, y);
         LoadAnimations();
         initHitbox(x, y, (int) (20f), (int) (27f));
     }
 
+    /** Update tick */ 
     @Override
     public void update() {
         super.update();
@@ -62,6 +86,7 @@ public class Player extends Entity {
         }
     }
 
+    /** Checks collision with enemies projectile */
     public void projCollision() {
         var muniz = (LinkedList<Projectile>) Playing.flyingAmmos.getEnemyProjectiles().clone();
         muniz.forEach(ammo -> {
@@ -72,6 +97,12 @@ public class Player extends Entity {
         });
     }
 
+    /** Render player on g if it is in the screen horizontal coordinates
+     * 
+     * @param g Graphics object to draw on
+     * @param offsetX horizontal offset of screen
+     * @param offsetY vertical offset of screen
+    */
     public void render(Graphics g, float offsetX, float offsetY) {
         if (!Playing.isPaused() && !Playing.isDeath()) {
             dirLeft = Playing.pointerX < (hitbox.x + hitbox.width / 2) * Game.SCALE + offsetX;
@@ -87,10 +118,13 @@ public class Player extends Entity {
         }
     }
 
+    
+    /** set moving acion */
     public void setMoving(boolean moving) {
         this.moving = moving;
     }
 
+    /** set animations from actions */
     private void setAnimation() {
         int startAni = playerAction;
         if (moving) {
@@ -110,11 +144,13 @@ public class Player extends Entity {
         }
     }
 
+    /** reset aniations timing */
     private void resetAniTick() {
         aniTick = 0;
         aniIndex = 0;
     }
-
+    
+    /** update positions, calculating tiles collisions */
     private void updatePos() {
         moving = false;
         if (jump) {
@@ -173,6 +209,7 @@ public class Player extends Entity {
 //        }
     }
 
+    /** update horizontal positions, calculating tiles collisions */
     private void updateXpos(float xSpeed) {
         if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
             hitbox.x += xSpeed;
@@ -181,6 +218,7 @@ public class Player extends Entity {
         }
     }
 
+    /** make player jump */
     private void jump() {
         if (inAir) {
             return;
@@ -190,6 +228,7 @@ public class Player extends Entity {
         AudioPlayer.playEffect(AudioPlayer.Effects.JUMP);
     }
 
+    /** advance animation timing */
     private void updateAnimationTick() {
         aniTick++;
         if (aniTick >= aniSpeed) {
@@ -202,6 +241,7 @@ public class Player extends Entity {
         }
     }
 
+    /** reset input booleans */
     public void resDirBools() {
         left = false;
         right = false;
@@ -210,42 +250,62 @@ public class Player extends Entity {
         jump = false;
     }
 
+    /** get if left is pressed
+     * @return if left is pressed */
     public boolean isLeft() {
         return left;
     }
-
+    
+    /** set left pressed status
+     * @param left new status  */
     public void setLeft(boolean left) {
         this.left = left;
     }
-
+    
+    /** get if up is pressed 
+     @return if up is pressed*/
     public boolean isUp() {
         return up;
     }
 
+    /** set up pressed status 
+     * @param up new status*/
     public void setUp(boolean up) {
         this.up = up;
     }
 
+    /** get if right is pressed 
+     @return if right is pressed*/
     public boolean isRight() {
         return right;
     }
 
+    /** set right pressed status 
+     * @param right new status*/
     public void setRight(boolean right) {
         this.right = right;
     }
 
+    /** get if down is pressed
+     * @return if down is pressed */
     public boolean isDown() {
         return down;
     }
 
+    /** set down pressed status 
+     * @param down new status*/
     public void setDown(boolean down) {
         this.down = down;
     }
 
+    /** get if jump is pressed
+     * @return if jump is pressed */
     public boolean isJump() {
         return jump;
     }
 
+    /** set jump pressed status 
+     * @param jump new status */
     public void setJump(boolean jump) {
         this.jump = jump;
     }
@@ -254,10 +314,13 @@ public class Player extends Entity {
         return attacking;
     }
 
+    /** set attacking status
+     * @param attacking new status*/
     public void setAttacking(boolean attacking) {
         this.attacking = attacking;
     }
 
+    /** load animations atlas */
     private void LoadAnimations() {
         BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_ATLAS);
         animations = new BufferedImage[9][];
@@ -269,21 +332,28 @@ public class Player extends Entity {
         }
     }
 
+    /** load level tiles data
+     * @param data level tiles data*/
     public void loadLvlData(int[][] data) {
         this.lvlData = data;
     }
 
+    /** reset in air status */
     private void resetInAir() {
         inAir = false;
         airSpeed = 0;
     }
 
+    /** teleport player
+     * @param x x new coordinate
+     * @param y y new coordinate */
     public void teleport(float x, float y) {
         hitbox.x = x;
         hitbox.y = y;
         inAir = true;
     }
 
+    /** reset player to initial status */
     public void reset() {
         teleport(x, y);
         //resDirBools();
@@ -298,14 +368,17 @@ public class Player extends Entity {
         resetInvincibilityFrame();
     }
 
+    /** get current lives */
     public int getLives() {
         return lives;
     }
 
+    /** reset lives to start value */
     public void resetLives() {
-        lives = 3;
+        lives = MAX_LIVES;
     }
 
+    /** hit player event handler */
     public void hit() {
         System.out.println("HIT");
         lives--;
@@ -318,14 +391,17 @@ public class Player extends Entity {
         }
     }
 
+    /** get invincibility remaning ticks */
     public int getInvincibilityFrame() {
         return invincibilityFrame;
     }
 
+    /** remove invincibility time */
     public void resetInvincibilityFrame() {
         invincibilityFrame = 0;
     }
 
+    /** die player event handler */
     @Override
     public void die() {
         //Playing.enemies.removeAllEnemies();

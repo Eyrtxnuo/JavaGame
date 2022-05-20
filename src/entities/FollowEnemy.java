@@ -16,6 +16,11 @@ import utils.LoadSave;
  */
 public class FollowEnemy extends Enemy{
     
+    /**
+     * constructor, create enemy
+     * @param x coordinate x
+     * @param y coordinate y
+     */
     public FollowEnemy(float x, float y) {
         super(x, y);
         TYPE = Constants.EnemyConstants.CRABBY;
@@ -26,6 +31,7 @@ public class FollowEnemy extends Enemy{
         jumpSpeed = -2.5f;
     }
     
+    /** initialize sprite "constants" */
     private void initSprite(){
         spriteX = Constants.EnemyConstants.CRABBY_WIDTH_DEFAULT;
         spriteY =  Constants.EnemyConstants.CRABBY_HEIGHT_DEFAULT;
@@ -33,6 +39,7 @@ public class FollowEnemy extends Enemy{
         yDrawOffset = 10;
     }
     
+    /**Initialize enemy options */
     private void settings(){
         action = RUNNING;
         movSpeed = 0.5f;
@@ -41,13 +48,13 @@ public class FollowEnemy extends Enemy{
     }
     
     
-    
+    /** On wall touch event, jump */
     @Override
     protected void onWallTouch() {
         jump();
     }
 
-    
+    /** set walk direction facing player */
     @Override
     protected void prePosUpdate(Player p) {
         resetMovements();

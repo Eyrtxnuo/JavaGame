@@ -69,7 +69,7 @@ public class Playing extends State implements Statemethods {
     }
     
     public static void loadLevel(int levelN){
-        currentLevel = levelN;
+        currentLevel = 2;
         reloadLevel();
     }
 
@@ -106,7 +106,7 @@ public class Playing extends State implements Statemethods {
         
         //long a = System.nanoTime();
         
-        float xOffset = -(GAME_WIDTH / 2 - player.getHitbox().x * SCALE);
+        float xOffset = -(GAME_WIDTH / 2 - (player.getHitbox().x + player.getHitbox().width/2) * SCALE);
         float maxOffset = (levelManager.getLoadedLevel().getLenght()*SCALE)-GAME_WIDTH;
         effXOffset = -((xOffset < 0) ? 0f: (xOffset > maxOffset ? maxOffset : xOffset));
         

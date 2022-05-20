@@ -16,7 +16,7 @@ public class GameWindow {
     JFrame jframe;
     
     public GameWindow(GamePanel gamePanel,boolean fullscreen) {
-        jframe = new JFrame();
+        jframe = new JFrame("Night of Monsters");
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.add(gamePanel);//paint gamePanel on frame
         jframe.addWindowFocusListener(new WindowFocusListener() {

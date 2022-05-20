@@ -20,23 +20,30 @@ import utils.LoadSave;
  */
 public class Sniper extends Enemy {
 
+    /** gun direction randomness, in radians  */
     private static final double GUN_RANDOMNESS = 0.02;//in radians
+    /** frames between shots */
     private static final int FIRE_SPEED = 500;
+    /** frame for next shot */
     private int fireTick = 100;
     
+    /** hitbox offset for shooting point */
     private final static float xShootOffset = -16, yShootOffset = 3;
     
+    /** Sprite image */
+    private BufferedImage animation;
 
-    private BufferedImage animations;
-
-    public Sniper(float x, float y) {
+    /** constructor with spawn coordinates
+     * @param x coordinate x
+     * @param y coordinate y */
+    public Sniper(float x,  float y) {
         super(x, y);
         TYPE = Constants.EnemyConstants.CRABBY;
         initSprite();
         settings();
         initHitbox(x, y, (int) (24f), (int) (30f));
         //LoadAnimations(LoadSave.BOSS_ATLAS);
-        animations = LoadSave.GetSpriteAtlas("zombie_atlas.png");
+        animation = LoadSave.GetSpriteAtlas("zombie_atlas.png");
         resetMovements();
     }
 
@@ -49,11 +56,7 @@ public class Sniper extends Enemy {
     @Override
     public void render(Graphics g, float offsetX, float offsetY) {
         if ((hitbox.x - xDrawOffset + spriteX) * Game.SCALE > -(offsetX) && (hitbox.x - xDrawOffset) * Game.SCALE < Game.GAME_WIDTH - (offsetX)) {
-            if (dirLeft) {
-                g.drawImage(animations, (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
-            } else {
-                g.drawImage(animations, (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX + spriteX * Game.SCALE), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) -(spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
-            }
+            g.drawImage(animation, (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
             if(lives!=MAX_LIVES){
                 drawHealthBar(g, offsetX,  offsetY);
             }
@@ -66,14 +69,7 @@ public class Sniper extends Enemy {
         }
     }
 
-    @Override
-    protected void resetMovements() {
-        right = false;
-        left = false;
-        jump = false;
-        dirLeft = true;
-    }
-
+    /** initialize sprite "constants" */
     private void initSprite() {
         spriteX = Constants.EnemyConstants.CRABBY_WIDTH_DEFAULT;
         spriteY = Constants.EnemyConstants.CRABBY_HEIGHT_DEFAULT;
@@ -81,6 +77,7 @@ public class Sniper extends Enemy {
         yDrawOffset = 26;
     }
 
+    /**Initialize enemy options */
     private void settings() {
         MAX_LIVES = 2;
         resetLives();
@@ -92,6 +89,7 @@ public class Sniper extends Enemy {
         spriteY = 64;
     }
 
+    /** update tick */
     @Override
     public void update() {
         super.update();
@@ -105,15 +103,10 @@ public class Sniper extends Enemy {
         }
     }
 
-    @Override
-    protected void onWallTouch() {
-        left = !left;
-        right = !right;
-    }
 
     /** Fires a projectile */
     public void fire() {
-        Projectile flyingAmmo = new Projectile(getHitbox().x - xShootOffset, getHitbox().y + yShootOffset,
+        Projectile flyingAmmo = new Projectile(getHitbox().x + xShootOffset, getHitbox().y + yShootOffset,
                 (float) (Math.atan2((getHitbox().x + xShootOffset) - (p.getHitbox().x +p.getHitbox().width/2), (getHitbox().y + yShootOffset) - (p.getHitbox().y + p.getHitbox().height / 2)) + Math.PI / 2 - GUN_RANDOMNESS / 2 + Math.random() * GUN_RANDOMNESS));
         flyingAmmo.loadLvlData(levelManager.getLoadedLevel().getLvlData());
         flyingAmmos.enemyAdd(flyingAmmo);
@@ -122,16 +115,17 @@ public class Sniper extends Enemy {
     }
 
     
-    private static final float BAR_BORDER = 1.5f;
-    private static final float BAR_HEIGHT = 3;
+    /** bar draw constants */
+    private static final float BAR_BORDER = 1.5f, BAR_HEIGHT = 3, BAR_DISTANCE = 5;
+    /** draw health bar */
     private void drawHealthBar(Graphics g, float offsetX, float offsetY) {
         Color c = g.getColor();
         g.setColor(Color.BLACK);
-        g.fillRect((int)((hitbox.x-BAR_BORDER)*Game.SCALE+offsetX), (int)((hitbox.y-(BAR_HEIGHT+2*BAR_BORDER))*Game.SCALE+offsetY), (int)((hitbox.width+BAR_BORDER*2)*Game.SCALE), (int) ((BAR_HEIGHT+2*BAR_BORDER)*Game.SCALE));
+        g.fillRect((int)((hitbox.x-BAR_BORDER)*Game.SCALE+offsetX), (int)((hitbox.y-(BAR_HEIGHT+2*BAR_BORDER+BAR_DISTANCE))*Game.SCALE+offsetY), (int)((hitbox.width+BAR_BORDER*2)*Game.SCALE), (int) ((BAR_HEIGHT+2*BAR_BORDER)*Game.SCALE));
         g.setColor(Color.DARK_GRAY);
-        g.fillRect((int)((hitbox.x)*Game.SCALE+offsetX), (int)((hitbox.y-(BAR_HEIGHT+BAR_BORDER))*Game.SCALE+offsetY), (int)((hitbox.width)*Game.SCALE), (int) (BAR_HEIGHT*Game.SCALE));
+        g.fillRect((int)((hitbox.x)*Game.SCALE+offsetX), (int)((hitbox.y-(BAR_HEIGHT+BAR_BORDER+BAR_DISTANCE))*Game.SCALE+offsetY), (int)((hitbox.width)*Game.SCALE), (int) (BAR_HEIGHT*Game.SCALE));
         g.setColor(Color.RED);
-        g.fillRect((int)((hitbox.x)*Game.SCALE+offsetX), (int)((hitbox.y-(BAR_HEIGHT+BAR_BORDER))*Game.SCALE+offsetY), (int)((hitbox.width*(lives/(float)MAX_LIVES))*Game.SCALE), (int) (BAR_HEIGHT*Game.SCALE));
+        g.fillRect((int)((hitbox.x)*Game.SCALE+offsetX), (int)((hitbox.y-(BAR_HEIGHT+BAR_BORDER+BAR_DISTANCE))*Game.SCALE+offsetY), (int)((hitbox.width*(lives/(float)MAX_LIVES))*Game.SCALE), (int) (BAR_HEIGHT*Game.SCALE));
         g.setColor(c);
     }
 }

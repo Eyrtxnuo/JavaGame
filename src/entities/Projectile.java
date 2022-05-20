@@ -12,15 +12,26 @@ import static utils.HelpMethods.CanMoveHere;
  * @author matti
  */
 public class Projectile extends Entity{
-    
+    /** Speed, units per tick */
     private static final float SPEED = 3f;
+    /** movement angle */
     private float angle;
+    /** movement scomposed in orthogonal speed */
     private float xSpeed, ySpeed;
+    /** current level tile data */
     private int[][] lvlData;
-    private final float gravity = 0.00f;
+    /** grvity applied every update */
+    private final float gravity = 0f;
+    /** bounces before disappearing */
     private int bounces = 0;
+    /** frames before disappearing */
     private int despawnCounter=100;
 
+    /** Constructor, spawn projectile
+     * @param x coordinate x
+     * @param y coordinate y
+     * @param angle movement angle
+     */
     public Projectile(float x, float y, float angle) {
         super(x, y);
         this.angle = -angle;
@@ -28,11 +39,16 @@ public class Projectile extends Entity{
         initHitbox(x, y, 4, 4);
     }
     
+    /** calculate scomposed speeds from base speed and angle */ 
     private void calcSpeeds(){
         xSpeed = (float)Math.cos(this.angle)*SPEED;
         ySpeed = (float)Math.sin(this.angle)*SPEED;
     }
  
+    /** render projectile in Graphics g
+     * @param g 
+     * @param offsetX 
+     * @param offsetY */ 
     public void render(Graphics g, float offsetX, float offsetY){
         
         g.setColor(Color.black);
@@ -42,6 +58,8 @@ public class Projectile extends Entity{
         }
     }
  
+    /**  update tick
+     * @param p player reference*/
     public void update(Player p) {
         super.update();
         updatePos();
@@ -54,6 +72,7 @@ public class Projectile extends Entity{
         }
     }
 
+    /** update position */
     private void updatePos() {
         if(CanMoveHere(hitbox.x, hitbox.y + ySpeed, hitbox.width, hitbox.height, lvlData)){
             hitbox.y += ySpeed;
@@ -79,25 +98,32 @@ public class Projectile extends Entity{
        
     }
 
-    
+    /** get movement angle
+     * @return the movement angle */
     public float getAngle() {
         return angle;
     }
-
+    
+    /** set movement angle
+     * @param angle the movement angle */
     public void setAngle(float angle) {
         this.angle = angle;
         calcSpeeds();
     }
     
+    /** load level tiles data
+     * @param data level tiles data*/
     public void loadLvlData(int[][] data) {
         this.lvlData = data;
     }
-
+    /** disappear event */
     @Override
     public void die() {
         Playing.flyingAmmos.removeProjectile(this);
     }
 
+    /** get remaning bounces before disappearing
+     * @return remaning bounces number */
     public int getRemaningBounces() {
         return bounces;
     }

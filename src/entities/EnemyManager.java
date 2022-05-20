@@ -66,13 +66,14 @@ public class EnemyManager {
         }
     }
     
+    /** start all enemy threads */
     public void startAllThreads(){
         LinkedList<Enemy> enem = (LinkedList <Enemy>) enemies.clone();
         for(Enemy el: enem){
             el.StartUpdates();
         }
-    }
-    
+    } 
+    /** stop all enemy threads */
     public void stopAllThreads(){
         LinkedList<Enemy> enem = (LinkedList <Enemy>) enemies.clone();
         for(Enemy el: enem){
@@ -80,6 +81,7 @@ public class EnemyManager {
         }
     }
 
+    /** stops all threads and clear enemies */
     void removeAllEnemies() {
         stopAllThreads();
         enemies.clear();
