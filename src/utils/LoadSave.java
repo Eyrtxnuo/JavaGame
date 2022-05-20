@@ -23,11 +23,13 @@ import javax.imageio.ImageIO;
 import main.Game;
 import main.GamePanel;
 
-/**
+/** Methods to load maps, audios and textures
  *
  * @author matti
  */
 public class LoadSave {
+    
+    /** sprites path */
     public static final String PLAYER_ATLAS = "player_sprites.png";
     public static final String LEVEL_ATLAS = Constants.DEBUG?"outside_sprites_grid.png":"outside_sprites_city.png";
     public static final String[] LEVELS_DATA = {"level_one_data.png", "level_two_data.png", "level_three_data.png", "level_boss_data.png"};
@@ -46,8 +48,10 @@ public class LoadSave {
 
     public static final String URM_BUTTONS = "urm_buttons.png";
 
-    
-    public static  BufferedImage GetSpriteAtlas(String atlas){
+    /** load sprite form local path
+     * @param atlas altlas path
+     * @return loaded Image*/
+    public static BufferedImage GetSpriteAtlas(String atlas){
         BufferedImage img =null;
         InputStream is = LoadSave.class.getResourceAsStream("/"+atlas);
         try {
@@ -65,6 +69,9 @@ public class LoadSave {
         return img;
     }
     
+    /** load level tiles data from level number
+     * @param levelN the level to load
+     * @return level tiles data */
     public static int[][] GetLevelData(int levelN) {
         if(levelN < 0 || levelN >= LEVELS_NUMBER)return null;
         
@@ -82,6 +89,9 @@ public class LoadSave {
         return lvlData;
     }
     
+    /** load level enemies from level number
+     * @param levelN the level to load
+     * @return level enemies list */
     public static LinkedList<Enemy> GetLevelEnemies(int levelN) {
         if(levelN < 0 || levelN >= LEVELS_NUMBER)return null;
         int[][] lvlData = GetLevelData(levelN);
@@ -118,7 +128,10 @@ public class LoadSave {
         return enemies;
     }
     
-    
+    /** load level tiles data and enemies from level number
+     * @param levelN the level to load
+     * @param playing current playing reference 
+     * @return level tiles data */
     public static levels.Level getLevel(int levelN, Playing playing){
         EnemyManager em = new EnemyManager(playing);
         em.loadEnemies(GetLevelEnemies(levelN));

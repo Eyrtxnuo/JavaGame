@@ -69,7 +69,7 @@ public class Playing extends State implements Statemethods {
     }
     
     public static void loadLevel(int levelN){
-        currentLevel = 2;
+        currentLevel = levelN;
         reloadLevel();
     }
 

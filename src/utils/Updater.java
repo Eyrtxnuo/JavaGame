@@ -13,12 +13,19 @@ import static main.Game.manualFrameAdvancing;
  * @author matti
  */
 public class Updater {
-    
+    /** function to be called at tick */
     Callable funct;
+    /** ticks to call per second */
     int tps;
+    /** if thread should currently run */
     private boolean running;
+    /** updater thread */
     Thread upd;
 
+    /** constructor, define function and tps
+     * @param funct function to be called at tick
+     * @param tps functions calls per second
+     */
     public Updater(Callable funct, int tps) {
         this.funct = funct;
         this.tps = tps;
@@ -26,7 +33,7 @@ public class Updater {
     }
 
     
-    
+    /** function run in thread, calls funct tps times a second */
     private void updateThread(){
         long previousTime = System.nanoTime();
         long ticks = 0;
@@ -47,6 +54,8 @@ public class Updater {
         }
     } 
     
+    
+    /** calls the function, stops execution on Exception */
     private void Tick(){
         try {
             funct.call();
@@ -56,10 +65,12 @@ public class Updater {
         }
     }
     
+    /** makes the thread stop at next update */
     public void stopThread(){
         running = false;
     }
     
+    /** start thread, if thread is not in ALIVE state, generate a new thread */
     public void startThread(){
         if(!running){
             running = true;
@@ -70,6 +81,7 @@ public class Updater {
         }
     }
     
+    /** static wrapper to sleep in nanoseconds */
     private static void sleepNano(long nano){
         try {
             Thread.sleep(nano/1000000, (int) (nano%1000000));
@@ -77,7 +89,8 @@ public class Updater {
             java.util.logging.Logger.getLogger(Updater.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
-
+    
+    /** get running state */
     public boolean isRunning() {
         return running;
     }
