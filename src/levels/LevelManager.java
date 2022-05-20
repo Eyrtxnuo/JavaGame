@@ -21,32 +21,52 @@ import utils.LoadSave;
 import static utils.LoadSave.LEVELS_NUMBER;
 
 /**
- *
+ * Level manager class, load level tiles, enemies, and background
  * @author matti
  */
 public class LevelManager {
  
+    /** game reference */
     private Game game;
+    /** level data as image - rgb decoding */
     private BufferedImage[] levelSprite; 
-    public static LinkedList<Integer> collisionChecked = new LinkedList<>();
-    public static LinkedList<Integer> collisionFound = new LinkedList<>();
+    /** debug only variables, list of collision checked tiles */
+    public static LinkedList<Integer> collisionChecked = new LinkedList<>(), collisionFound = new LinkedList<>();
 
+    /** currently loaded level */
     private Level loadedLevel;
 
+    /**
+     * Constructor, needs game reference
+     * @param game 
+     */
     public LevelManager(Game game) {
         this.game = game;
         importOutsideSprites();
-        loadedLevel = LoadSave.getLevel(0, game.getPlaying());
+        loadedLevel = LoadSave.getLevel(Playing.getCurrentLevel(), game.getPlaying());
     }
     
+    /**
+     * Loads in memory the level chosen
+     * @param levelN leven number to load
+     * @throws NullPointerException if level does not exist
+     */
     public void loadLevel(int levelN){
         loadedLevel = LoadSave.getLevel(levelN, game.getPlaying());
     }
     
+    /** update, redirect update to loadedLevel */
     public void update(){
         loadedLevel.update();
     }
     
+    
+    /** Render tiles on g if they are in the screen horizontal coordinates
+     * 
+     * @param g Graphics object to draw on
+     * @param offsetX horizontal offset of screen
+     * @param offsetY vertical offset of screen
+    */
      public void drawWorld(Graphics g, float offsetX, float offsetY){
         
          drawBackground(g, offsetX, offsetY);
@@ -57,7 +77,7 @@ public class LevelManager {
         
         for (int j = 0; j < loadedLevel.getLvlData().length; j++)
             for (int i = 0; i < loadedLevel.getLvlData()[j].length; i++) {
-                int index = loadedLevel.getSpriteIndex(i, j);
+                int index = loadedLevel.getTilesIndex(i, j);
                 if((i+1)*Game.TILES_SIZE>-(offsetX) && i*Game.TILES_SIZE<Game.GAME_WIDTH-(offsetX)){
                     
                     g.drawImage(levelSprite[index], (int)((Game.TILES_SIZE * i)+offsetX), (int)((Game.TILES_SIZE * j)+offsetY), (int)Math.ceil(Game.TILES_SIZE), (int)Math.ceil(Game.TILES_SIZE), null);
@@ -75,6 +95,12 @@ public class LevelManager {
             }
     }
      
+    /** Render a repeating background
+     * 
+     * @param g Graphics object to draw on
+     * @param offsetX horizontal offset of screen
+     * @param offsetY vertical offset of screen
+     */
     private void drawBackground(Graphics g, float offsetX, float offsetY){
         
         int imageWidth = (int)((loadedLevel.getBackground().getWidth()/(float)loadedLevel.getBackground().getHeight())*Game.GAME_HEIGHT);
@@ -83,6 +109,12 @@ public class LevelManager {
         }
     }
      
+    /** Render every enemy on g, they will render only if in the screen horizontal space
+     * 
+     * @param g Graphics object to draw on
+     * @param offsetX horizontal offset of screen
+     * @param offsetY vertical offset of screen
+     */
     public void drawEnemies(Graphics g, float offsetX, float offsetY){
         var nemic = (LinkedList<Enemy>)enemies.getEnemies().clone();
          for(Enemy en : nemic){
@@ -90,6 +122,12 @@ public class LevelManager {
          }
     }
      
+    /** Render every player projectile and enemy projectile on g
+     * 
+     * @param g Graphics object to draw on
+     * @param offsetX horizontal offset of screen
+     * @param offsetY vertical offset of screen
+     */
     public void drawProjs(Graphics g, float offsetX, float offsetY){
        var muniz = (LinkedList<Projectile>)flyingAmmos.getProjectiles().clone();
         muniz.forEach((el)->{
@@ -101,6 +139,7 @@ public class LevelManager {
         });
    }
 
+    /** loads tiles textures */
     private void importOutsideSprites() {
         BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.LEVEL_ATLAS);
         levelSprite = new BufferedImage[48];
@@ -113,6 +152,10 @@ public class LevelManager {
         }
     }
 
+    /**
+     * Return the loaded level object reference
+     * @return currently loaded level
+     */
     public Level getLoadedLevel() {
         return loadedLevel;
     }
