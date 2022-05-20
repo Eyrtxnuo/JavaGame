@@ -16,7 +16,9 @@ import levels.LevelManager;
 import main.Game;
 import static main.Game.*;
 import ui.DeathOverlay;
+import ui.EndGameOverlay;
 import ui.PauseOverlay;
+import ui.VolumeButton;
 import utils.AudioPlayer;
 import utils.Constants;
 import static utils.LoadSave.*;
@@ -42,12 +44,13 @@ public class Playing extends State implements Statemethods {
      * Boolean for the pause
      */
     private static boolean paused = false;
-
     /**
      * Boolean for the player death
      */
     private static boolean death = false;
 
+    
+    private static boolean endGame = false;
     /**
      * PauseOverlay object
      */
@@ -57,7 +60,10 @@ public class Playing extends State implements Statemethods {
      * DeathOverlay object
      */
     private DeathOverlay deathOverlay;
-
+    /**
+     * EndgameOverlay object
+     */
+    private EndGameOverlay endGameOverlay;
     /**
      * ProjectileManager object
      */
@@ -111,8 +117,10 @@ public class Playing extends State implements Statemethods {
         player = new Player(50, 200);
         pauseOverlay = new PauseOverlay(this);
         deathOverlay = new DeathOverlay(this);
+        endGameOverlay = new EndGameOverlay(this);
     }
 
+    
     /**
      * Create levelmanager
      *
@@ -148,7 +156,7 @@ public class Playing extends State implements Statemethods {
      * @param levelN
      */
     public static void loadLevel(int levelN) {
-        currentLevel = levelN;
+        currentLevel = 3;
         reloadLevel();
     }
 
@@ -164,6 +172,10 @@ public class Playing extends State implements Statemethods {
         }
         if (death) {
             deathOverlay.update();
+            return;
+        }
+        if(endGame){
+            endGameOverlay.update();
             return;
         }
         if (player.getHitbox().x > (levelManager.getLoadedLevel().getWidthInTiles() - 4) * Game.TILES_DEFAULT_SIZE
@@ -200,7 +212,7 @@ public class Playing extends State implements Statemethods {
         levelManager.drawWorld(g, effXOffset, 0);
         levelManager.drawEnemies(g, effXOffset, 0);
         Player player = levelManager.getLoadedLevel().getPlayer();
-        if (!paused && !death) {
+        if (!paused && !death && !endGame) {
             Graphics2D g2 = (Graphics2D) g;
             g2.setStroke(new BasicStroke(2 * Game.SCALE));
             g2.setColor(new Color(255, 0, 0, 56));
@@ -219,6 +231,9 @@ public class Playing extends State implements Statemethods {
         }
         if (death) {
             deathOverlay.draw(g);
+        }
+        if (endGame){
+            endGameOverlay.draw(g);
         }
         //System.out.println(System.nanoTime() - a);
 
@@ -243,6 +258,10 @@ public class Playing extends State implements Statemethods {
             deathOverlay.mousePressed(e);
             return;
         }
+        if(endGame){
+            endGameOverlay.mousePressed(e);
+            return;
+        }
         if (e.getButton() == MouseEvent.BUTTON1 && fireTick <= 0) {
             playerShoot(e.getX(), e.getY());
         }
@@ -262,6 +281,9 @@ public class Playing extends State implements Statemethods {
         if (death) {
             deathOverlay.mouseReleased(e);
         }
+        if(endGame){
+            endGameOverlay.mouseReleased(e);
+        }
     }
 
     /**
@@ -279,6 +301,10 @@ public class Playing extends State implements Statemethods {
             deathOverlay.mouseMoved(e);
             return;
         }
+        if (endGame) {
+            endGameOverlay.mouseMoved(e);
+            return;
+        }
 
     }
 
@@ -292,7 +318,10 @@ public class Playing extends State implements Statemethods {
             pauseOverlay.mouseDragged(e);
             return;
         }
-
+        if(endGame){
+            endGameOverlay.mouseMoved(e);
+            return;
+        }
     }
 
     /**
@@ -322,7 +351,7 @@ public class Playing extends State implements Statemethods {
             }
 
         }
-        if (e.getKeyCode() == KeyEvent.VK_ESCAPE && !death) {
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE && !death && !endGame) {
             paused = !paused;
             if (paused) {
                 enemies.stopAllThreads();
@@ -387,6 +416,7 @@ public class Playing extends State implements Statemethods {
      */
     public void unpauseGame() {
         paused = false;
+        endGame = false;
         enemies.startAllThreads();
     }
 
@@ -470,4 +500,12 @@ public class Playing extends State implements Statemethods {
         return death;
     }
 
+    public static boolean isEndGame() {
+        return endGame;
+    }
+
+    public static void gameWin(){
+        endGame = true;
+        
+    }
 }

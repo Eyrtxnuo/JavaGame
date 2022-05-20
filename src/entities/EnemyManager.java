@@ -50,7 +50,7 @@ public class EnemyManager {
         return enemies.remove(enemy);
     }
 
-    /** Get the {@link gamestates.Playing Playing} reference
+    /** *  Get the {@link gamestates.Playing Playing} reference
      * @return the loaded {@link gamestates.Playing Playing} reference
      */
     public Playing getPlaying() {

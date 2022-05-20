@@ -104,7 +104,7 @@ public class Player extends Entity {
      * @param offsetY vertical offset of screen
     */
     public void render(Graphics g, float offsetX, float offsetY) {
-        if (!Playing.isPaused() && !Playing.isDeath()) {
+        if (!Playing.isPaused() && !Playing.isDeath() && !Playing.isEndGame()) {
             dirLeft = Playing.pointerX < (hitbox.x + hitbox.width / 2) * Game.SCALE + offsetX;
         }
         if (dirLeft) {

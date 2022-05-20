@@ -8,12 +8,12 @@ import static gamestates.Playing.flyingAmmos;
 import static gamestates.Playing.levelManager;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import main.Game;
 import utils.Constants;
 import static utils.Constants.EnemyConstants.IDLE;
 import static utils.Constants.PlayerConstants.RUNNING;
 import utils.LoadSave;
+import gamestates.Playing;
 
 /** enemy boss, flies, 20hp
  * @author matti
@@ -56,7 +56,7 @@ public class Boss extends Enemy {
     
     /**Initialize enemy options */
     private void settings() {
-        MAX_LIVES = 20;
+        MAX_LIVES = 2;
         resetLives();
         action = RUNNING;
         movSpeed = 0.2f;
@@ -152,4 +152,12 @@ public class Boss extends Enemy {
             }
         }
     }
+    
+    
+    @Override
+    public void die() {
+        super.die(); 
+        Playing.gameWin();
+    }
+    
 }
