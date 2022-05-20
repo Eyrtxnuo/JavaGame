@@ -14,8 +14,7 @@ import utils.Constants;
 import static utils.Constants.PlayerConstants.RUNNING;
 import utils.LoadSave;
 
-/**
- *
+/** enemy sniper, doesn't move, 2hp
  * @author matti
  */
 public class Sniper extends Enemy {

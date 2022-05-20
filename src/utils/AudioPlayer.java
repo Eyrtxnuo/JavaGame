@@ -7,13 +7,14 @@ package utils;
 import javax.sound.sampled.*;
 import java.io.IOException;
 import main.Game;
-/**
- *
+/** audio manager class, can play effects, and one music track at a time
  * @author matti
  */
 public class AudioPlayer {
     
+    /** game reference */
     private static Game game;
+    /** current playing music */
     private static Clip music;
     
     /**load the game reference
@@ -88,12 +89,12 @@ public class AudioPlayer {
     /** enum Effects list*/
     public static enum Effects{
         /**effects enums*/
-        FIRE, JUMP, DAMAGE, ENEMY_DEAD, GAME_OVER, LEVEL_END, CLICK, PAUSE, DEATH;
+        FIRE, JUMP, DAMAGE, ENEMY_DEAD, CLICK, PAUSE, DEATH, GAME_OVER;
     }
     
     /** enum Musics list*/
     public static enum Musics{
-        LEVEL_MUSIC, MENU_MUSIC, GAME_COMPLETED_MUSIC;
+        LEVEL_MUSIC;
     }
     
      /** Get the effect path
@@ -115,6 +116,7 @@ public class AudioPlayer {
             case PAUSE:
                 return "pause.wav";
             case DEATH:
+            case GAME_OVER:
                 return "death.wav";
             default:
                 return null;

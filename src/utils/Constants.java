@@ -7,6 +7,7 @@ public class Constants {
     /** is Debug enabled */
     public static final boolean DEBUG = false;
     
+    /** update values respect to scale */
     public static void updateScaleConsts(){
         UI.Buttons.B_WIDTH = (int) (UI.Buttons.B_WIDTH_DEFAULT * Game.SCALE);
         UI.Buttons.B_HEIGHT = (int) (UI.Buttons.B_HEIGHT_DEFAULT * Game.SCALE);
@@ -19,8 +20,10 @@ public class Constants {
         EnemyConstants.CRABBY_HEIGHT = (int) (EnemyConstants.CRABBY_HEIGHT_DEFAULT * Game.SCALE);
     }
 
+    /** ui constants */
     public static class UI {
 
+        /** Buttons constants */
         public static class Buttons {
 
             public final static int B_WIDTH_DEFAULT = 140;
@@ -28,13 +31,15 @@ public class Constants {
             public static int B_WIDTH = (int) (B_WIDTH_DEFAULT * Game.SCALE);
             public static int B_HEIGHT = (int) (B_HEIGHT_DEFAULT * Game.SCALE);
         }
-
+        
+        /** Pause buttons constants */
         public static class PauseButtons {
 
             public static final int SOUND_SIZE_DEFAULT = 42;
             public static int SOUND_SIZE = (int) (SOUND_SIZE_DEFAULT * Game.SCALE);
         }
 
+        /** Unpause-Reset-Menu Buttons */
         public static class URMButtons {
 
             public static final int URM_DEFAULT_SIZE = 56;
@@ -42,6 +47,7 @@ public class Constants {
 
         }
 
+        /** Volume buttons constants */
         public static class VolumeButtons {
 
             public static final int VOLUME_DEFAULT_WIDTH = 28;
@@ -54,6 +60,7 @@ public class Constants {
         }
     }
 
+    /** directions constants */
     public static class Directions {
 
         public static final int LEFT = 0;
@@ -63,6 +70,7 @@ public class Constants {
 
     }
 
+    /** player constants */
     public static class PlayerConstants {
 
         public static final int IDLE = 0;
@@ -105,6 +113,7 @@ public class Constants {
         }
     }
 
+    /** enemies constants */
     public static class EnemyConstants {
 
         public static final int CRABBY = 0;
@@ -123,6 +132,7 @@ public class Constants {
         public static int CRABBY_WIDTH = (int) (CRABBY_WIDTH_DEFAULT * Game.SCALE);
         public static int CRABBY_HEIGHT = (int) (CRABBY_HEIGHT_DEFAULT * Game.SCALE);
 
+        /** get sprites for every action for every enemy type */
         public static int GetSpriteAmount(int enemy_type, int enemy_state) {
 
             switch (enemy_type) {

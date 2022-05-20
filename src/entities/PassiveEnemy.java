@@ -11,8 +11,7 @@ import static utils.Constants.EnemyConstants.*;
 import static utils.Constants.PlayerConstants.RUNNING;
 import utils.LoadSave;
 
-/**
- *
+/** enemy, bounces on walls
  * @author Bossi_Mattia
  */
 public class PassiveEnemy extends Enemy {

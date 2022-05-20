@@ -10,8 +10,7 @@ import utils.Constants;
 import static utils.Constants.PlayerConstants.*;
 import utils.LoadSave;
 
-/**
- *
+/** enemy, flollows player if near enough
  * @author Bossi_Mattia
  */
 public class FollowEnemy extends Enemy{
@@ -66,6 +65,4 @@ public class FollowEnemy extends Enemy{
             }
         }
     }
-    
-    
 }

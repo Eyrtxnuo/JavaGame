@@ -15,8 +15,7 @@ import static utils.Constants.EnemyConstants.IDLE;
 import static utils.Constants.PlayerConstants.RUNNING;
 import utils.LoadSave;
 
-/**
- *
+/** enemy boss, flies, 20hp
  * @author matti
  */
 public class Boss extends Enemy {
@@ -28,11 +27,15 @@ public class Boss extends Enemy {
     /** frame for next shot */
     private int fireTick = 100;
     
+    /** barrel to fire next*/
     private int barrel = 0;
+    /** barrels offsets */
     private final static float[] xShootOffset = {21.5f, 54f}, yShootOffset = {117.5f, 117.5f};
     
 
-
+    /** constructor with spawn coordinates
+    * @param x coordinate x
+    * @param y coordinate y */
     public Boss(float x, float y) {
         super(x, y);
         TYPE = Constants.EnemyConstants.BOSS;
