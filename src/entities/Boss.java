@@ -158,6 +158,7 @@ public class Boss extends Enemy {
     public void die() {
         super.die(); 
         Playing.gameWin();
+        
     }
     
 }

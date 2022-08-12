@@ -135,7 +135,7 @@ public class SoundButton extends PauseButton {
     /**
      * Set muted
      *
-     * @param mousePressed
+     * @param muted 
      */
     public void setMuted(boolean muted) {
         this.muted = muted;

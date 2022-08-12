@@ -16,7 +16,7 @@ import utils.Constants;
 import static utils.HelpMethods.*;
 
 /**
- *
+ * Player class, controlled via keyboard
  * @author matti
  */
 public class Player extends Entity {
@@ -75,10 +75,10 @@ public class Player extends Entity {
     @Override
     public void update() {
         super.update();
+        updateBlockCollision();
         updatePos();
         updateAnimationTick();
         setAnimation();
-
         if (invincibilityFrame > 0) {
             invincibilityFrame--;
         } else {
@@ -215,6 +215,13 @@ public class Player extends Entity {
             hitbox.x += xSpeed;
         } else {
             hitbox.x = GetEntityXPosNextToWall(hitbox, xSpeed);
+        }
+    }
+    
+    private void updateBlockCollision() {
+        if(getStandingBlock(hitbox, lvlData)==3){
+            hit();
+            jump();
         }
     }
 
@@ -380,6 +387,8 @@ public class Player extends Entity {
 
     /** hit player event handler */
     public void hit() {
+        if(invincibilityFrame>0)return;
+        
         System.out.println("HIT");
         lives--;
         invincibilityFrame = 400;

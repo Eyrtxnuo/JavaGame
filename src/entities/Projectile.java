@@ -8,7 +8,7 @@ import utils.Constants;
 import static utils.HelpMethods.CanMoveHere;
 
 /**
- *
+ * Hit enemies or player on contact
  * @author matti
  */
 public class Projectile extends Entity{

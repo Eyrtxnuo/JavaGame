@@ -44,6 +44,9 @@ public class Updater {
             if(!manualFrameAdvancing) {
                 deltaT += (currentTime - previousTime) / timePerTick;
                 if (deltaT >= 1) {
+                    if(deltaT>3){
+                        System.out.println(deltaT);
+                    }
                     Tick();
                     ticks++;
                     deltaT--;
@@ -94,4 +97,6 @@ public class Updater {
     public boolean isRunning() {
         return running;
     }
+    
+    
 }

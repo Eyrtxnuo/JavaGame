@@ -6,7 +6,12 @@ package main;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import net.ClientNetInterpreter;
 import utils.AudioPlayer;
 
 /**
@@ -14,12 +19,17 @@ import utils.AudioPlayer;
  * @author matti
  */
 public class MainClass {
-    
     /**
      * program execution point
      * @param args console arguments
      */
     public static void main(String[] args) {
+        ClientNetInterpreter inter = new ClientNetInterpreter();
+        try {
+            inter.connection("127.0.0.1", 45670, "Username00");
+        } catch (SocketException | UnknownHostException ex) {
+            Logger.getLogger(MainClass.class.getName()).log(Level.SEVERE, null, ex);
+        }
         boolean fullscreen =true;
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         System.out.println("Screen: " + screen.width + "*" + screen.height );
@@ -28,12 +38,16 @@ public class MainClass {
         int vIntScale = (int)Math.floor(vScale);
         int hIntScale = (int)Math.floor(hScale);
         float scale = vScale;
-        if(args.length>0 && Arrays.asList(args).contains("windowed")){
+        if(Arrays.asList(args).contains("windowed")){
             fullscreen = false;
-            scale = Math.min(vIntScale, hIntScale);
+            if(System.getProperty("scale")!=null)
+                scale = Float.parseFloat(System.getProperty("scale"));
+            else
+                scale = Math.min(vIntScale, hIntScale);
         }
-        System.out.println("Scale: " + vScale);
+        System.out.println("Scale: " + scale);
         AudioPlayer.loadGame(new Game(scale, fullscreen));
         AudioPlayer.playMusic(AudioPlayer.Musics.LEVEL_MUSIC);
+
     }
 }

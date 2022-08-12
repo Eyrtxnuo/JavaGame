@@ -506,6 +506,8 @@ public class Playing extends State implements Statemethods {
 
     public static void gameWin(){
         endGame = true;
+        AudioPlayer.stopMusic();
+        AudioPlayer.playEffect(AudioPlayer.Effects.WIN_GAME);
         
     }
 }

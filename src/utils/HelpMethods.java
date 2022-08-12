@@ -23,6 +23,26 @@ public class HelpMethods {
     public static boolean CanMoveHere(float x, float y,  float width, float height, int[][] lvlData) {
         return IsAllAir(x, y, x+width, y+height, lvlData);
     }
+    
+    /** gets block id of coordinates
+     * @param x coordinate x
+     * @param y coordinate y
+     * @param lvlData level tiles data
+     * @return block id 
+     */
+    private static int getBlock(float x, float y, int[][] lvlData) {
+        if (y < 0 || y >= lvlData.length*Game.TILES_DEFAULT_SIZE) {
+            return 11;//vertically out of bound: air
+        }
+        if (x < 0 || x >= lvlData[0].length*Game.TILES_DEFAULT_SIZE) {
+            return -1;//horizontally out of bound: error
+        }
+        float xIndex = x / Game.TILES_DEFAULT_SIZE;
+        float yIndex = y / Game.TILES_DEFAULT_SIZE;
+        int value = lvlData[(int)Math.floor(yIndex)][(int)Math.floor(xIndex)];
+        
+        return value;
+    }
 
     /** checks if coordinates passed are in a solid tile 
      * @param x coordinate x
@@ -31,19 +51,11 @@ public class HelpMethods {
      * @return if position is solid 
      */
     private static boolean IsSolid(float x, float y, int[][] lvlData) {
-        if (y < 0 || y >= lvlData.length*Game.TILES_DEFAULT_SIZE) {
-            return false;
-        }
-        if (x < 0 || x >= lvlData[0].length*Game.TILES_DEFAULT_SIZE) {
-            return true;
-        }
+
+        int value = getBlock(x, y, lvlData);
         float xIndex = x / Game.TILES_DEFAULT_SIZE;
         float yIndex = y / Game.TILES_DEFAULT_SIZE;
-        LevelManager.collisionChecked.add((int)Math.floor(xIndex)*14 + (int)Math.floor(yIndex));
-
-        int value = lvlData[(int)Math.floor(yIndex)][(int)Math.floor(xIndex)];
-        
-        if (value >= 48 || value < 0 || value != 11) {
+        if (value == -1 || value >= 48 || value < 0 || value != 11) {
             
             LevelManager.collisionFound.add((int)xIndex*14 + (int)yIndex);
             return true;
@@ -126,5 +138,10 @@ public class HelpMethods {
             }
         }
         return true;
+    }
+    
+    public static int getStandingBlock(Rectangle2D.Float hitbox, int[][] lvlData){
+        
+        return getBlock(hitbox.x+hitbox.width/2, hitbox.y+hitbox.height + 1 , lvlData);
     }
 }

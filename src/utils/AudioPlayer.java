@@ -44,7 +44,7 @@ public class AudioPlayer {
       try {
         Clip clip = AudioSystem.getClip();
         AudioInputStream inputStream = AudioSystem.getAudioInputStream(
-        AudioPlayer.class.getResourceAsStream("/audio/" + clipFile));
+        AudioPlayer.class.getResource("/audio/" + clipFile));
         clip.open(inputStream);
         setVolume(clip, volume);
         clip.start(); 
@@ -61,11 +61,11 @@ public class AudioPlayer {
        try {
         music = AudioSystem.getClip();
         AudioInputStream inputStream = AudioSystem.getAudioInputStream(
-        AudioPlayer.class.getResourceAsStream("/audio/" + musicFile));
+        AudioPlayer.class.getResource("/audio/" + musicFile));
         music.open(inputStream);
         setVolume(music, volume);
         music.loop(Clip.LOOP_CONTINUOUSLY);
-        music.start(); 
+        music.start();
       } catch (IOException | LineUnavailableException | UnsupportedAudioFileException e) {
         System.err.println(e.getMessage());
       }
@@ -85,7 +85,7 @@ public class AudioPlayer {
     /** enum Effects list*/
     public static enum Effects{
         /**effects enums*/
-        FIRE, JUMP, DAMAGE, ENEMY_DEAD, CLICK, PAUSE, DEATH, GAME_OVER;
+        FIRE, JUMP, DAMAGE, ENEMY_DEAD, CLICK, PAUSE, DEATH, GAME_OVER, WIN_GAME;
     }
     
     /** enum Musics list*/
@@ -114,6 +114,8 @@ public class AudioPlayer {
             case DEATH:
             case GAME_OVER:
                 return "death.wav";
+            case WIN_GAME:
+                return "win_effect.wav";
             default:
                 return null;
         }

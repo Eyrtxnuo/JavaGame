@@ -8,7 +8,7 @@ import gamestates.Playing;
 import java.util.LinkedList;
 
 /**
- *
+ * Contains  enemy and player fired projectiles
  * @author matti
  */
 public class ProjectileManager {
