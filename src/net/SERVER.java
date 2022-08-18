@@ -16,13 +16,17 @@ import utils.Utils;
  */
 public class SERVER extends Thread{
     static final int SRVport = 45670;
+    ServerNetInterpreter inerpreter; 
+
+    public SERVER(ServerNetInterpreter inerpreter) {
+        this.inerpreter = inerpreter;
+    }
     
     @Override
     public void run(){
         // TODO code application logic here
-        DatagramSocket socket = null;
-        DatagramPacket packet = null;
-        DatagramPacket packetOut = null;
+        final DatagramSocket socket;
+        DatagramPacket packet;
         try {
             socket = new DatagramSocket(SRVport);
         }catch(SocketException ex){
@@ -31,10 +35,8 @@ public class SERVER extends Thread{
         }
         System.out.println("PORTA: "+socket.getLocalPort());
      
-        
+       
         while(true){
-            InetAddress address;
-            int port;
             byte[] dataIn = new byte[1500];//1500 = MTU
             packet = new DatagramPacket(dataIn, dataIn.length);
             packet.setData(dataIn);
@@ -42,19 +44,28 @@ public class SERVER extends Thread{
             
             try {
                 socket.receive(packet);
+                final DatagramPacket finalPacket = packet;
+                new Thread(()->{
+                    InetAddress address = finalPacket.getAddress();
+                    int port = finalPacket.getPort();
+                    byte[] data = Utils.deflator.decompress(finalPacket.getData());
+                    
+                    byte[] byteOut = Utils.deflator.compress(inerpreter.packetInterpreter(data));
+                    
+                    var packetOut = new DatagramPacket(byteOut , byteOut.length, address, port);
+
+                    try {
+                        socket.send(packetOut);
+                    } catch (IOException ex) {
+                        Logger.getLogger(SERVER.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    //debug
+                    //*
+                    System.out.println("[" + Utils.getHour() +"] " +address + " -> this:45670  || this -> " +address + ":" + port
+                    );
+                    //*/
+                }).start();
                 
-                address = packet.getAddress();
-                port = packet.getPort();
-                dataIn = packet.getData();
-                
-                byte[] byteOut = dataIn;
-                packetOut = new DatagramPacket(byteOut , byteOut.length, address, port);
-                
-                socket.send(packetOut);
-                //debug
-                //*
-                System.out.println("[" + Utils.getHour() +"] " +address + " -> this:45670  || this -> " +address + ":" + SRVport);
-                //*/
                 
             } catch (IOException ex) {
                 Logger.getLogger(SERVER.class.getName()).log(Level.SEVERE, null, ex);

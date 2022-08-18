@@ -6,14 +6,17 @@ package entities;
 
 import gamestates.Playing;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import static utils.Constants.PlayerConstants.*;
 import utils.LoadSave;
 import main.Game;
+import org.json.JSONObject;
 import utils.AudioPlayer;
 import utils.Constants;
 import static utils.HelpMethods.*;
+import utils.Utils;
 
 /**
  * Player class, controlled via keyboard
@@ -24,6 +27,8 @@ public class Player extends Entity {
     /** sprite atlas pixels */
     final int spriteX = 64, spriteY = 40;
 
+    /** palyer username */
+    private String username;
     /** animations sprites */
     private BufferedImage[][] animations;
     /** ticks to change animations */
@@ -70,6 +75,29 @@ public class Player extends Entity {
         LoadAnimations();
         initHitbox(x, y, (int) (20f), (int) (27f));
     }
+    
+    public Player(Point.Float position) {
+        this(position.x, position.y);
+    }
+    
+    private Player(float spawnX, float spawnY, boolean left, boolean right, boolean jump, Point.Float position, int lives, int invincibilityFrame, boolean dirLeft, boolean moving, boolean attacking){
+        this(spawnX,spawnY);
+        hitbox.x = position.x;
+        hitbox.y = position.y;
+        this.left = left;
+        this.right = right;
+        this.jump = jump; 
+        this.lives = lives;
+        this.invincibilityFrame = invincibilityFrame;
+        this.dirLeft = dirLeft;
+        this.moving = moving;
+        this.attacking = attacking;
+    }
+    
+    private Player(float spawnX, float spawnY, boolean left, boolean right, boolean jump, Point.Float position, int lives, int invincibilityFrame, boolean dirLeft, boolean moving, boolean attacking, String username){
+        this(spawnX, spawnY, left, right, jump, position, lives, invincibilityFrame, dirLeft, moving, attacking);
+        this.username = username;
+    }
 
     /** Update tick */ 
     @Override
@@ -104,7 +132,7 @@ public class Player extends Entity {
      * @param offsetY vertical offset of screen
     */
     public void render(Graphics g, float offsetX, float offsetY) {
-        if (!Playing.isPaused() && !Playing.isDeath() && !Playing.isEndGame()) {
+        if (!Playing.isPaused() && !Playing.isDeath() && !Playing.isEndGame() && this == Playing.player) {
             dirLeft = Playing.pointerX < (hitbox.x + hitbox.width / 2) * Game.SCALE + offsetX;
         }
         if (dirLeft) {
@@ -419,4 +447,61 @@ public class Player extends Entity {
 
     }
 
+    public Point.Float getPosition(){
+        return new Point.Float(getHitbox().x, getHitbox().y);
+    }
+    
+    public void setPosition(Point.Float point){
+        hitbox.x = point.x;
+        hitbox.y = point.y;
+    }
+    
+    public Point.Float getSpawnPosition(){
+        return new Point.Float(x, y);
+    }
+    
+    public JSONObject toJSONObject(){
+        return new JSONObject()
+                .put("spawnX", x)
+                .put("spawnY", y)
+                .put("left", left)
+                .put("right",right)
+                .put("jump",jump)
+                .put("position", Utils.jsonMapper.pointToJSON(getPosition()))
+                .put("lives", lives)
+                .put("invincibilityFrame", invincibilityFrame)
+                .put("dirLeft", dirLeft)
+                .put("moving", moving)
+                .put("attacking", attacking)
+                .put("username", username)
+                ;
+        
+    }
+    
+    public void updateWithJson(JSONObject obj){
+        x = obj.getFloat("spawnX");
+        y = obj.getFloat("spawnY");
+        left = obj.getBoolean("left");
+        right = obj.getBoolean("right");
+        jump = obj.getBoolean("jump");
+        setPosition(Utils.jsonMapper.JSONTOPoint(obj.getJSONArray("position")));
+        lives = obj.getInt("lives");
+        invincibilityFrame = obj.getInt("invincibilityFrame");
+        dirLeft = obj.getBoolean("dirLeft");
+        moving = obj.getBoolean("moving");
+        attacking = obj.getBoolean("attacking");
+        username = obj.getString("username");
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public Player setUsername(String username) {
+        this.username = username;
+        return this;
+    }
+    
+    
+    
 }

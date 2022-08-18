@@ -1,6 +1,5 @@
 package gamestates;
 
-import entities.Enemy;
 import entities.EnemyManager;
 import entities.Player;
 import entities.Projectile;
@@ -33,7 +32,7 @@ public class Playing extends State implements Statemethods {
     /**
      * Player object
      */
-    private static Player player;
+    public static Player player;
 
     /**
      * EnemyManager object
@@ -72,7 +71,7 @@ public class Playing extends State implements Statemethods {
     /**
      * Offset of displayed frame
      */
-    private float effXOffset;
+    protected float effXOffset;
 
     /**
      * Pointer position
@@ -97,7 +96,7 @@ public class Playing extends State implements Statemethods {
     /**
      * Current level load
      */
-    private static int currentLevel = 0;
+    protected static int currentLevel = 0;
 
     /**
      * Default constructor
@@ -212,6 +211,8 @@ public class Playing extends State implements Statemethods {
         levelManager.drawWorld(g, effXOffset, 0);
         levelManager.drawEnemies(g, effXOffset, 0);
         Player player = levelManager.getLoadedLevel().getPlayer();
+        
+        otherPlayerDraw(g);
         if (!paused && !death && !endGame) {
             Graphics2D g2 = (Graphics2D) g;
             g2.setStroke(new BasicStroke(2 * Game.SCALE));
@@ -509,5 +510,8 @@ public class Playing extends State implements Statemethods {
         AudioPlayer.stopMusic();
         AudioPlayer.playEffect(AudioPlayer.Effects.WIN_GAME);
         
+    }
+
+    protected void otherPlayerDraw(Graphics g) {
     }
 }

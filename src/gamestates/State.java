@@ -9,7 +9,7 @@ import ui.MenuButton;
  *
  * @author m1ncio
  */
-public class State {
+public abstract class State {
 
     /**
      * Game object

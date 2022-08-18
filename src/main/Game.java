@@ -3,6 +3,7 @@ package main;
 import gamestates.Gamestate;
 import gamestates.Menu;
 import gamestates.Playing;
+import gamestates.PlayingMultiplayerServer;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -21,7 +22,7 @@ public class Game implements Runnable {
     /** game thread, updater */
     private Thread gameThread;
     /** Frame updates per second */
-    private static final int FPS_SET = 120;
+    private static final int FPS_SET = 60;
     /** entities updates per second */
     public static final int UPS_SET = 200;
 
@@ -92,8 +93,11 @@ public class Game implements Runnable {
     /** initialises classes */
     private void initClasses() {
         menu=new Menu(this);
-        playing=new Playing(this);
+        initPlaying(new Playing(this));
+        /*
+        playing=new PlayingMultiplayerServer(this);
         playing.initLevelManager();
+        */
     }
 
     /** Generate a new thread, that will execute the run() function, then starts it */
@@ -209,6 +213,12 @@ public class Game implements Runnable {
         update();
         gamePanel.repaint();
     }
+
+    public void initPlaying(Playing playing) {
+        this.playing = playing;
+        this.playing.initLevelManager();
+    }
+
     
     
 }

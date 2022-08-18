@@ -5,8 +5,12 @@
 package net;
 
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -24,7 +28,11 @@ public class ClientNetInterpreter {
         JSONObject packet = new JSONObject();
         packet.put("type",3);
         packet.put("uuid", connectionStatus.currentUUID.toString());
-        return new JSONObject(new String(client.transmit(packet.toString().getBytes())));
+        try {
+            return new JSONObject(new String(client.transmit(packet.toString().getBytes(), 100)));
+        } catch (SocketTimeoutException ex) {
+            return null;
+        }
         
     }
     
@@ -40,8 +48,22 @@ public class ClientNetInterpreter {
         JSONObject data = new JSONObject();
         data.put("username", Username);
         packet.put("data", data);
-        JSONObject response = new JSONObject(new String(client.transmit(packet.toString().getBytes())));
-        System.out.println(response);
+        
+        JSONObject response;
+        
+        try {
+            String resStr = new String(client.transmit(packet.toString().getBytes(),10000));
+            try{
+                response = new JSONObject(resStr);
+            }catch(JSONException jexc){
+                Logger.getLogger(ClientNetInterpreter.class.getName()).log(Level.SEVERE, "msg("+Username+"->:" +resStr+".", jexc);
+                return false;
+            }
+        } catch (SocketTimeoutException ex) {
+            System.out.println("Packet Lost");
+            return false;
+        }
+        //System.out.print(response);
         UUID recivedID;
         connectionStatus.currentUUID = uuid;
         try{

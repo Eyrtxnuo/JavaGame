@@ -22,7 +22,7 @@ public class Menu extends State implements Statemethods {
     /**
      * Array with buttons texture
      */
-    private MenuButton[] buttons = new MenuButton[2];
+    private MenuButton[] buttons = new MenuButton[3];
 
     /**
      * Image used as background
@@ -85,7 +85,7 @@ public class Menu extends State implements Statemethods {
         for (MenuButton mb : buttons) {
             if (isIn(e, mb)) {
                 if (mb.getGamestate() == Gamestate.PLAYING) {
-                    Playing.loadLevel(0);
+                    
                 }
                 mb.setMousePressed(true);
 
@@ -104,7 +104,7 @@ public class Menu extends State implements Statemethods {
         for (MenuButton mb : buttons) {
             if (isIn(e, mb)) {
                 if (mb.getMousePressed()) {
-                    mb.applyGamestate();
+                    mb.clickEvent();
                 }
                 break;
             }
@@ -152,9 +152,23 @@ public class Menu extends State implements Statemethods {
      *
      */
     private void loadButtons() {
-        buttons[0] = new MenuButton((int) (Game.GAME_WIDTH / 2), (int) (170 * Game.SCALE), 0, Gamestate.PLAYING);
-        //buttons[1] = new MenuButton((int) (Game.GAME_WIDTH / 2), (int) (220 * Game.SCALE), 1, Gamestate.OPTIONS);
-        buttons[1] = new MenuButton((int) (Game.GAME_WIDTH / 2), (int) (260 * Game.SCALE), 2, Gamestate.QUIT);
+        buttons[0] = new MenuButton((int) (Game.GAME_WIDTH / 2), (int) (150 * Game.SCALE), 0, Gamestate.PLAYING) {
+            @Override
+            public void onClick() {
+                game.initPlaying(new Playing(game));
+                Playing.loadLevel(0);
+                
+            }
+        };
+        buttons[1] = new MenuButton((int) (Game.GAME_WIDTH / 2), (int) (220 * Game.SCALE), 1, Gamestate.PLAYING) {
+            @Override
+            public void onClick() {
+                game.initPlaying(new PlayingMultiplayerServer(game));
+                Playing.loadLevel(0);
+                
+            }
+        };;
+        buttons[2] = new MenuButton((int) (Game.GAME_WIDTH / 2), (int) (290 * Game.SCALE), 2, Gamestate.QUIT);
     }
 
     /**
