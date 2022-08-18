@@ -27,4 +27,4 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: Progetto
-        path: build/jar
+        path: D:\a\JavaGame\JavaGame\dist\
