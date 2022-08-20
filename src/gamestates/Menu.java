@@ -1,6 +1,5 @@
 package gamestates;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -22,7 +21,7 @@ public class Menu extends State implements Statemethods {
     /**
      * Array with buttons texture
      */
-    private MenuButton[] buttons = new MenuButton[3];
+    private MenuButton[] buttons = new MenuButton[4];
 
     /**
      * Image used as background
@@ -156,19 +155,27 @@ public class Menu extends State implements Statemethods {
             @Override
             public void onClick() {
                 game.initPlaying(new Playing(game));
-                Playing.loadLevel(0);
+                Game.playing.loadLevel(0);
                 
             }
         };
-        buttons[1] = new MenuButton((int) (Game.GAME_WIDTH / 2), (int) (220 * Game.SCALE), 1, Gamestate.PLAYING) {
+        buttons[1] = new MenuButton((int) (Game.GAME_WIDTH / 2), (int) (220 * Game.SCALE), 3, Gamestate.PLAYING) {
             @Override
             public void onClick() {
                 game.initPlaying(new PlayingMultiplayerServer(game));
-                Playing.loadLevel(0);
+                Game.playing.loadLevel(0);
                 
             }
-        };;
+        };
         buttons[2] = new MenuButton((int) (Game.GAME_WIDTH / 2), (int) (290 * Game.SCALE), 2, Gamestate.QUIT);
+        buttons[3] = new MenuButton((int) (Game.GAME_WIDTH / 2+150*Game.SCALE), (int) (220 * Game.SCALE), 4, Gamestate.PLAYING) {
+            @Override
+            public void onClick() {
+                game.initPlaying(new PlayingMultiplayerClient(game));
+                Game.playing.loadLevel(0);
+                
+            }
+        };
     }
 
     /**

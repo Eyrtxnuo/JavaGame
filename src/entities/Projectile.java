@@ -1,6 +1,5 @@
 package entities;
 
-import gamestates.Playing;
 import java.awt.Color;
 import java.awt.Graphics;
 import main.Game;
@@ -92,7 +91,7 @@ public class Projectile extends Entity{
             //;
         }
         if(bounces<0){
-            Playing.flyingAmmos.removeProjectile(this);
+            Game.playing.flyingAmmos.removeProjectile(this);
 
         }
        
@@ -119,7 +118,7 @@ public class Projectile extends Entity{
     /** disappear event */
     @Override
     public void die() {
-        Playing.flyingAmmos.removeProjectile(this);
+        Game.playing.flyingAmmos.removeProjectile(this);
     }
 
     /** get remaning bounces before disappearing

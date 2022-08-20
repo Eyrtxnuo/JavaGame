@@ -7,7 +7,6 @@ package levels;
 import entities.EnemyManager;
 import entities.Player;
 import entities.ProjectileManager;
-import static gamestates.Playing.flyingAmmos;
 import java.awt.image.BufferedImage;
 import main.Game;
 
@@ -66,7 +65,7 @@ public class Level {
     public void update() {
         enemies.startAllThreads();
         player.update();
-        flyingAmmos.updateAll(player);
+        Game.playing.flyingAmmos.updateAll(player);
     }
 
     /* get enemy menager object reference */ 

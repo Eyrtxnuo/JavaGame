@@ -126,13 +126,13 @@ public class DeathOverlay {
         if (isIn(e, menuB)) {
             if (menuB.isMousePressed()) {
                 Gamestate.state = Gamestate.MENU;
-                playing.unpauseGame();
+                
                 startMusic = true;
             }
         } else if (isIn(e, replayB)) {
             if (replayB.isMousePressed()) {
-                Playing.reloadLevel();
-                playing.unpauseGame();
+                Game.playing.reloadLevel();
+                //playing.unpauseGame();
                 System.out.println("replay lvl!");
                 startMusic = true;
             }

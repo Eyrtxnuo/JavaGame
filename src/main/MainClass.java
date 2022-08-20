@@ -25,7 +25,7 @@ public class MainClass {
         /*/
             boolean fullscreen =true;
             Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-            System.out.println("Screen: " + screen.width + "*" + screen.height );
+            System.out.println("Screen: " + screen.width + "*" + screen.height +", " + Game.FPS_SET + " Hz");
             float vScale = (float)screen.height/(Game.TILES_DEFAULT_SIZE*Game.TILES_IN_HEIGHT);
             float hScale = (float)screen.width/(Game.TILES_DEFAULT_SIZE*Game.TILES_IN_WIDTH);
             int vIntScale = (int)Math.floor(vScale);
@@ -41,6 +41,6 @@ public class MainClass {
             System.out.println("Scale: " + scale);
             AudioPlayer.loadGame(new Game(scale, fullscreen));
             AudioPlayer.playMusic(AudioPlayer.Musics.LEVEL_MUSIC);
-            //*/
+        //*/
     }
 }

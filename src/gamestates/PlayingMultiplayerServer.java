@@ -1,4 +1,3 @@
-
 package gamestates;
 
 import entities.Player;
@@ -13,72 +12,76 @@ import net.ServerNetInterface;
 import net.ServerNetInterpreter;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import utils.AudioPlayer;
+import utils.Triplet;
 
 /**
- *  boh, non so che sto facendo, metto tutto quello che mi viene in mente.
+ * boh, non so che sto facendo, metto tutto quello che mi viene in mente.
+ *
  * @author matti
  */
-public class PlayingMultiplayerServer extends Playing implements ServerNetInterface{
-     final Object gameStartLock=new Object();
-     
-    Map<UUID,String> connectedPlayers;
-    Map<UUID,Player> connPlayers;
-    
+public class PlayingMultiplayerServer extends Playing implements ServerNetInterface {
+
+    final Object gameStartLock = new Object();
+
+    Map<UUID, Triplet<Player, String, Boolean>> connectedPlayers;
+
     ServerNetInterpreter server;
-    
+
     public PlayingMultiplayerServer(Game game) {
         super(game);
         connectedPlayers = new HashMap<>();
-        connPlayers = new HashMap<>();
         //connPlayers.put(UUID.fromString("cbcf1463-acce-47e4-bb91-3e3cffe6a971"), new Player(20, 50));
         server = new ServerNetInterpreter(this);
     }
-    
+
     @Override
     public JSONObject playerConnection(UUID Puuid, JSONObject data) {
-        if(connectedPlayers.containsKey(Puuid))return null;
-        
-        String username = (String)data.get("username");
+        if (connectedPlayers.containsKey(Puuid)) {
+            return null;
+        }
 
-        if(connectedPlayers.containsValue(username)){
+        String username = (String) data.get("username");
+
+        if (connectedPlayers.containsValue(username)) {
             int count = 0;
             String newName;
-            do{
-                newName = username + "("+ count++ +")";
-            }while((connectedPlayers.containsValue(newName)));
+            do {
+                newName = username + "(" + count++ + ")";
+            } while ((connectedPlayers.containsValue(newName)));
             username = newName;
         }
-        connectedPlayers.put(Puuid, username);
         Player pl = new Player(player.getSpawnPosition());
         pl.setUsername(username);
         pl.loadLvlData(levelManager.getLoadedLevel().getLvlData());
-        connPlayers.put(Puuid, pl);
+        connectedPlayers.put(Puuid, Triplet.of(pl, username, true));
         return new JSONObject().put("uuid", Puuid).put("username", username);
     }
-    
+
     @Override
     public JSONObject updateResponse(UUID Puuid, JSONObject data) {
         //Elaborate recived data
         JSONObject RecPlayer = data.getJSONObject("player");
-        connPlayers.get(Puuid).updateWithJson(RecPlayer);
+        connectedPlayers.get(Puuid).getFirst().updateWithJson(RecPlayer);
         //Package current data in JSON
-        
+
         JSONArray players = new JSONArray();
         players.put(player.toJSONObject());
-        connPlayers.forEach((UUID id, Player p) -> {
-            players.put(p.toJSONObject());
+        connectedPlayers.forEach((var id, var tr) -> {
+            players.put(tr.getFirst().toJSONObject());
         });
-        JSONObject response = new  JSONObject();
+        JSONObject response = new JSONObject();
         response.put("players", players);
         return response;
     }
 
     @Override
     public JSONObject playerDisconnection(UUID Puuid, JSONObject data) {
-        if(!connectedPlayers.containsKey(Puuid))return null;
-        
+        if (!connectedPlayers.containsKey(Puuid)) {
+            return null;
+        }
+
         connectedPlayers.remove(Puuid);
-        connPlayers.remove(Puuid);
         return new JSONObject();
     }
 
@@ -92,15 +95,15 @@ public class PlayingMultiplayerServer extends Playing implements ServerNetInterf
             }
         }
         return new JSONObject().put("map", currentLevel);
-        
+
     }
 
     @Override
     public JSONObject genericRequest(JSONObject packet) {
         return null;
     }
-    
-    public void StartGame(){
+
+    public void StartGame() {
         synchronized (gameStartLock) {
             gameStartLock.notifyAll();
         }
@@ -108,20 +111,34 @@ public class PlayingMultiplayerServer extends Playing implements ServerNetInterf
 
     @Override
     protected void otherPlayerDraw(Graphics g) {
-        connPlayers.forEach((var uuid, var p)->{
-           p.render(g, effXOffset, 0);
+        connectedPlayers.forEach((var uuid, var tr) -> {
+            tr.getFirst().render(g, effXOffset, 0);
         });
     }
 
     @Override
     public void update() {
         super.update();
-        connPlayers.forEach((var id, var p) -> {
-            p.update();
+        connectedPlayers.forEach((var id, var tr) -> {
+            if(tr.getThird())
+                tr.getFirst().update();
         });
     }
-    
-    
-    
-    
+
+    @Override
+    public void playerDeath(Player p) {
+        if (p == player) {
+            super.playerDeath(p);
+        }
+        
+        for(var es : connectedPlayers.entrySet()){
+            if(es.getValue().getFirst() ==  p){
+                es.getValue().setThird(false);
+                AudioPlayer.playEffect(AudioPlayer.Effects.DEATH);
+                break;
+            }
+        }
+            
+    }
+
 }

@@ -17,7 +17,6 @@ import static main.Game.*;
 import ui.DeathOverlay;
 import ui.EndGameOverlay;
 import ui.PauseOverlay;
-import ui.VolumeButton;
 import utils.AudioPlayer;
 import utils.Constants;
 import static utils.LoadSave.*;
@@ -27,29 +26,29 @@ public class Playing extends State implements Statemethods {
     /**
      * LevelManeger object
      */
-    public static LevelManager levelManager;
+    public LevelManager levelManager;
 
     /**
      * Player object
      */
-    public static Player player;
+    public Player player;
 
     /**
      * EnemyManager object
      */
-    public static EnemyManager enemies;
+    public  EnemyManager enemies;
 
     /**
      * Boolean for the pause
      */
-    private static boolean paused = false;
+    private  boolean paused = false;
     /**
      * Boolean for the player death
      */
-    private static boolean death = false;
+    private boolean death = false;
 
     
-    private static boolean endGame = false;
+    private boolean endGame = false;
     /**
      * PauseOverlay object
      */
@@ -66,7 +65,7 @@ public class Playing extends State implements Statemethods {
     /**
      * ProjectileManager object
      */
-    public static ProjectileManager flyingAmmos;
+    public ProjectileManager flyingAmmos;
 
     /**
      * Offset of displayed frame
@@ -96,7 +95,7 @@ public class Playing extends State implements Statemethods {
     /**
      * Current level load
      */
-    protected static int currentLevel = 0;
+    protected int currentLevel = 0;
 
     /**
      * Default constructor
@@ -132,7 +131,7 @@ public class Playing extends State implements Statemethods {
     /**
      *
      */
-    public static void connectLevel() {
+    public void connectLevel() {
         enemies = levelManager.getLoadedLevel().getEnemies();
         flyingAmmos = levelManager.getLoadedLevel().getProj();
     }
@@ -141,8 +140,9 @@ public class Playing extends State implements Statemethods {
      * Reload level, player and enemies
      *
      */
-    public static void reloadLevel() {
+    public void reloadLevel() {
         enemies.stopAllThreads();
+        
         levelManager.loadLevel(currentLevel);
         connectLevel();
         player.reset();
@@ -154,7 +154,7 @@ public class Playing extends State implements Statemethods {
      *
      * @param levelN
      */
-    public static void loadLevel(int levelN) {
+    public void loadLevel(int levelN) {
         currentLevel = levelN;
         reloadLevel();
     }
@@ -408,7 +408,7 @@ public class Playing extends State implements Statemethods {
      *
      * @return levelmanager
      */
-    static public LevelManager getLevelManager() {
+    public LevelManager getLevelManager() {
         return levelManager;
     }
 
@@ -420,11 +420,20 @@ public class Playing extends State implements Statemethods {
         endGame = false;
         enemies.startAllThreads();
     }
+    
+    /**
+     * Unpause the game
+     */
+    public void pauseGame() {
+        paused = false;
+        enemies.stopAllThreads();
+    }
+    
 
     /**
      * Set the player as death
      */
-    static public void playerDeath() {
+    public void playerDeath(Player p) {
         death = true;
         enemies.stopAllThreads();
 
@@ -437,7 +446,7 @@ public class Playing extends State implements Statemethods {
      *
      * @return the current level
      */
-    public static int getCurrentLevel() {
+    public int getCurrentLevel() {
         return currentLevel;
     }
 
@@ -488,7 +497,7 @@ public class Playing extends State implements Statemethods {
      *
      * @return if game is pause
      */
-    public static boolean isPaused() {
+    public boolean isPaused() {
         return paused;
     }
 
@@ -497,15 +506,15 @@ public class Playing extends State implements Statemethods {
      *
      * @return if player is death
      */
-    public static boolean isDeath() {
+    public boolean isDeath() {
         return death;
     }
 
-    public static boolean isEndGame() {
+    public boolean isEndGame() {
         return endGame;
     }
 
-    public static void gameWin(){
+    public void gameWin(){
         endGame = true;
         AudioPlayer.stopMusic();
         AudioPlayer.playEffect(AudioPlayer.Effects.WIN_GAME);

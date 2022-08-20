@@ -64,7 +64,7 @@ public class EndGameOverlay {
         if (isIn(e, menuB)) {
             if (menuB.isMousePressed()) {
                 Gamestate.state = Gamestate.MENU;
-                playing.unpauseGame();
+                //playing.unpauseGame();
                 startMusic = true;
             }
         }

@@ -145,8 +145,8 @@ public class MenuButton implements onClick{
      * Set the game state
      */
     public void clickEvent() {
-        Gamestate.state = state;
         onClick();
+        Gamestate.state = state;
         AudioPlayer.playEffect(AudioPlayer.Effects.CLICK);
     }
 

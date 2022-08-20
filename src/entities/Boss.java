@@ -4,8 +4,6 @@
  */
 package entities;
 
-import static gamestates.Playing.flyingAmmos;
-import static gamestates.Playing.levelManager;
 import java.awt.Color;
 import java.awt.Graphics;
 import main.Game;
@@ -13,7 +11,6 @@ import utils.Constants;
 import static utils.Constants.EnemyConstants.IDLE;
 import static utils.Constants.PlayerConstants.RUNNING;
 import utils.LoadSave;
-import gamestates.Playing;
 
 /** enemy boss, flies, 20hp
  * @author matti
@@ -120,8 +117,8 @@ public class Boss extends Enemy {
     public void fire() {
         Projectile flyingAmmo = new Projectile(getHitbox().x + xShootOffset[barrel], getHitbox().y + yShootOffset[barrel],
             (float) (Math.atan2((getHitbox().x + xShootOffset[barrel]) - (p.getHitbox().x+p.getHitbox().width/2), (getHitbox().y +  yShootOffset[barrel]) - (p.getHitbox().y + p.getHitbox().height / 2)) + Math.PI / 2 - GUN_RANDOMNESS / 2 + Math.random() * GUN_RANDOMNESS));
-        flyingAmmo.loadLvlData(levelManager.getLoadedLevel().getLvlData());
-        flyingAmmos.enemyAdd(flyingAmmo);
+        flyingAmmo.loadLvlData(Game.playing.levelManager.getLoadedLevel().getLvlData());
+        Game.playing.flyingAmmos.enemyAdd(flyingAmmo);
         barrel = ++barrel%xShootOffset.length;
         fireTick = FIRE_SPEED;
     }
@@ -157,7 +154,7 @@ public class Boss extends Enemy {
     @Override
     public void die() {
         super.die(); 
-        Playing.gameWin();
+        Game.playing.gameWin();
         
     }
     

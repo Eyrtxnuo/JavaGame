@@ -4,7 +4,6 @@
  */
 package entities;
 
-import gamestates.Playing;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
@@ -116,7 +115,7 @@ public class Player extends Entity {
 
     /** Checks collision with enemies projectile */
     public void projCollision() {
-        var muniz = (LinkedList<Projectile>) Playing.flyingAmmos.getEnemyProjectiles().clone();
+        var muniz = (LinkedList<Projectile>) Game.playing.flyingAmmos.getEnemyProjectiles().clone();
         muniz.forEach(ammo -> {
             if (hitbox.intersects(ammo.hitbox)) {
                 hit();
@@ -132,8 +131,8 @@ public class Player extends Entity {
      * @param offsetY vertical offset of screen
     */
     public void render(Graphics g, float offsetX, float offsetY) {
-        if (!Playing.isPaused() && !Playing.isDeath() && !Playing.isEndGame() && this == Playing.player) {
-            dirLeft = Playing.pointerX < (hitbox.x + hitbox.width / 2) * Game.SCALE + offsetX;
+        if (!Game.playing.isPaused() && !Game.playing.isDeath() && !Game.playing.isEndGame() && this == Game.playing.player) {
+            dirLeft = Game.playing.pointerX < (hitbox.x + hitbox.width / 2) * Game.SCALE + offsetX;
         }
         if (dirLeft) {
             g.drawImage(animations[playerAction][aniIndex % animations[playerAction].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX + spriteX * Game.SCALE), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), -(int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
@@ -443,7 +442,7 @@ public class Player extends Entity {
     public void die() {
         //Playing.enemies.removeAllEnemies();
         System.out.println("DEAD");
-        Playing.playerDeath();
+        Game.playing.playerDeath(this);
 
     }
 
@@ -473,7 +472,8 @@ public class Player extends Entity {
                 .put("dirLeft", dirLeft)
                 .put("moving", moving)
                 .put("attacking", attacking)
-                .put("username", username)
+                .put("airSpeed", airSpeed)
+                //.put("username", username)
                 ;
         
     }
@@ -490,7 +490,8 @@ public class Player extends Entity {
         dirLeft = obj.getBoolean("dirLeft");
         moving = obj.getBoolean("moving");
         attacking = obj.getBoolean("attacking");
-        username = obj.getString("username");
+        airSpeed = obj.getFloat("airSpeed");
+        //username = obj.getString("username");
     }
 
     public String getUsername() {
@@ -501,6 +502,7 @@ public class Player extends Entity {
         this.username = username;
         return this;
     }
+
     
     
     

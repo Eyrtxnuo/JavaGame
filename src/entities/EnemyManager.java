@@ -47,6 +47,7 @@ public class EnemyManager {
      * @return true if the enemy has been removed, false if it wasn't contained
      */
     public boolean removeEnemy(Enemy enemy){
+        enemy.updater.stopThread();
         return enemies.remove(enemy);
     }
 

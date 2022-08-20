@@ -4,8 +4,6 @@
  */
 package entities;
 
-import static gamestates.Playing.flyingAmmos;
-import static gamestates.Playing.levelManager;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -107,8 +105,8 @@ public class Sniper extends Enemy {
     public void fire() {
         Projectile flyingAmmo = new Projectile(getHitbox().x + xShootOffset, getHitbox().y + yShootOffset,
                 (float) (Math.atan2((getHitbox().x + xShootOffset) - (p.getHitbox().x +p.getHitbox().width/2), (getHitbox().y + yShootOffset) - (p.getHitbox().y + p.getHitbox().height / 2)) + Math.PI / 2 - GUN_RANDOMNESS / 2 + Math.random() * GUN_RANDOMNESS));
-        flyingAmmo.loadLvlData(levelManager.getLoadedLevel().getLvlData());
-        flyingAmmos.enemyAdd(flyingAmmo);
+        flyingAmmo.loadLvlData(Game.playing.levelManager.getLoadedLevel().getLvlData());
+        Game.playing.flyingAmmos.enemyAdd(flyingAmmo);
 
         fireTick = FIRE_SPEED;
     }

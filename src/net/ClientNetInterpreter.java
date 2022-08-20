@@ -10,6 +10,7 @@ import java.net.UnknownHostException;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import main.Game;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,6 +29,7 @@ public class ClientNetInterpreter {
         JSONObject packet = new JSONObject();
         packet.put("type",3);
         packet.put("uuid", connectionStatus.currentUUID.toString());
+        packet.put("data", new JSONObject().put("player", Game.playing.player.toJSONObject()));
         try {
             return new JSONObject(new String(client.transmit(packet.toString().getBytes(), 100)));
         } catch (SocketTimeoutException ex) {
@@ -36,11 +38,11 @@ public class ClientNetInterpreter {
         
     }
     
-    public void connection(String ip, int port, String Username) throws SocketException, UnknownHostException{
+    public void connection(String ip, int port, String Username) throws SocketException, UnknownHostException, SocketTimeoutException{
         connection(ip,  port,  UUID.fromString("00000000-0000-0000-0000-000000000000"),  Username);
     }
     
-    public boolean connection(String ip, int port, UUID uuid, String Username) throws SocketException, UnknownHostException{
+    public boolean connection(String ip, int port, UUID uuid, String Username) throws SocketException, UnknownHostException, SocketTimeoutException{
         client = new CLIENT(ip, port);
         JSONObject packet = new JSONObject();
         packet.put("type",1);
@@ -51,7 +53,6 @@ public class ClientNetInterpreter {
         
         JSONObject response;
         
-        try {
             String resStr = new String(client.transmit(packet.toString().getBytes(),10000));
             try{
                 response = new JSONObject(resStr);
@@ -59,10 +60,7 @@ public class ClientNetInterpreter {
                 Logger.getLogger(ClientNetInterpreter.class.getName()).log(Level.SEVERE, "msg("+Username+"->:" +resStr+".", jexc);
                 return false;
             }
-        } catch (SocketTimeoutException ex) {
-            System.out.println("Packet Lost");
-            return false;
-        }
+        
         //System.out.print(response);
         UUID recivedID;
         connectionStatus.currentUUID = uuid;

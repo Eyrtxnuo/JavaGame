@@ -3,10 +3,10 @@ package main;
 import gamestates.Gamestate;
 import gamestates.Menu;
 import gamestates.Playing;
-import gamestates.PlayingMultiplayerServer;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import utils.Constants;
 
@@ -22,7 +22,7 @@ public class Game implements Runnable {
     /** game thread, updater */
     private Thread gameThread;
     /** Frame updates per second */
-    private static final int FPS_SET = 60;
+    public static final int FPS_SET = Math.max(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getRefreshRate(), 60);
     /** entities updates per second */
     public static final int UPS_SET = 200;
 
@@ -30,7 +30,7 @@ public class Game implements Runnable {
     public static boolean manualFrameAdvancing;
     
     /** Playing object */
-    private Playing playing;
+    public static Playing playing;
     /** Menu object */
     private Menu menu;
     
@@ -94,6 +94,7 @@ public class Game implements Runnable {
     private void initClasses() {
         menu=new Menu(this);
         initPlaying(new Playing(this));
+        
         /*
         playing=new PlayingMultiplayerServer(this);
         playing.initLevelManager();
@@ -173,7 +174,7 @@ public class Game implements Runnable {
                     deltaU--;
                 }
                 if (deltaF >= 1) {
-                    gamePanel.repaint();
+                    gamePanel.repaint(0);
                     frames++;
                     deltaF--;
                 }
@@ -215,8 +216,8 @@ public class Game implements Runnable {
     }
 
     public void initPlaying(Playing playing) {
-        this.playing = playing;
-        this.playing.initLevelManager();
+        Game.playing = playing;
+        Game.playing.initLevelManager();
     }
 
     

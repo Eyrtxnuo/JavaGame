@@ -1,6 +1,5 @@
 package entities;
 
-import gamestates.Playing;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
@@ -142,7 +141,7 @@ public abstract class Enemy extends Entity{
     
     /** calculates project collisions */
     public void projCollision(){
-        var muniz = (LinkedList<Projectile>)Playing.flyingAmmos.getProjectiles().clone();
+        var muniz = (LinkedList<Projectile>)Game.playing.flyingAmmos.getProjectiles().clone();
         muniz.forEach(ammo ->{
             if(hitbox.intersects(ammo.hitbox)){
                 hit();
@@ -368,7 +367,7 @@ public abstract class Enemy extends Entity{
     public void die(){
         System.out.println("EnemyDeath");
         updater.stopThread();
-        Playing.enemies.removeEnemy(this);
+        Game.playing.enemies.removeEnemy(this);
     }
     
     /** get lives count
