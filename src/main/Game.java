@@ -2,6 +2,7 @@ package main;
 
 import gamestates.Gamestate;
 import gamestates.Menu;
+import gamestates.MultiplayerMenu;
 import gamestates.Playing;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -33,6 +34,8 @@ public class Game implements Runnable {
     public static Playing playing;
     /** Menu object */
     private Menu menu;
+    /**Multiplayer object*/
+    private MultiplayerMenu multiplayermenu;
     
     /** Tiles size at scale 1 */
     public final static int TILES_DEFAULT_SIZE = 32;
@@ -93,6 +96,7 @@ public class Game implements Runnable {
     /** initialises classes */
     private void initClasses() {
         menu=new Menu(this);
+        multiplayermenu=new MultiplayerMenu(this);
         initPlaying(new Playing(this));
         
         /*
@@ -118,7 +122,9 @@ public class Game implements Runnable {
             case MENU:
                 menu.update();
                 break;
-            case OPTIONS:
+            case MULTIPLAYERMENU:
+                multiplayermenu.update();
+                break;
             case QUIT:
             default:
                 System.exit(0);
@@ -141,6 +147,9 @@ public class Game implements Runnable {
                 break;
             case MENU:
                 menu.draw(g);
+                break;
+            case MULTIPLAYERMENU:
+                multiplayermenu.draw(g);
                 break;
             default:
                 break;
@@ -209,8 +218,13 @@ public class Game implements Runnable {
         return playing;
     }
     
+    /** get multiplayer menu reference*/
+    public MultiplayerMenu getMultiplayerMenu(){
+        return multiplayermenu;
+    }
+
     /** debug use only, updates and paint the update instantly */
-    public void newFrame(){
+    public void newFrame() {
         update();
         gamePanel.repaint();
     }

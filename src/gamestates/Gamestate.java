@@ -7,7 +7,7 @@ package gamestates;
 public enum Gamestate {
     
     /**Different possible states*/
-    PLAYING, MENU, OPTIONS, QUIT;
+    PLAYING, MENU, MULTIPLAYERMENU, QUIT;
     /**State of the game initialised as menu*/
     public static Gamestate state = MENU;
     
