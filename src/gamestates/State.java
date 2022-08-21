@@ -3,6 +3,7 @@ package gamestates;
 import java.awt.event.MouseEvent;
 import main.Game;
 import ui.MenuButton;
+import ui.MultiplayerButton;
 
 /**
  * Super class of game states
@@ -32,7 +33,11 @@ public abstract class State {
      * @param mb
      * @return if the mouse is in an hitbox
      */
-    public Boolean isIn(MouseEvent e, MenuButton mb) {
+    public Boolean isInMb(MouseEvent e, MenuButton mb) {
+        return mb.getBounds().contains(e.getX(), e.getY());
+    }
+    
+    public Boolean isInMultb(MouseEvent e, MultiplayerButton mb) {
         return mb.getBounds().contains(e.getX(), e.getY());
     }
 

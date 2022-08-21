@@ -21,7 +21,7 @@ public class Menu extends State implements Statemethods {
     /**
      * Array with buttons texture
      */
-    private MenuButton[] buttons = new MenuButton[4];
+    private MenuButton[] buttons = new MenuButton[3];
 
     /**
      * Image used as background
@@ -82,7 +82,7 @@ public class Menu extends State implements Statemethods {
     @Override
     public void mousePressed(MouseEvent e) {
         for (MenuButton mb : buttons) {
-            if (isIn(e, mb)) {
+            if (isInMb(e, mb)) {
                 if (mb.getGamestate() == Gamestate.PLAYING) {
                     
                 }
@@ -101,7 +101,7 @@ public class Menu extends State implements Statemethods {
     @Override
     public void mouseReleased(MouseEvent e) {
         for (MenuButton mb : buttons) {
-            if (isIn(e, mb)) {
+            if (isInMb(e, mb)) {
                 if (mb.getMousePressed()) {
                     mb.clickEvent();
                 }
@@ -122,7 +122,7 @@ public class Menu extends State implements Statemethods {
             mb.setMouseOver(false);
         }
         for (MenuButton mb : buttons) {
-            if (isIn(e, mb)) {
+            if (isInMb(e, mb)) {
                 mb.setMouseOver(true);
                 break;
             }
@@ -138,9 +138,6 @@ public class Menu extends State implements Statemethods {
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             Gamestate.state = Gamestate.PLAYING;
-        }
-        if (e.getKeyCode() == KeyEvent.VK_M) {
-            Gamestate.state = Gamestate.MULTIPLAYERMENU;
         }
     }
 
@@ -162,23 +159,9 @@ public class Menu extends State implements Statemethods {
                 
             }
         };
-        buttons[1] = new MenuButton((int) (Game.GAME_WIDTH / 2), (int) (220 * Game.SCALE), 3, Gamestate.PLAYING) {
-            @Override
-            public void onClick() {
-                game.initPlaying(new PlayingMultiplayerServer(game));
-                Game.playing.loadLevel(0);
-                
-            }
+        buttons[1] = new MenuButton((int) (Game.GAME_WIDTH / 2), (int) (220 * Game.SCALE), 1, Gamestate.MULTIPLAYERMENU) {
         };
         buttons[2] = new MenuButton((int) (Game.GAME_WIDTH / 2), (int) (290 * Game.SCALE), 2, Gamestate.QUIT);
-        buttons[3] = new MenuButton((int) (Game.GAME_WIDTH / 2+150*Game.SCALE), (int) (220 * Game.SCALE), 4, Gamestate.PLAYING) {
-            @Override
-            public void onClick() {
-                game.initPlaying(new PlayingMultiplayerClient(game));
-                Game.playing.loadLevel(0);
-                
-            }
-        };
     }
 
     /**
