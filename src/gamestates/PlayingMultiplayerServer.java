@@ -64,11 +64,12 @@ public class PlayingMultiplayerServer extends Playing implements ServerNetInterf
         JSONObject RecPlayer = data.getJSONObject("player");
         connectedPlayers.get(Puuid).getFirst().updateWithJson(RecPlayer);
         //Package current data in JSON
-
+        
         JSONArray players = new JSONArray();
-        players.put(player.toJSONObject());
+        players.put(new JSONObject().put("uuid", "00000000-0000-0000-0000-000000000001").put("info",player.toJSONObject()));
         connectedPlayers.forEach((var id, var tr) -> {
-            players.put(tr.getFirst().toJSONObject());
+            if(id.equals(Puuid))return;
+            players.put(new JSONObject().put("uuid",id).put("info", tr.getFirst().toJSONObject()));
         });
         JSONObject response = new JSONObject();
         response.put("players", players);

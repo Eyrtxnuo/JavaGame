@@ -47,7 +47,7 @@ public class ServerNetInterpreter{
         responseJson.put("uuid", uuid.toString());
         responseJson.put("data", responseData);
         
-        System.out.println(responseJson);
+        //System.out.println(responseJson);
         
         return responseJson.toString().getBytes();
     }

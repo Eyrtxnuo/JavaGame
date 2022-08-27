@@ -189,11 +189,11 @@ public class Player extends Entity {
         float xSpeed = 0, ySpeed = 0;
 
         if (left) {
-            dirLeft = true;
+            //dirLeft = true;
             xSpeed -= playerSpeed;
         }
         if (right) {
-            dirLeft = false;
+            //dirLeft = false;
             xSpeed += playerSpeed;
         }
 

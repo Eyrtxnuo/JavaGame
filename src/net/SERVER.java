@@ -60,9 +60,8 @@ public class SERVER extends Thread{
                         Logger.getLogger(SERVER.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     //debug
-                    //*
-                    System.out.println("[" + Utils.getHour() +"] " +address + " -> this:45670  || this -> " +address + ":" + port
-                    );
+                    /*
+                    System.out.println("[" + Utils.getHour() +"] " +address + " -> this:45670  || this -> " +address + ":" + port);
                     //*/
                 }).start();
                 
