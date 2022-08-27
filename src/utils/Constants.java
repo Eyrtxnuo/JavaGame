@@ -58,6 +58,13 @@ public class Constants {
             public static int VOLUME_HEIGHT = (int) (VOLUME_DEFAULT_HEIGHT * Game.SCALE);
             public static int SLIDER_WIDTH = (int) (SLIDER_DEFAULT_WIDTH * Game.SCALE);
         }
+        
+        public static class TextInput {
+            public final static int TI_WIDTH_DEFAULT = 404;
+            public final static int TI_HEIGHT_DEFAULT = 44;
+            public static int TI_WIDTH = (int) (TI_WIDTH_DEFAULT * Game.SCALE);
+            public static int TI_HEIGHT = (int) (TI_HEIGHT_DEFAULT * Game.SCALE);
+        }
     }
 
     /** directions constants */

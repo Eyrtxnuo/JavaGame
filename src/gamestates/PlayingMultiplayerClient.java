@@ -23,20 +23,20 @@ public class PlayingMultiplayerClient extends Playing {
 
     ClientNetInterpreter interpreter;
     int updateCounter = 0;
-    UUID myUUID;
+    public UUID myUUID;
 
     Map<UUID, Triplet<Player, String, Boolean>> connectedPlayers;
 
-    public PlayingMultiplayerClient(Game game) {
+    public PlayingMultiplayerClient(Game game, String ip, int port) throws SocketException, UnknownHostException, SocketTimeoutException {
         super(game);
         connectedPlayers = new HashMap<>();
         interpreter = new ClientNetInterpreter();
-        try {
-            UUID idRec = interpreter.connection("192.168.178.20", 45670,UUID.randomUUID(), "Test1");
+        //try {
+            UUID idRec = interpreter.connection(ip, port,UUID.randomUUID(), "Test1");
             if(idRec != null){
                 myUUID = idRec;
             }
-        } catch (SocketException | UnknownHostException ex) {
+        /*} catch (SocketException | UnknownHostException ex) {
             pauseGame();
             Gamestate.state = Gamestate.MENU;
             Logger.getLogger(PlayingMultiplayerClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -45,7 +45,7 @@ public class PlayingMultiplayerClient extends Playing {
             pauseGame();
             Gamestate.state = Gamestate.MENU;
             Logger.getLogger(PlayingMultiplayerClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
 
     @Override

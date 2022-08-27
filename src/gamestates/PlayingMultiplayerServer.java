@@ -37,10 +37,10 @@ public class PlayingMultiplayerServer extends Playing implements ServerNetInterf
 
     @Override
     public JSONObject playerConnection(UUID Puuid, JSONObject data) {
-        if (connectedPlayers.containsKey(Puuid)) {
-            return null;
+        while (connectedPlayers.containsKey(Puuid) || Puuid.equals(UUID.fromString("00000000-0000-0000-0000-000000000001"))) {
+            Puuid = UUID.randomUUID();
         }
-
+        
         String username = (String) data.get("username");
 
         if (connectedPlayers.containsValue(username)) {

@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package net;
 
+import gamestates.PlayingMultiplayerClient;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -29,7 +26,7 @@ public class ClientNetInterpreter {
     public JSONObject requestUpdate(){
         JSONObject packet = new JSONObject();
         packet.put("type",3);
-        packet.put("uuid", connectionStatus.currentUUID.toString());
+        packet.put("uuid", ((PlayingMultiplayerClient)Game.playing).myUUID.toString());
         packet.put("data", new JSONObject().put("player", Game.playing.player.toJSONObject()));
         try {
             return new JSONObject(new String(client.transmit(packet.toString().getBytes(), 100))).getJSONObject("data");
@@ -64,7 +61,6 @@ public class ClientNetInterpreter {
         
         //System.out.print(response);
         UUID recivedID;
-        connectionStatus.currentUUID = uuid;
         try{
             recivedID = UUID.fromString((String) response.get("uuid"));
         }catch(IllegalArgumentException ex){
@@ -72,17 +68,15 @@ public class ClientNetInterpreter {
             disconnection();
             return null;
         }
-        connectionStatus.currentUUID = recivedID;
-        connectionStatus.Username = Username;
         return recivedID;
     }
     
     public void disconnection(){
         JSONObject packet = new JSONObject();
         packet.put("type",4);
-        packet.put("uuid", connectionStatus.currentUUID.toString());
+        packet.put("uuid", ((PlayingMultiplayerClient)Game.playing).myUUID.toString());
         client.transmit(packet.toString().getBytes());
-        connectionStatus.reset();
+        ((PlayingMultiplayerClient)Game.playing).myUUID = null;
     }
     
 }

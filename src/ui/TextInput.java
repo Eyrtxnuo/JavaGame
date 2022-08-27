@@ -1,0 +1,249 @@
+package ui;
+
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import main.Game;
+import utils.AudioPlayer;
+import static utils.Constants.UI.TextInput.TI_HEIGHT;
+import static utils.Constants.UI.TextInput.TI_HEIGHT_DEFAULT;
+import static utils.Constants.UI.TextInput.TI_WIDTH;
+import static utils.Constants.UI.TextInput.TI_WIDTH_DEFAULT;
+import utils.LoadSave;
+import static utils.Utils.isPrintableChar;
+
+/**
+ *
+ * @author matti
+ */
+public class TextInput implements onClick {
+
+    private int xPos, yPos, index;
+
+    private int yOffestCenter = TI_HEIGHT / 2;
+
+    private boolean cursor = false;
+    
+    private int cursorIndex = 0;
+    
+    private String text = "";
+    private int skipped=0;
+
+    private Font font = LoadSave.MC_FONT.deriveFont(25 * Game.SCALE);
+
+    private int animTick;
+    private final int animSpeed = 100;
+
+    private BufferedImage[] imgs;
+
+    private Boolean mouseOver = false, selected = false;
+
+    private Rectangle bounds;
+
+    public TextInput(int xPos, int yPos) {
+
+        this.xPos = xPos;
+        this.yPos = yPos;
+        loadImgs();
+        initBounds();
+    }
+
+    private void loadImgs() {
+        imgs = new BufferedImage[3];
+        BufferedImage temp = LoadSave.GetSpriteAtlas(LoadSave.MENU_TEXTINPUT);
+        for (int i = 0; i < imgs.length; i++) {
+            imgs[i] = temp.getSubimage(i * TI_WIDTH_DEFAULT, 0, TI_WIDTH_DEFAULT, TI_HEIGHT_DEFAULT);
+        }
+    }
+
+    private void initBounds() {
+        bounds = new Rectangle(xPos, yPos - yOffestCenter, TI_WIDTH, TI_HEIGHT);
+    }
+
+    public void draw(Graphics g) {
+
+        g.drawImage(imgs[index], xPos, yPos - yOffestCenter, bounds.width, bounds.height, null);
+        Color old = g.getColor();
+        g.setColor(Color.white);
+
+        g.setFont(font);
+        String printText = text;
+        if (g.getFontMetrics().stringWidth(text) > (bounds.width - 8 * Game.SCALE)) {
+            skipped = 1;
+            while (g.getFontMetrics().stringWidth("…" + text.substring(skipped)) > (bounds.width - 8 * Game.SCALE)) {
+                skipped++;
+            }
+            printText = "…" + text.substring(skipped);
+        }
+        g.drawString(printText, (int) (xPos + 4 * Game.SCALE), (int) (yPos + 9 * Game.SCALE));
+        
+
+        if (cursor) {
+            if(cursorIndex==0){
+                int x = (int) (xPos + 4 * Game.SCALE + g.getFontMetrics().stringWidth(printText));
+                int y = (int) (yPos-yOffestCenter + g.getFontMetrics().getHeight()-g.getFontMetrics().getDescent());
+                int width = (int) Math.min(
+                        (g.getFontMetrics().charWidth('0')),
+                        Math.max((xPos + bounds.width - 4 * Game.SCALE) - x, 0)
+                );
+                int height = (int) (2 * Game.SCALE);
+                g.fillRect(x, y, width, height);
+            }else{
+                int x = (int) (xPos + 2 * Game.SCALE + g.getFontMetrics().stringWidth(printText.substring(0,printText.length()-cursorIndex)));
+                int y = yPos-yOffestCenter + g.getFontMetrics().getDescent();
+                int width = (int) (2 * Game.SCALE);
+                int height = g.getFontMetrics().getHeight()-g.getFontMetrics().getAscent()/2;
+                g.fillRect(x, y, width, height);
+            }
+        }
+        g.setColor(old);
+    }
+
+    public void update() {
+        if (selected) {
+            animTick++;
+            if (animTick > animSpeed) {
+                animTick %= animSpeed;
+                cursor = !cursor;
+            }
+        }
+
+        index = 0;
+        if (mouseOver) {
+            index = 1;
+        }
+        if (selected) {
+            index = 2;
+        }
+    }
+
+    public Boolean getMouseOver() {
+        return mouseOver;
+    }
+
+    public void setMouseOver(Boolean mouseOver) {
+        this.mouseOver = mouseOver;
+    }
+
+    public Boolean getSelected() {
+        return selected;
+    }
+
+    public void setSelected(Boolean selected) {
+        this.selected = selected;
+        cursor &= selected;
+    }
+
+    public void clickEvent(MouseEvent e) {
+        if (!onClick(e)) {
+            return;
+        }
+        cursorIndex = getCursorIndexAtposition(e.getX()-xPos);
+        AudioPlayer.playEffect(AudioPlayer.Effects.CLICK);
+    }
+
+    @Override
+    public boolean onClick(MouseEvent e) {
+        return true;
+    }
+
+    public void resetBools() {
+        mouseOver = false;
+        selected = false;
+    }
+
+    public Rectangle getBounds() {
+        return bounds;
+    }
+
+    public void processKeyEvent(KeyEvent e) {
+        if (!selected) {
+            return;
+        }
+        if (isPrintableChar(e.getKeyChar())) {
+            append(e.getKeyChar());
+        } else {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_BACK_SPACE -> {
+                    if(cursorIndex == text.length())break;
+                    int intsertionPoint = text.length() - cursorIndex;
+                    text = text.substring(0,intsertionPoint-1)+text.substring(intsertionPoint);
+                }
+                    
+                case KeyEvent.VK_DELETE -> {
+                    if(cursorIndex == 0)break;
+                    int intsertionPoint = text.length() - cursorIndex;
+                    text = text.substring(0,intsertionPoint)+text.substring(intsertionPoint+1);
+                    cursorIndex--;
+                }    
+
+                case KeyEvent.VK_V ->                      {
+                    if (!e.isControlDown()) {
+                        break;
+                    }
+                    {
+                        try {
+                            append((String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor));
+                        } catch (UnsupportedFlavorException | IOException ex) {
+                            System.out.println("Clipboard is not text!");
+                        }
+                    }
+                    }
+                case KeyEvent.VK_LEFT,KeyEvent.VK_DOWN  -> {
+                    if(cursorIndex<text.length()){
+                        cursorIndex++;
+                    }
+                }
+                case KeyEvent.VK_RIGHT,KeyEvent.VK_UP -> {
+                    if(cursorIndex>0){
+                        cursorIndex--;
+                    }
+                }
+            }
+
+        }
+    }
+
+    public void append(String str) {
+        for (Character ch : str.toCharArray()) {
+            append(ch);
+        }
+    }
+
+    public void append(Character ch) {
+        if (isPrintableChar(ch)) {
+            int intsertionPoint = text.length() - cursorIndex;
+            text = text.substring(0,intsertionPoint)+ch+text.substring(intsertionPoint);
+        }
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    private int getCursorIndexAtposition(int xRelativePos){
+        float x = xRelativePos - 4*Game.SCALE;
+        FontMetrics Fm = new Canvas().getFontMetrics(font);
+        String displayed = text;
+        if(skipped>0){
+            displayed = "…" + text.substring(skipped);
+        }
+        int attempt = displayed.length();
+        while(attempt>0&&Fm.stringWidth(displayed.substring(0, attempt))>xRelativePos){
+            attempt--;
+        }
+        return displayed.length()-attempt;
+    }
+}

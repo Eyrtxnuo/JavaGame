@@ -103,7 +103,7 @@ public class Menu extends State implements Statemethods {
         for (MenuButton mb : buttons) {
             if (isInMb(e, mb)) {
                 if (mb.getMousePressed()) {
-                    mb.clickEvent();
+                    mb.clickEvent(e);
                 }
                 break;
             }
@@ -153,10 +153,10 @@ public class Menu extends State implements Statemethods {
     private void loadButtons() {
         buttons[0] = new MenuButton((int) (Game.GAME_WIDTH / 2), (int) (150 * Game.SCALE), 0, Gamestate.PLAYING) {
             @Override
-            public void onClick() {
+            public boolean onClick(MouseEvent e) {
                 game.initPlaying(new Playing(game));
                 Game.playing.loadLevel(0);
-                
+                return true;
             }
         };
         buttons[1] = new MenuButton((int) (Game.GAME_WIDTH / 2), (int) (220 * Game.SCALE), 1, Gamestate.MULTIPLAYERMENU) {
