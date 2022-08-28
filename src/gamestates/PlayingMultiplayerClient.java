@@ -8,8 +8,6 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import main.Game;
 import net.ClientNetInterpreter;
 import org.json.JSONObject;

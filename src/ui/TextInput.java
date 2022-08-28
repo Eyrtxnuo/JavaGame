@@ -13,8 +13,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import main.Game;
 import utils.AudioPlayer;
 import static utils.Constants.UI.TextInput.TI_HEIGHT;
@@ -28,18 +26,22 @@ import static utils.Utils.isPrintableChar;
  *
  * @author matti
  */
-public class TextInput implements onClick {
+public class TextInput implements onClick {//TODO: selections : ctrl+c (and Ins functionality)
 
     private int xPos, yPos, index;
 
     private int yOffestCenter = TI_HEIGHT / 2;
 
     private boolean cursor = false;
-    
+
     private int cursorIndex = 0;
-    
+
     private String text = "";
-    private int skipped=0;
+    private int leftSkipped = 0;
+    private int rightSkipped = 0;
+
+    private static final String PREFIX = "…";
+    private static final String SUFFIX = "…";
 
     private Font font = LoadSave.MC_FONT.deriveFont(25 * Game.SCALE);
 
@@ -51,6 +53,9 @@ public class TextInput implements onClick {
     private Boolean mouseOver = false, selected = false;
 
     private Rectangle bounds;
+    private final int leftBorder = (int) (new Canvas().getFontMetrics(font).stringWidth(PREFIX) + 4 * Game.SCALE);
+    private final int rightBorder = (int) (new Canvas().getFontMetrics(font).stringWidth(SUFFIX) + 4 * Game.SCALE);
+    private final int upperBorder = (int) (9 * Game.SCALE);
 
     public TextInput(int xPos, int yPos) {
 
@@ -80,31 +85,64 @@ public class TextInput implements onClick {
 
         g.setFont(font);
         String printText = text;
-        if (g.getFontMetrics().stringWidth(text) > (bounds.width - 8 * Game.SCALE)) {
-            skipped = 1;
-            while (g.getFontMetrics().stringWidth("…" + text.substring(skipped)) > (bounds.width - 8 * Game.SCALE)) {
-                skipped++;
-            }
-            printText = "…" + text.substring(skipped);
+
+        System.out.print("Cursor index: " + cursorIndex + ";  leftSkip:" + leftSkipped + ";  rightSkip:" + rightSkipped + ";   lenght:" + text.length());
+        while (leftSkipped < printText.length() - rightSkipped
+                && rightSkipped < printText.length() - 1
+                && rightSkipped > 0
+                && g.getFontMetrics().stringWidth(printText.substring(leftSkipped, printText.length() - rightSkipped)) < (bounds.width - (leftBorder + rightBorder))) {
+            rightSkipped--;
         }
-        g.drawString(printText, (int) (xPos + 4 * Game.SCALE), (int) (yPos + 9 * Game.SCALE));
-        
+        if(!(g.getFontMetrics().stringWidth(printText.substring(leftSkipped, printText.length() - rightSkipped)) < (bounds.width - (leftBorder + rightBorder)))){
+            rightSkipped++;
+        }
+                
+        System.out.println("\n"+rightSkipped);
+        if (leftSkipped == printText.length()
+                || cursorIndex == printText.length()
+                || cursorIndex > printText.substring(leftSkipped).length()
+                || cursorIndex < rightSkipped
+                || g.getFontMetrics().stringWidth(printText.substring(leftSkipped, printText.length() - rightSkipped)) > (bounds.width - (leftBorder + rightBorder))) {
+            rightSkipped = 0;
+            leftSkipped = 0;
+            while (g.getFontMetrics().stringWidth(printText.substring(leftSkipped)) > (bounds.width - (leftBorder + rightBorder))) {
+                leftSkipped++;
+            }
+            rightSkipped = 0;
+            while (cursorIndex > printText.substring(leftSkipped).length()) {
+                rightSkipped++;
+                while (leftSkipped >= 0 && g.getFontMetrics().stringWidth(printText.substring(leftSkipped, printText.length() - rightSkipped)) < (bounds.width - (leftBorder + rightBorder))) {
+                    leftSkipped--;
+                }
+                leftSkipped++;
+            }
+        }
+        printText = printText.substring(leftSkipped, printText.length() - rightSkipped);
+        System.out.println(";   printLenght:" + printText.length());
+
+        if (leftSkipped > 0) {
+            g.drawString(PREFIX, (int) (xPos + 4 * Game.SCALE), yPos + upperBorder);
+        }
+        if (rightSkipped > 0) {
+            g.drawString(SUFFIX, xPos + bounds.width - rightBorder, yPos + upperBorder);
+        }
+        g.drawString(printText, (int) (xPos + leftBorder), (int) (yPos + upperBorder));
 
         if (cursor) {
-            if(cursorIndex==0){
-                int x = (int) (xPos + 4 * Game.SCALE + g.getFontMetrics().stringWidth(printText));
-                int y = (int) (yPos-yOffestCenter + g.getFontMetrics().getHeight()-g.getFontMetrics().getDescent());
+            if (cursorIndex == 0) {
+                int x = (int) (xPos + leftBorder + g.getFontMetrics().stringWidth(printText));
+                int y = (int) (yPos - yOffestCenter + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent());
                 int width = (int) Math.min(
                         (g.getFontMetrics().charWidth('0')),
-                        Math.max((xPos + bounds.width - 4 * Game.SCALE) - x, 0)
+                        Math.max((xPos + bounds.width - rightBorder) - x, 0)
                 );
                 int height = (int) (2 * Game.SCALE);
                 g.fillRect(x, y, width, height);
-            }else{
-                int x = (int) (xPos + 2 * Game.SCALE + g.getFontMetrics().stringWidth(printText.substring(0,printText.length()-cursorIndex)));
-                int y = yPos-yOffestCenter + g.getFontMetrics().getDescent();
+            } else {
+                int x = (int) (xPos + leftBorder - 2 * Game.SCALE + g.getFontMetrics().stringWidth(text.substring(leftSkipped, text.length() - (cursorIndex))));
+                int y = yPos - yOffestCenter + g.getFontMetrics().getDescent();
                 int width = (int) (2 * Game.SCALE);
-                int height = g.getFontMetrics().getHeight()-g.getFontMetrics().getAscent()/2;
+                int height = g.getFontMetrics().getHeight() - g.getFontMetrics().getAscent() / 2;
                 g.fillRect(x, y, width, height);
             }
         }
@@ -150,7 +188,7 @@ public class TextInput implements onClick {
         if (!onClick(e)) {
             return;
         }
-        cursorIndex = getCursorIndexAtposition(e.getX()-xPos);
+        cursorIndex = getCursorIndexAtposition(e.getX() - xPos);
         AudioPlayer.playEffect(AudioPlayer.Effects.CLICK);
     }
 
@@ -177,19 +215,23 @@ public class TextInput implements onClick {
         } else {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_BACK_SPACE -> {
-                    if(cursorIndex == text.length())break;
+                    if (cursorIndex == text.length()) {
+                        break;
+                    }
                     int intsertionPoint = text.length() - cursorIndex;
-                    text = text.substring(0,intsertionPoint-1)+text.substring(intsertionPoint);
+                    text = text.substring(0, intsertionPoint - 1) + text.substring(intsertionPoint);
                 }
-                    
-                case KeyEvent.VK_DELETE -> {
-                    if(cursorIndex == 0)break;
-                    int intsertionPoint = text.length() - cursorIndex;
-                    text = text.substring(0,intsertionPoint)+text.substring(intsertionPoint+1);
-                    cursorIndex--;
-                }    
 
-                case KeyEvent.VK_V ->                      {
+                case KeyEvent.VK_DELETE -> {
+                    if (cursorIndex == 0) {
+                        break;
+                    }
+                    int intsertionPoint = text.length() - cursorIndex;
+                    text = text.substring(0, intsertionPoint) + text.substring(intsertionPoint + 1);
+                    cursorIndex--;
+                }
+
+                case KeyEvent.VK_V -> {
                     if (!e.isControlDown()) {
                         break;
                     }
@@ -200,14 +242,14 @@ public class TextInput implements onClick {
                             System.out.println("Clipboard is not text!");
                         }
                     }
-                    }
-                case KeyEvent.VK_LEFT,KeyEvent.VK_DOWN  -> {
-                    if(cursorIndex<text.length()){
+                }
+                case KeyEvent.VK_LEFT,KeyEvent.VK_DOWN -> {
+                    if (cursorIndex < text.length()) {
                         cursorIndex++;
                     }
                 }
                 case KeyEvent.VK_RIGHT,KeyEvent.VK_UP -> {
-                    if(cursorIndex>0){
+                    if (cursorIndex > 0) {
                         cursorIndex--;
                     }
                 }
@@ -225,7 +267,7 @@ public class TextInput implements onClick {
     public void append(Character ch) {
         if (isPrintableChar(ch)) {
             int intsertionPoint = text.length() - cursorIndex;
-            text = text.substring(0,intsertionPoint)+ch+text.substring(intsertionPoint);
+            text = text.substring(0, intsertionPoint) + ch + text.substring(intsertionPoint);
         }
     }
 
@@ -233,17 +275,14 @@ public class TextInput implements onClick {
         return text;
     }
 
-    private int getCursorIndexAtposition(int xRelativePos){
-        float x = xRelativePos - 4*Game.SCALE;
+    private int getCursorIndexAtposition(int xRelativePos) {
+        float x = xRelativePos - 4 * Game.SCALE;
         FontMetrics Fm = new Canvas().getFontMetrics(font);
-        String displayed = text;
-        if(skipped>0){
-            displayed = "…" + text.substring(skipped);
-        }
+        String displayed = text.substring(leftSkipped, text.length() - rightSkipped);
         int attempt = displayed.length();
-        while(attempt>0&&Fm.stringWidth(displayed.substring(0, attempt))>xRelativePos){
+        while (attempt > 0 && Fm.stringWidth(displayed.substring(0, attempt)) > xRelativePos) {
             attempt--;
         }
-        return displayed.length()-attempt;
+        return (displayed.length() - attempt) + rightSkipped;
     }
 }
