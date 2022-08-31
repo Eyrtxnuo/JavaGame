@@ -26,13 +26,14 @@ import static utils.Utils.isPrintableChar;
  *
  * @author matti
  */
-public class TextInput implements onClick {//TODO: selections : ctrl+c (and Ins functionality)
+public class TextInput implements onClick {//TODO: selections : ctrl+c 
 
     private int xPos, yPos, index;
 
     private int yOffestCenter = TI_HEIGHT / 2;
 
     private boolean cursor = false;
+    private boolean insert = false;
 
     private int cursorIndex = 0;
 
@@ -86,18 +87,18 @@ public class TextInput implements onClick {//TODO: selections : ctrl+c (and Ins 
         g.setFont(font);
         String printText = text;
 
-        System.out.print("Cursor index: " + cursorIndex + ";  leftSkip:" + leftSkipped + ";  rightSkip:" + rightSkipped + ";   lenght:" + text.length());
+        //System.out.print("Cursor index: " + cursorIndex + ";  leftSkip:" + leftSkipped + ";  rightSkip:" + rightSkipped + ";   lenght:" + text.length());
         while (leftSkipped < printText.length() - rightSkipped
                 && rightSkipped < printText.length() - 1
                 && rightSkipped > 0
                 && g.getFontMetrics().stringWidth(printText.substring(leftSkipped, printText.length() - rightSkipped)) < (bounds.width - (leftBorder + rightBorder))) {
             rightSkipped--;
         }
-        if(!(g.getFontMetrics().stringWidth(printText.substring(leftSkipped, printText.length() - rightSkipped)) < (bounds.width - (leftBorder + rightBorder)))){
+        if (!(g.getFontMetrics().stringWidth(printText.substring(leftSkipped, printText.length() - rightSkipped)) < (bounds.width - (leftBorder + rightBorder)))) {
             rightSkipped++;
         }
-                
-        System.out.println("\n"+rightSkipped);
+
+        //System.out.println("\n"+rightSkipped);
         if (leftSkipped == printText.length()
                 || cursorIndex == printText.length()
                 || cursorIndex > printText.substring(leftSkipped).length()
@@ -118,7 +119,7 @@ public class TextInput implements onClick {//TODO: selections : ctrl+c (and Ins 
             }
         }
         printText = printText.substring(leftSkipped, printText.length() - rightSkipped);
-        System.out.println(";   printLenght:" + printText.length());
+        //System.out.println(";   printLenght:" + printText.length());
 
         if (leftSkipped > 0) {
             g.drawString(PREFIX, (int) (xPos + 4 * Game.SCALE), yPos + upperBorder);
@@ -140,10 +141,20 @@ public class TextInput implements onClick {//TODO: selections : ctrl+c (and Ins 
                 g.fillRect(x, y, width, height);
             } else {
                 int x = (int) (xPos + leftBorder - 2 * Game.SCALE + g.getFontMetrics().stringWidth(text.substring(leftSkipped, text.length() - (cursorIndex))));
-                int y = yPos - yOffestCenter + g.getFontMetrics().getDescent();
-                int width = (int) (2 * Game.SCALE);
+                int y = yPos - yOffestCenter + upperBorder;//g.getFontMetrics().getDescent();
+                int width = insert ? g.getFontMetrics().charWidth(text.charAt(text.length() - cursorIndex)) : (int) (2 * Game.SCALE);
                 int height = g.getFontMetrics().getHeight() - g.getFontMetrics().getAscent() / 2;
                 g.fillRect(x, y, width, height);
+                if (insert) {
+                    x += 2 * Game.SCALE;
+                    Color oldC = g.getColor();
+                    g.setColor(new Color(255 - oldC.getRed(),
+                            255 - oldC.getGreen(),
+                            255 - oldC.getBlue()
+                    ));
+                    g.drawString(text.charAt(text.length() - cursorIndex) + "", x, (int) (yPos + upperBorder));
+                    g.setColor(oldC);
+                }
             }
         }
         g.setColor(old);
@@ -253,6 +264,9 @@ public class TextInput implements onClick {//TODO: selections : ctrl+c (and Ins 
                         cursorIndex--;
                     }
                 }
+                case KeyEvent.VK_INSERT -> {
+                    insert = !insert;
+                }
             }
 
         }
@@ -266,8 +280,14 @@ public class TextInput implements onClick {//TODO: selections : ctrl+c (and Ins 
 
     public void append(Character ch) {
         if (isPrintableChar(ch)) {
-            int intsertionPoint = text.length() - cursorIndex;
-            text = text.substring(0, intsertionPoint) + ch + text.substring(intsertionPoint);
+            int insertionPoint = text.length() - cursorIndex;
+            int reinsertionPoint = insertionPoint;
+            if (insert && cursorIndex > 0) {
+                cursorIndex--;
+                reinsertionPoint += 1;
+            }
+            text = text.substring(0, insertionPoint) + ch + text.substring(reinsertionPoint);
+
         }
     }
 
@@ -276,7 +296,7 @@ public class TextInput implements onClick {//TODO: selections : ctrl+c (and Ins 
     }
 
     private int getCursorIndexAtposition(int xRelativePos) {
-        float x = xRelativePos - 4 * Game.SCALE;
+        float x = xRelativePos - leftBorder;
         FontMetrics Fm = new Canvas().getFontMetrics(font);
         String displayed = text.substring(leftSkipped, text.length() - rightSkipped);
         int attempt = displayed.length();
