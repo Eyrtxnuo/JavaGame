@@ -5,7 +5,7 @@
 package utils;
 
 import java.awt.Point;
-import java.awt.geom.Point2D;
+import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.io.ByteArrayOutputStream;
@@ -72,4 +72,13 @@ public class Utils {
         }
         
     }
+    
+    public static boolean isPrintableChar( char c ) {
+        Character.UnicodeBlock block = Character.UnicodeBlock.of( c );
+        return (!Character.isISOControl(c)) &&
+            c != KeyEvent.CHAR_UNDEFINED &&
+            block != null &&
+            block != Character.UnicodeBlock.SPECIALS &&
+            LoadSave.MC_FONT.canDisplay(c);
+    }   
 }

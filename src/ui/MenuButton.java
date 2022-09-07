@@ -3,6 +3,7 @@ package ui;
 import gamestates.Gamestate;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import utils.AudioPlayer;
 import utils.LoadSave;
@@ -143,8 +144,8 @@ public class MenuButton implements onClick{
     /**
      * Set the game state
      */
-    public void clickEvent() {
-        onClick();
+    public void clickEvent(MouseEvent e) {
+        if(!onClick(e))return;
         Gamestate.state = state;
         AudioPlayer.playEffect(AudioPlayer.Effects.CLICK);
     }
@@ -176,8 +177,8 @@ public class MenuButton implements onClick{
     }
 
     @Override
-    public void onClick() {
-        
+    public boolean onClick(MouseEvent e) {
+        return true;
     }
 
     

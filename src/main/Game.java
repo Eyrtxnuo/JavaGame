@@ -78,7 +78,8 @@ public class Game implements Runnable {
     }
     
     
-    /** change game scale, resize panel and recalculate sizes */
+    /** change game scale, resize panel and recalculate sizes
+     * @param scale new scale value*/
     public void changeScale(float scale){
         SCALE = scale;
         TILES_SIZE = TILES_DEFAULT_SIZE * SCALE;

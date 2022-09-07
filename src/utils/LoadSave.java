@@ -13,7 +13,11 @@ import entities.PassiveEnemy;
 import entities.ProjectileManager;
 import gamestates.Playing;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -36,6 +40,7 @@ public class LoadSave {
     public static final String[] LEVELS_BACKGROUND = {"city_background.png","city_background.png","city_background.png", "city_background.png"};
     public static final int LEVELS_NUMBER = LEVELS_DATA.length;
     public static final String MENU_BUTTONS = "button_atlas.png";
+    public static final String MENU_TEXTINPUT = "textinput_atlas.png";
     public static final String MENU_BACKGROUND = "menu_background.png";
     public static final String PAUSE_BACKGROUND = "pause_menu.png";
     public static final String SOUND_BUTTONS = "sound_button.png";
@@ -48,6 +53,8 @@ public class LoadSave {
     public static final String WIN_OVERLAY = "win_overlay.png";
 
     public static final String URM_BUTTONS = "urm_buttons.png";
+    
+    public static final Font MC_FONT = createFont("minecraft-gnu-font.otf");
 
     /** load sprite form local path
      * @param atlas altlas path
@@ -137,5 +144,16 @@ public class LoadSave {
         EnemyManager em = new EnemyManager(playing);
         em.loadEnemies(GetLevelEnemies(levelN));
         return new levels.Level(GetLevelData(levelN),em , new ProjectileManager(playing),playing.getPlayer(), GetSpriteAtlas(LEVELS_BACKGROUND[levelN]));
+    }
+
+    private static Font createFont(String PathToFont) {
+        try {
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            Font newFont = Font.createFont(Font.TRUETYPE_FONT, LoadSave.class.getResourceAsStream("/font/"+PathToFont));
+            ge.registerFont(newFont);
+            return newFont;
+        } catch (IOException|FontFormatException e) {
+            return null;
+        }
     }
 }

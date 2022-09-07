@@ -3,6 +3,7 @@ package ui;
 import gamestates.Gamestate;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import utils.AudioPlayer;
 import static utils.Constants.UI.Buttons.*;
@@ -73,8 +74,8 @@ public class MultiplayerButton implements onClick {
         this.mousePressed = mousePressed;
     }
     
-    public void clickEvent() {
-        onClick();
+    public void clickEvent(MouseEvent e) {
+        if(!onClick(e))return;
         Gamestate.state = state;
         AudioPlayer.playEffect(AudioPlayer.Effects.CLICK);
     }
@@ -93,8 +94,8 @@ public class MultiplayerButton implements onClick {
     }
     
     @Override
-    public void onClick() {
-
+    public boolean onClick(MouseEvent e) {
+        return true;
     }
 
 }

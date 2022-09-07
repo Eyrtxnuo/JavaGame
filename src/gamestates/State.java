@@ -1,5 +1,6 @@
 package gamestates;
 
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import main.Game;
 import ui.MenuButton;
@@ -39,6 +40,10 @@ public abstract class State {
     
     public Boolean isInMultb(MouseEvent e, MultiplayerButton mb) {
         return mb.getBounds().contains(e.getX(), e.getY());
+    }
+    
+    public Boolean isInBounds(MouseEvent e, Rectangle bo) {
+        return bo.contains(e.getX(), e.getY());
     }
 
     /**

@@ -4,10 +4,12 @@
  */
 package ui;
 
+import java.awt.event.MouseEvent;
+
 /**
  *
  * @author matti
  */
 public interface onClick {
-    public void onClick();
+    public boolean onClick(MouseEvent e);
 }

@@ -70,7 +70,6 @@ public class GamePanel extends javax.swing.JPanel {
         Dimension size = new Dimension((int)GAME_WIDTH, (int)GAME_HEIGHT);
         setPreferredSize(size);
         System.out.println("Panel Size: " + GAME_WIDTH + "*" + GAME_HEIGHT);
-
     }
 
      
