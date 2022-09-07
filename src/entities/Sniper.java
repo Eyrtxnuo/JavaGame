@@ -6,10 +6,12 @@ package entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import main.Game;
 import utils.Constants;
-import static utils.Constants.PlayerConstants.RUNNING;
+import static utils.Constants.EnemyConstants.enemyAtlas.CRABBY;
+import static utils.Constants.EnemyConstants.enemyState.RUNNING;
 import utils.LoadSave;
 
 /** enemy sniper, doesn't move, 2hp
@@ -32,10 +34,12 @@ public class Sniper extends Enemy {
 
     /** constructor with spawn coordinates
      * @param x coordinate x
-     * @param y coordinate y */
-    public Sniper(float x,  float y) {
-        super(x, y);
-        TYPE = Constants.EnemyConstants.CRABBY;
+     * @param y coordinate y
+     * @param id enemy id
+     */
+    public Sniper(float x,  float y,int id) {
+        super(x, y, id);
+        ATLAS_TYPE = CRABBY;
         initSprite();
         settings();
         initHitbox(x, y, (int) (24f), (int) (30f));
@@ -91,8 +95,9 @@ public class Sniper extends Enemy {
     public void update() {
         super.update();
         updateAnimationTick();
+        Player nearestPl = Game.playing.getNearestPlayer(new Point.Float(hitbox.x+hitbox.width/2,hitbox.y+hitbox.height/2));
         if (fireTick <= 0) {
-            if (Math.abs(p.hitbox.x - hitbox.x) < Game.COORD_WIDTH / 2 - 100) {
+            if (Math.abs(nearestPl.hitbox.x - hitbox.x) < Game.COORD_WIDTH / 2 - 100) {
                 fire();
             }
         } else {
@@ -103,8 +108,9 @@ public class Sniper extends Enemy {
 
     /** Fires a projectile */
     public void fire() {
+        Player nearestPl = Game.playing.getNearestPlayer(new Point.Float(hitbox.x+hitbox.width/2,hitbox.y+hitbox.height/2));
         Projectile flyingAmmo = new Projectile(getHitbox().x + xShootOffset, getHitbox().y + yShootOffset,
-                (float) (Math.atan2((getHitbox().x + xShootOffset) - (p.getHitbox().x +p.getHitbox().width/2), (getHitbox().y + yShootOffset) - (p.getHitbox().y + p.getHitbox().height / 2)) + Math.PI / 2 - GUN_RANDOMNESS / 2 + Math.random() * GUN_RANDOMNESS));
+                (float) (Math.atan2((getHitbox().x + xShootOffset) - (nearestPl.getHitbox().x +nearestPl.getHitbox().width/2), (getHitbox().y + yShootOffset) - (nearestPl.getHitbox().y + nearestPl.getHitbox().height / 2)) + Math.PI / 2 - GUN_RANDOMNESS / 2 + Math.random() * GUN_RANDOMNESS));
         flyingAmmo.loadLvlData(Game.playing.levelManager.getLoadedLevel().getLvlData());
         Game.playing.flyingAmmos.enemyAdd(flyingAmmo);
 

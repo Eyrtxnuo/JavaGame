@@ -11,6 +11,7 @@ import java.util.LinkedList;
 public class EnemyManager {
     /** Enemy container */
     private LinkedList<Enemy> enemies;
+    private LinkedList<Enemy> defaultEnemies;
     /** Playing object reference */
     private final Playing playing;
 
@@ -29,10 +30,14 @@ public class EnemyManager {
      *@param enemies the new {@link entities.Enemy Enemy} list
      */
     public void loadEnemies(LinkedList<Enemy> enemies){
+        stopAllThreads();
         for(Enemy el: enemies){
             el.loadPlayer(playing.getPlayer());
         }
         this.enemies = enemies;
+        this.defaultEnemies = (LinkedList<Enemy>) enemies.clone();
+        
+         
     }
 
     /** Get current {@link entities.Enemy Enemy} list
@@ -40,6 +45,22 @@ public class EnemyManager {
      */
     public LinkedList<Enemy> getEnemies() {
         return enemies;
+    }
+
+    /** Get level {@link entities.Enemy Enemy} list
+     *@return the level {@link entities.Enemy Enemy} list
+     */
+    public LinkedList<Enemy> getDefaultEnemies() {
+        return defaultEnemies;
+    }
+    
+    /** Get the dead enemies {@link entities.Enemy Enemy} list
+     *@return the list of level {@link entities.Enemy enemies} that are not currently alive 
+     */
+    public LinkedList<Enemy> getDeadEnemies() {
+        LinkedList<Enemy> difference = ((LinkedList<Enemy>) defaultEnemies.clone());
+        difference.removeAll(enemies);
+        return difference;
     }
     
     /**Remove a {@link entities.Enemy Enemy} from the list
@@ -83,9 +104,34 @@ public class EnemyManager {
     }
 
     /** stops all threads and clear enemies */
-    void removeAllEnemies() {
+    public void removeAllEnemies() {
         stopAllThreads();
         enemies.clear();
     }
+
     
+    /**
+     * Reload default and resets enemies
+     */
+    public void reset() {
+        removeAllEnemies();
+        defaultEnemies.forEach((en)-> {
+            en.reset();
+        });
+        enemies.addAll(defaultEnemies);
+    }
+    
+    /**
+     * Get the enemy with the specified id if present, else return null
+     * @param id the id of the enemy to be searched
+     * @return the enemy found with this id, or null if not found
+     */
+    public Enemy getFromId(int id){
+        for (Enemy enemy : enemies) {
+            if(enemy.id == id){
+                return enemy;
+            } 
+        }
+        return null;
+    }
 }

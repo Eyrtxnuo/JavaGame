@@ -9,15 +9,16 @@ import java.awt.Toolkit;
 import java.util.Arrays;
 import utils.AudioPlayer;
 
-
 /**
  * Main class, calculates scale for screen, create game object
+ *
  * @author matti
  */
 public class MainClass {
-    
+
     /**
      * program execution point
+     *
      * @param args console arguments
      */
     public static void main(String[] args) {

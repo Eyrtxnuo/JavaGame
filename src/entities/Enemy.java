@@ -4,16 +4,20 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import main.Game;
+import org.json.JSONObject;
 import utils.AudioPlayer;
 import utils.Constants;
 import static utils.Constants.EnemyConstants.GetSpriteAmount;
 import static utils.Constants.EnemyConstants.*;
+import static utils.Constants.EnemyConstants.enemyState.*;
+import static utils.Constants.EnemyConstants.enemyType.*;
 import static utils.HelpMethods.CanMoveHere;
 import static utils.HelpMethods.GetEntityXPosNextToWall;
 import static utils.HelpMethods.GetEntityYPosUnderRoofOrAboveFloor;
 import static utils.HelpMethods.IsEntityOnFloor;
 import utils.LoadSave;
 import utils.Updater;
+import utils.Utils;
 
 /**Abstract class to declare enemies
  * 
@@ -34,10 +38,11 @@ public abstract class Enemy extends Entity{
     protected float xDrawOffset, yDrawOffset;
     
     /** enemy type */
-    protected int TYPE;
+    protected enemyAtlas ATLAS_TYPE;
+    public int id;
     
     /** enemy action, for animations */
-    protected int action = RUNNING;
+    protected enemyState action = RUNNING;
     /** enemy actions animations */
     protected boolean moving = false, attacking = false;
     /** enemy movements(inputs) */
@@ -48,7 +53,7 @@ public abstract class Enemy extends Entity{
     protected int[][] lvlData;
     /** current vertical speed */
     protected float airSpeed = 0f;
-    /** movement constaats */
+    /** movement constants */
     protected float movSpeed=0.5f, jumpSpeed=-2.25f, gravity=0.04f, fallSpeedAfterCollision = 0.5f;
     /** is Enemy in Air, for applying graavity and animations */
     protected boolean inAir = true;
@@ -75,25 +80,28 @@ public abstract class Enemy extends Entity{
     * calls initSprite to load sprite render configuration
     * @param x X coordinate of enemy
     * @param y Y coordinate of enemy
+    * @param id enemy id
     */
-    public Enemy(float x, float y) {
+    public Enemy(float x, float y,int id) {
         super(x, y);
+        this.id = id;
         initSprite();
         initHitbox(x, y, (int)(20f), (int)(27f));
         updater = new Updater(() -> {update(); return null;}, Game.UPS_SET);
         
     }
-    /** TYPE enemy constructor, 
-    * 
-    * Initialize enemy object, declaring the type
-    * calls the {@link entities.Enemy#Enemy(float, float) default constructor}
+    /** ATLAS_TYPE enemy constructor, 
+ 
+ Initialize enemy object, declaring the type
+ calls the {@link entities.Enemy#Enemy(float, float) default constructor}
     * @param x X coordinate of enemy
     * @param y Y coordinate of enemy
+    * @param id enemy id
     * @param TYPE enemy type
     */
-    public Enemy(float x, float y, int TYPE) {
-        this(x, y);
-        this.TYPE = TYPE;
+    public Enemy(float x, float y,int id, enemyAtlas TYPE) {
+        this(x, y, id);
+        this.ATLAS_TYPE = TYPE;
     }
     
     /** load sprite render configuration, 
@@ -118,6 +126,10 @@ public abstract class Enemy extends Entity{
     */
     @Override
     public void update() {
+        if(!Game.playing.enemies.getEnemies().contains(this)){
+            System.err.println("ENEMY ERROR: NOT REGISTERED, STOPPING("+id+")");
+            updater.stopThread();
+        }
         super.update();
         updateAnimationTick();
         updatePos();
@@ -161,9 +173,9 @@ public abstract class Enemy extends Entity{
     public void render(Graphics g, float offsetX, float offsetY) {
         if((hitbox.x-xDrawOffset+spriteX)*Game.SCALE>-(offsetX) && (hitbox.x-xDrawOffset)*Game.SCALE <Game.GAME_WIDTH-(offsetX)){
             if(dirLeft){
-                g.drawImage(animations[action][aniIndex % animations[action].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
+                g.drawImage(animations[action.ordinal()][aniIndex % animations[action.ordinal()].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) (spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
             }else{
-                g.drawImage(animations[action][aniIndex % animations[action].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX  + spriteX * Game.SCALE), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) -(spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
+                g.drawImage(animations[action.ordinal()][aniIndex % animations[action.ordinal()].length], (int) ((hitbox.x - xDrawOffset) * Game.SCALE + offsetX  + spriteX * Game.SCALE), (int) ((hitbox.y - yDrawOffset) * Game.SCALE + offsetY), (int) -(spriteX * Game.SCALE), (int) (spriteY * Game.SCALE), null);
             }
             if(Constants.DEBUG){
                 drawHitbox(g, offsetX, offsetY);
@@ -177,9 +189,9 @@ public abstract class Enemy extends Entity{
     protected void LoadAnimations(String path) {
         BufferedImage img = LoadSave.GetSpriteAtlas(path);
         
-        animations = new BufferedImage[5][];
+        animations = new BufferedImage[enemyState.values().length][];
         for (int j = 0; j < animations.length; j++) {
-            animations[j] = new BufferedImage[Constants.EnemyConstants.GetSpriteAmount(TYPE, j)];
+            animations[j] = new BufferedImage[Constants.EnemyConstants.GetSpriteAmount(ATLAS_TYPE, enemyState.values()[j])];
             for (int i = 0; i < animations[j].length; i++) {
                 animations[j][i] = img.getSubimage(i * spriteX, j * spriteY, spriteX, spriteY);
             }
@@ -197,7 +209,7 @@ public abstract class Enemy extends Entity{
     * calls updateXpos() to handle horizontal movements
     */
     protected void updatePos() {
-        prePosUpdate(p);
+        prePosUpdate();
         /**/
         moving = false;
         if(jump){
@@ -324,7 +336,7 @@ public abstract class Enemy extends Entity{
         if (aniTick >= aniSpeed) {
             aniTick = 0;
             aniIndex++;//= (aniIndex + 1) % GetSpriteAmount(playerAction);
-            if (aniIndex >= GetSpriteAmount(TYPE, action)) {
+            if (aniIndex >= GetSpriteAmount(ATLAS_TYPE, action)) {
                 aniIndex = 0;
                 attacking = false;
             }
@@ -347,9 +359,8 @@ public abstract class Enemy extends Entity{
     
     /** event called every time before position update,
      * should be overridden from a subclass to implement event
-     * @param p player reference
      */
-    protected void prePosUpdate(Player p) {
+    protected void prePosUpdate() {
         
     }
     
@@ -365,7 +376,7 @@ public abstract class Enemy extends Entity{
     /** Override die of Entity */
     @Override
     public void die(){
-        System.out.println("EnemyDeath");
+        System.out.println("EnemyDeath (" + id+ ")");
         updater.stopThread();
         Game.playing.enemies.removeEnemy(this);
     }
@@ -385,5 +396,124 @@ public abstract class Enemy extends Entity{
             die();
         }
         AudioPlayer.playEffect(AudioPlayer.Effects.ENEMY_DEAD);
+    }
+    
+    /**
+     * Get a Enemy representation of the enemy
+     * @return a JSON object representing this
+     */
+    public JSONObject toJSONObject(){
+        return new JSONObject()
+                .put("spawnX", x)
+                .put("spawnY", y)
+                .put("left", left)
+                .put("right",right)
+                .put("jump",jump)
+                .put("position", Utils.jsonMapper.pointToJSON(getPosition()))
+                .put("lives", lives)
+                .put("dirLeft", dirLeft)
+                .put("moving", moving)
+                .put("attacking", attacking)
+                .put("airSpeed", airSpeed)
+                .put("id", id)
+                .put("type", Constants.EnemyConstants.enemyType.getFromClass(this).ordinal());
+    }
+    
+    /**
+     * Get a reduced representation of the enemy
+     * should be used to send death (0 lives) updates, and in client
+     * @return a reduced JSON object representing this
+     */
+    public JSONObject JSONLives(){
+        return new JSONObject()
+            .put("lives", lives)
+            .put("id", id);
+    }
+    
+    
+    /**
+     * Update the current enemy with the JSON data
+     * @param obj the JSON object to be used to update status
+     */
+    public void updateWithJson(JSONObject obj){
+        x = obj.getFloat("spawnX");
+        y = obj.getFloat("spawnY");
+        left = obj.getBoolean("left");
+        right = obj.getBoolean("right");
+        jump = obj.getBoolean("jump");
+        setPosition(Utils.jsonMapper.JSONTOPoint(obj.getJSONArray("position")));
+        lives = obj.getInt("lives");
+        dirLeft = obj.getBoolean("dirLeft");
+        moving = obj.getBoolean("moving");
+        attacking = obj.getBoolean("attacking");
+        airSpeed = obj.getFloat("airSpeed");
+        id = obj.getInt("id");
+    }
+    
+    /**
+     * Create a enemy with a JSON representation
+     * @param obj the JSON object used to create the enemy
+     * @return the newly created enemy
+     */
+    public static Enemy fromJSON(JSONObject obj){
+        Enemy created;
+        int type = obj.getInt("type");
+        if(type == PASSIVE_ENEMY.ordinal()){
+            created = new PassiveEnemy(obj.getFloat("spawnX"), obj.getFloat("spawnY"),  type);
+        }else if(type == FOLLOW_ENEMY.ordinal()){
+            created = new FollowEnemy(obj.getFloat("spawnX"), obj.getFloat("spawnY"),  type);
+        }else if(type == SNIPER.ordinal()){
+            created = new Sniper(obj.getFloat("spawnX"), obj.getFloat("spawnY"),  type);
+        }else if(type == BOSS.ordinal()){
+            created = new Boss(obj.getFloat("spawnX"), obj.getFloat("spawnY"),  type);
+        }else{
+            return null;
+        }
+        created.id = obj.getInt("id");
+        created.left = obj.getBoolean("left");
+        created.right = obj.getBoolean("right");
+        created.jump = obj.getBoolean("jump");
+        created.setPosition(Utils.jsonMapper.JSONTOPoint(obj.getJSONArray("position")));
+        created.lives = obj.getInt("lives");
+        created.dirLeft = obj.getBoolean("dirLeft");
+        created.moving = obj.getBoolean("moving");
+        created.attacking = obj.getBoolean("attacking");
+        created.airSpeed = obj.getFloat("airSpeed");
+        return created;
+    }
+    
+    /**
+     * reset the position to the spawn/default
+     */
+    private void resetPosition() {
+        hitbox.x = x;
+        hitbox.y = y;
+    }
+
+    /**
+     * Reset the enemy to the default status
+     */
+    void reset() {
+        resetInAir();
+        inAir = true;
+        resetPosition();
+        resetMovements();
+        resetLives();
+    }
+
+    /**
+     * Get the max lives of enemy
+     * @return 
+     */
+    public int getMAX_LIVES() {
+        return MAX_LIVES;
+    }
+
+    /**
+     * Set the lives of this enemy
+     * @param lives new lives value
+     */
+    public void setLives(int lives) {
+        this.lives = lives;
     }
 }

@@ -65,7 +65,7 @@ public class Level {
     public void update() {
         enemies.startAllThreads();
         player.update();
-        Game.playing.flyingAmmos.updateAll(player);
+        Game.playing.flyingAmmos.updateAll();
     }
 
     /* get enemy menager object reference */ 
@@ -121,5 +121,11 @@ public class Level {
      */
     public int getLenght(){
         return getWidthInTiles()*Game.TILES_DEFAULT_SIZE;
+    }
+    
+    public void reload(){
+        player.reset();
+        proj.clear();
+        enemies.reset();
     }
 }

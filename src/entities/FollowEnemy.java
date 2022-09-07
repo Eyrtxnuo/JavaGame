@@ -5,9 +5,11 @@
  */
 package entities;
 
+import java.awt.Point;
 import main.Game;
 import utils.Constants;
-import static utils.Constants.PlayerConstants.*;
+import static utils.Constants.EnemyConstants.enemyAtlas.*;
+import static utils.Constants.EnemyConstants.enemyState.*;
 import utils.LoadSave;
 
 /** enemy, flollows player if near enough
@@ -19,10 +21,11 @@ public class FollowEnemy extends Enemy{
      * constructor, create enemy
      * @param x coordinate x
      * @param y coordinate y
+     * @param id enemy id
      */
-    public FollowEnemy(float x, float y) {
-        super(x, y);
-        TYPE = Constants.EnemyConstants.CRABBY;
+    public FollowEnemy(float x, float y, int id) {
+        super(x, y, id);
+        ATLAS_TYPE = CRABBY;
         initSprite();
         settings();
         initHitbox(x, y, (int)(22f), (int)(17f));
@@ -55,12 +58,13 @@ public class FollowEnemy extends Enemy{
 
     /** set walk direction facing player */
     @Override
-    protected void prePosUpdate(Player p) {
+    protected void prePosUpdate() {
+        Player nearestPl = Game.playing.getNearestPlayer(new Point.Float(hitbox.x+hitbox.width/2,hitbox.y+hitbox.height/2));
         resetMovements();
-        if(Math.abs(p.hitbox.x-hitbox.x)<Game.COORD_WIDTH/2-100){
-            if(p.getHitbox().x > hitbox.x){
+        if(Math.abs(nearestPl.hitbox.x-hitbox.x)<Game.COORD_WIDTH/2-100){
+            if(nearestPl.getHitbox().x > hitbox.x){
                 right=true;
-            }else if(p.getHitbox().x < hitbox.x){
+            }else if(nearestPl.getHitbox().x < hitbox.x){
                 left=true;
             }
         }

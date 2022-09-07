@@ -233,8 +233,15 @@ public class Game implements Runnable {
     public void initPlaying(Playing playing) {
         Game.playing = playing;
         Game.playing.initLevelManager();
+        Game.playing.afterCreationInit();
     }
 
+    /*public void initPlaying(Playing playing, LevelManager lm) {
+        Game.playing = playing;
+        Game.playing.levelManager = lm;
+    }*/
+    
+    
     
     
 }

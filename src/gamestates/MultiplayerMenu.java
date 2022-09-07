@@ -4,7 +4,6 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -129,7 +128,7 @@ public class MultiplayerMenu extends State implements Statemethods{
             public boolean onClick(MouseEvent e) {
                 try {
                     game.initPlaying(new PlayingMultiplayerClient(game, textIP.getText(), 45670));
-                    Game.playing.loadLevel(0);
+                    //Game.playing.loadLevel(0);
                     
                 } catch (SocketException | UnknownHostException | SocketTimeoutException ex) {
                     //Logger.getLogger(MultiplayerMenu.class.getName()).log(Level.WARNING, "Connection error: {0}", ex.getMessage());

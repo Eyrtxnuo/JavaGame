@@ -6,6 +6,7 @@ package entities;
 
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import static utils.Constants.PlayerConstants.*;
@@ -446,14 +447,7 @@ public class Player extends Entity {
 
     }
 
-    public Point.Float getPosition(){
-        return new Point.Float(getHitbox().x, getHitbox().y);
-    }
     
-    public void setPosition(Point.Float point){
-        hitbox.x = point.x;
-        hitbox.y = point.y;
-    }
     
     public Point.Float getSpawnPosition(){
         return new Point.Float(x, y);
@@ -503,7 +497,8 @@ public class Player extends Entity {
         return this;
     }
 
-    
-    
-    
+    public Point.Float getCenterPoint() {
+        return new Point2D.Float(hitbox.x+hitbox.width/2, hitbox.y+hitbox.height/2);
+    }
+
 }

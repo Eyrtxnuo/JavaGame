@@ -17,7 +17,7 @@ import org.json.JSONArray;
  *
  * @author matti
  */
-public class Utils {
+public abstract class Utils {
     
     public static String getHour(){
         return (new SimpleDateFormat("HH:mm:ss")).format(new Date(System.currentTimeMillis()));
@@ -71,6 +71,18 @@ public class Utils {
             return new Point.Float(a.getFloat(0),a.getFloat(1));
         }
         
+        public static int[][] JSONToLevelData(JSONArray arr){
+            int[][] data = new int[arr.length()][];
+            for (int c = 0; c < arr.length(); c++) {
+                JSONArray array = arr.getJSONArray(c);
+                data[c] = new int[array.length()];
+                for (int i = 0; i < array.length(); ++i) {
+                    data[c][i] = array.getInt(i);
+                }
+            }
+            return data;
+        }
+        
     }
     
     public static boolean isPrintableChar( char c ) {
@@ -79,6 +91,8 @@ public class Utils {
             c != KeyEvent.CHAR_UNDEFINED &&
             block != null &&
             block != Character.UnicodeBlock.SPECIALS &&
-            LoadSave.MC_FONT.canDisplay(c);
+            LoadSave.FONT.canDisplay(c);
     }   
+    
+    
 }

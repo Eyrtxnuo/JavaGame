@@ -2,9 +2,12 @@ package entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import main.Game;
+import org.json.JSONObject;
 import utils.Constants;
 import static utils.HelpMethods.CanMoveHere;
+import utils.Utils;
 
 /**
  * Hit enemies or player on contact
@@ -38,6 +41,13 @@ public class Projectile extends Entity{
         initHitbox(x, y, 4, 4);
     }
     
+     public Projectile(Point.Float position, float angle) {
+        super(position.x, position.y);
+        this.angle = -angle;
+        calcSpeeds();
+        initHitbox(x, y, 4, 4);
+    }
+    
     /** calculate scomposed speeds from base speed and angle */ 
     private void calcSpeeds(){
         xSpeed = (float)Math.cos(this.angle)*SPEED;
@@ -57,9 +67,11 @@ public class Projectile extends Entity{
         }
     }
  
-    /**  update tick
-     * @param p player reference*/
-    public void update(Player p) {
+    /**
+     * update tick
+    */
+    @Override
+    public void update() {
         super.update();
         updatePos();
         /*if(hitbox.intersects(p.hitbox)){
@@ -79,13 +91,11 @@ public class Projectile extends Entity{
             if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
                 hitbox.x += xSpeed;
             }else {
-                float angleNew = (float)(Math.PI/2+(Math.PI/2-getAngle()));
-                setAngle(angleNew);
+                setAngle((float)(Math.PI/2+(Math.PI/2-getAngle())));
                 bounces--;
             }
         }else{
-            float angleNew = (float)-getAngle();
-            setAngle(angleNew);
+            setAngle((float)-getAngle());
              bounces--;
             //initHitbox(0, 0, 5, 5);
             //;
@@ -126,4 +136,40 @@ public class Projectile extends Entity{
     public int getRemaningBounces() {
         return bounces;
     }
+
+    
+    /**
+     * Get a JSON representation of the projectile
+     * @return a JSON object representing this
+     */
+    public JSONObject toJSONObject(){
+        return new JSONObject()
+            .put("position", Utils.jsonMapper.pointToJSON(getPosition()))
+            .put("angle", -getAngle())
+            .put("bounces", getRemaningBounces())
+            .put("despawnCounter", despawnCounter);
+    }
+    
+    /**
+     * Update the current projectile with the JSON data
+     * @param obj the JSON object to be used to update status
+     */
+    public void updateWithJson(JSONObject obj){
+        setPosition(Utils.jsonMapper.JSONTOPoint(obj.getJSONArray("position")));
+        bounces = obj.getInt("bounces");
+        despawnCounter = obj.getInt("despawnCounter");
+    }
+    
+    /**
+     * Create a projectile with a JSON representation
+     * @param obj the JSON object used to create the enemy
+     * @return the newly created projectile
+     */
+    public static Projectile fromJSON(JSONObject obj){
+        Projectile created = new Projectile(Utils.jsonMapper.JSONTOPoint(obj.getJSONArray("position")), obj.getFloat("angle"));
+        created.bounces = obj.getInt("bounces");
+        created.despawnCounter = obj.getInt("despawnCounter");
+        return created;
+    }
+
 }

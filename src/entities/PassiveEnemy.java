@@ -5,10 +5,9 @@
  */
 package entities;
 
-import java.awt.image.BufferedImage;
 import utils.Constants;
-import static utils.Constants.EnemyConstants.*;
-import static utils.Constants.PlayerConstants.RUNNING;
+import static utils.Constants.EnemyConstants.enemyAtlas.*;
+import static utils.Constants.EnemyConstants.enemyState.RUNNING;
 import utils.LoadSave;
 
 /** enemy, bounces on walls
@@ -20,10 +19,11 @@ public class PassiveEnemy extends Enemy {
      * constructor, create enemy
      * @param x coordinate x
      * @param y coordinate y
+     * @param id enemy id
      */
-    public PassiveEnemy(float x, float y) {
-        super(x, y);
-        TYPE = Constants.EnemyConstants.CRABBY;
+    public PassiveEnemy(float x, float y, int id) {
+        super(x, y, id);
+        ATLAS_TYPE = CRABBY;
         initSprite();
         settings();
         initHitbox(x, y, (int) (22f), (int) (17f));

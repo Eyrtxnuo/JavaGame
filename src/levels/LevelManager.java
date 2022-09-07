@@ -5,6 +5,7 @@
 package levels;
 
 import entities.Enemy;
+import entities.EnemyManager;
 import entities.Projectile;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -19,6 +20,7 @@ import static utils.LoadSave.LEVELS_NUMBER;
  * Level manager class, load level tiles, enemies, and background
  * @author matti
  */
+
 public class LevelManager {
  
     /** game reference */
@@ -48,6 +50,7 @@ public class LevelManager {
      */
     public void loadLevel(int levelN){
         loadedLevel = LoadSave.getLevel(levelN, game.getPlaying());
+        loadedLevel.reload();
     }
     
     /** update, redirect update to loadedLevel */
@@ -69,7 +72,6 @@ public class LevelManager {
             g.setColor(new Color(255, 160, 0, 128));
             g.fillRect((int)((loadedLevel.getWidthInTiles()-4)*Game.TILES_SIZE+offsetX), (int)(0+offsetY),(int)(4*Game.TILES_SIZE), (int) Game.GAME_HEIGHT);
         }
-        
         for (int j = 0; j < loadedLevel.getLvlData().length; j++)
             for (int i = 0; i < loadedLevel.getLvlData()[j].length; i++) {
                 int index = loadedLevel.getTilesIndex(i, j);
@@ -155,5 +157,13 @@ public class LevelManager {
         return loadedLevel;
     }
     
+    public void loadLevelWIthData(int[][] data, EnemyManager em){
+        loadedLevel = LoadSave.createCustomLevel(data, Game.playing, em);
+        loadedLevel.reload();
+    }
+    
+    public void reloadLevel() {
+        loadedLevel.reload();
+    }
     
 }

@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import levels.LevelManager;
@@ -20,6 +21,11 @@ import ui.PauseOverlay;
 import utils.AudioPlayer;
 import utils.Constants;
 import static utils.LoadSave.*;
+
+/**
+ * 
+ * @author matti
+ */
 
 public class Playing extends State implements Statemethods {
 
@@ -47,8 +53,11 @@ public class Playing extends State implements Statemethods {
      */
     private boolean death = false;
 
-    
+    /**
+     * Boolean for the player win state
+     */
     private boolean endGame = false;
+    
     /**
      * PauseOverlay object
      */
@@ -96,7 +105,14 @@ public class Playing extends State implements Statemethods {
      * Current level load
      */
     protected int currentLevel = 0;
-
+    
+    public boolean doPauseBlock = true;
+    
+    /**
+     * Data for eventual custom level load
+     *
+    public int[][] customLevel = null;/**/
+    
     /**
      * Default constructor
      *
@@ -127,7 +143,14 @@ public class Playing extends State implements Statemethods {
         levelManager = new LevelManager(game);
         connectLevel();
     }
-
+    
+    /**
+     * Event called after the object creaation is complete
+     */
+    public void afterCreationInit(){
+        
+    }
+    
     /**
      *
      */
@@ -141,11 +164,14 @@ public class Playing extends State implements Statemethods {
      *
      */
     public void reloadLevel() {
-        enemies.stopAllThreads();
-        
-        levelManager.loadLevel(currentLevel);
-        connectLevel();
-        player.reset();
+        /*if(enemies!=null){
+            enemies.stopAllThreads();
+        }
+        */
+        /*levelManager.loadLevel(currentLevel);
+        connectLevel();*/
+        levelManager.reloadLevel();
+        //player.reset();
         death = false;
     }
 
@@ -156,7 +182,8 @@ public class Playing extends State implements Statemethods {
      */
     public void loadLevel(int levelN) {
         currentLevel = levelN;
-        reloadLevel();
+        levelManager.loadLevel(levelN);
+        connectLevel();
     }
 
     /**
@@ -167,7 +194,7 @@ public class Playing extends State implements Statemethods {
     public void update() {
         if (paused) {
             pauseOverlay.update();
-            return;
+            if(doPauseBlock)return;
         }
         if (death) {
             deathOverlay.update();
@@ -210,7 +237,7 @@ public class Playing extends State implements Statemethods {
 
         levelManager.drawWorld(g, effXOffset, 0);
         levelManager.drawEnemies(g, effXOffset, 0);
-        Player player = levelManager.getLoadedLevel().getPlayer();
+        //Player player = levelManager.getLoadedLevel().getPlayer();
         
         otherPlayerDraw(g);
         if (!paused && !death && !endGame) {
@@ -220,22 +247,23 @@ public class Playing extends State implements Statemethods {
             g.drawLine((int) ((player.getHitbox().x + player.getHitbox().width / 2) * Game.SCALE + effXOffset), (int) ((player.getHitbox().y + player.getHitbox().height / 2) * Game.SCALE), (int) pointerX, (int) pointerY);
             g2.setStroke(new BasicStroke(0));
         }
+        otherProjectileDraw(g);
         levelManager.drawProjs(g, effXOffset, 0);
-
         player.render(g, effXOffset, 0);
         g.setColor(Color.black);
         g.setFont(new Font("TimesRoman", Font.BOLD, (int) (15 * Game.SCALE)));
         g.drawString("LIVES: " + player.getLives(), (int) (2 * Game.SCALE), (int) (15 * Game.SCALE));
-
-        if (paused) {
-            pauseOverlay.draw(g);
+        if (endGame){
+            endGameOverlay.draw(g);
         }
         if (death) {
             deathOverlay.draw(g);
         }
-        if (endGame){
-            endGameOverlay.draw(g);
+        if (paused) {
+            pauseOverlay.draw(g);
         }
+        
+        
         //System.out.println(System.nanoTime() - a);
 
     }
@@ -502,18 +530,24 @@ public class Playing extends State implements Statemethods {
     }
 
     /**
-     * Return if player is death
+     * Return if player is in death state
      *
-     * @return if player is death
+     * @return if player is dead
      */
     public boolean isDeath() {
         return death;
     }
 
+    /**
+     * Return if player is in endgame state
+     *
+     * @return if player has completed the game
+     */
     public boolean isEndGame() {
         return endGame;
     }
 
+    
     public void gameWin(){
         endGame = true;
         AudioPlayer.stopMusic();
@@ -523,4 +557,25 @@ public class Playing extends State implements Statemethods {
 
     protected void otherPlayerDraw(Graphics g) {
     }
+    
+    protected void otherProjectileDraw(Graphics g) {
+    }
+    
+    public void loadCustomLevel(int[][] lvlData, int lvlNumber, EnemyManager enemies){
+        if(enemies!=null){
+            enemies.stopAllThreads();
+        }
+        levelManager.loadLevelWIthData(lvlData, enemies);
+        this.currentLevel = 3;
+        this.enemies = enemies;
+        connectLevel();
+        player.reset();
+        death = false;
+    }
+
+    public Player getNearestPlayer(Point.Float point) {
+        return player;
+    }
+
+    
 }

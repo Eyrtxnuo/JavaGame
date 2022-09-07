@@ -71,4 +71,13 @@ public class CLIENT extends Thread{
          }
          return null;   
     }
+
+    public InetAddress getAddress() {
+        return address;
+    }
+
+    public int getPort() {
+        return port;
+    }
+    
 }

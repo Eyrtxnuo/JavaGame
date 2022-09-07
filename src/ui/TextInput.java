@@ -37,14 +37,14 @@ public class TextInput implements onClick {//TODO: selections : ctrl+c
 
     private int cursorIndex = 0;
 
-    private String text = "";
+    private String text = "localhost";
     private int leftSkipped = 0;
     private int rightSkipped = 0;
 
     private static final String PREFIX = "…";
     private static final String SUFFIX = "…";
 
-    private Font font = LoadSave.MC_FONT.deriveFont(25 * Game.SCALE);
+    private Font font = LoadSave.FONT.deriveFont(25 * Game.SCALE);
 
     private int animTick;
     private final int animSpeed = 100;

@@ -1,14 +1,23 @@
 package utils;
 
+import entities.Boss;
+import entities.Enemy;
+import entities.FollowEnemy;
+import entities.PassiveEnemy;
+import entities.Sniper;
 import main.Game;
 
 public class Constants {
 
-    /** is Debug enabled */
+    /**
+     * is Debug enabled
+     */
     public static final boolean DEBUG = false;
-    
-    /** update values respect to scale */
-    public static void updateScaleConsts(){
+
+    /**
+     * update values respect to scale
+     */
+    public static void updateScaleConsts() {
         UI.Buttons.B_WIDTH = (int) (UI.Buttons.B_WIDTH_DEFAULT * Game.SCALE);
         UI.Buttons.B_HEIGHT = (int) (UI.Buttons.B_HEIGHT_DEFAULT * Game.SCALE);
         UI.PauseButtons.SOUND_SIZE = (int) (UI.PauseButtons.SOUND_SIZE_DEFAULT * Game.SCALE);
@@ -20,10 +29,14 @@ public class Constants {
         EnemyConstants.CRABBY_HEIGHT = (int) (EnemyConstants.CRABBY_HEIGHT_DEFAULT * Game.SCALE);
     }
 
-    /** ui constants */
+    /**
+     * ui constants
+     */
     public static class UI {
 
-        /** Buttons constants */
+        /**
+         * Buttons constants
+         */
         public static class Buttons {
 
             public final static int B_WIDTH_DEFAULT = 140;
@@ -31,15 +44,19 @@ public class Constants {
             public static int B_WIDTH = (int) (B_WIDTH_DEFAULT * Game.SCALE);
             public static int B_HEIGHT = (int) (B_HEIGHT_DEFAULT * Game.SCALE);
         }
-        
-        /** Pause buttons constants */
+
+        /**
+         * Pause buttons constants
+         */
         public static class PauseButtons {
 
             public static final int SOUND_SIZE_DEFAULT = 42;
             public static int SOUND_SIZE = (int) (SOUND_SIZE_DEFAULT * Game.SCALE);
         }
 
-        /** Unpause-Reset-Menu Buttons */
+        /**
+         * Unpause-Reset-Menu Buttons
+         */
         public static class URMButtons {
 
             public static final int URM_DEFAULT_SIZE = 56;
@@ -47,7 +64,9 @@ public class Constants {
 
         }
 
-        /** Volume buttons constants */
+        /**
+         * Volume buttons constants
+         */
         public static class VolumeButtons {
 
             public static final int VOLUME_DEFAULT_WIDTH = 28;
@@ -58,8 +77,9 @@ public class Constants {
             public static int VOLUME_HEIGHT = (int) (VOLUME_DEFAULT_HEIGHT * Game.SCALE);
             public static int SLIDER_WIDTH = (int) (SLIDER_DEFAULT_WIDTH * Game.SCALE);
         }
-        
+
         public static class TextInput {
+
             public final static int TI_WIDTH_DEFAULT = 404;
             public final static int TI_HEIGHT_DEFAULT = 44;
             public static int TI_WIDTH = (int) (TI_WIDTH_DEFAULT * Game.SCALE);
@@ -67,7 +87,9 @@ public class Constants {
         }
     }
 
-    /** directions constants */
+    /**
+     * directions constants
+     */
     public static class Directions {
 
         public static final int LEFT = 0;
@@ -77,7 +99,9 @@ public class Constants {
 
     }
 
-    /** player constants */
+    /**
+     * player constants
+     */
     public static class PlayerConstants {
 
         public static final int IDLE = 0;
@@ -120,18 +144,37 @@ public class Constants {
         }
     }
 
-    /** enemies constants */
+    /**
+     * enemies constants
+     */
     public static class EnemyConstants {
 
-        public static final int CRABBY = 0;
-        public static final int SNIPER = 1;
-        public static final int BOSS = 2;
+        public static enum enemyType {
+            PASSIVE_ENEMY, FOLLOW_ENEMY, SNIPER, BOSS;
+            
+            public static enemyType getFromClass(Enemy c){
+                if(c instanceof PassiveEnemy){
+                    return  PASSIVE_ENEMY;
+                }else if(c instanceof FollowEnemy){
+                    return  FOLLOW_ENEMY;
+                }else if(c instanceof Sniper){
+                    return  SNIPER;
+                }else if(c instanceof Boss){
+                    return  BOSS;
+                }
+                return null;
+            }
+        }
+        
+        
+        
+        public static enum enemyAtlas {
+            CRABBY, SNIPER, BOSS;
+        }
 
-        public static final int IDLE = 0;
-        public static final int RUNNING = 1;
-        public static final int ATTACK = 2;
-        public static final int HIT = 3;
-        public static final int DEAD = 4;
+        public static enum enemyState {
+            IDLE, RUNNING, ATTACK, HIT, DEAD;
+        }
 
         public static final int CRABBY_WIDTH_DEFAULT = 72;
         public static final int CRABBY_HEIGHT_DEFAULT = 32;
@@ -139,10 +182,17 @@ public class Constants {
         public static int CRABBY_WIDTH = (int) (CRABBY_WIDTH_DEFAULT * Game.SCALE);
         public static int CRABBY_HEIGHT = (int) (CRABBY_HEIGHT_DEFAULT * Game.SCALE);
 
-        /** get sprites for every action for every enemy type */
-        public static int GetSpriteAmount(int enemy_type, int enemy_state) {
+        /**
+         * get sprites for every action for every enemy type
+         *
+         * @param enemy_atlas
+         * @param enemy_state
+         * @return the amount of sprites of a enemy atlas of a specific
+         * animation;
+         */
+        public static int GetSpriteAmount(enemyAtlas enemy_atlas, enemyState enemy_state) {
 
-            switch (enemy_type) {
+            switch (enemy_atlas) {
                 case CRABBY:
                     switch (enemy_state) {
                         case IDLE:

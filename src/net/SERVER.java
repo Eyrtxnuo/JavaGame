@@ -15,17 +15,21 @@ import utils.Utils;
  * @author matti
  */
 public class SERVER extends Thread{
-    static final int SRVport = 45670;
-    ServerNetInterpreter inerpreter; 
+    public static final int SRVport = 45670;
+    private boolean running;
+    private DatagramSocket socket;
+    
+    ServerNetInterpreter interpreter; 
+    
 
     public SERVER(ServerNetInterpreter inerpreter) {
-        this.inerpreter = inerpreter;
+        this.interpreter = inerpreter;
     }
     
     @Override
     public void run(){
+         running = true;
         // TODO code application logic here
-        final DatagramSocket socket;
         DatagramPacket packet;
         try {
             socket = new DatagramSocket(SRVport);
@@ -36,7 +40,7 @@ public class SERVER extends Thread{
         System.out.println("PORTA: "+socket.getLocalPort());
      
        
-        while(true){
+        while(running){
             byte[] dataIn = new byte[1500];//1500 = MTU
             packet = new DatagramPacket(dataIn, dataIn.length);
             packet.setData(dataIn);
@@ -50,7 +54,7 @@ public class SERVER extends Thread{
                     int port = finalPacket.getPort();
                     byte[] data = Utils.deflator.decompress(finalPacket.getData());
                     
-                    byte[] byteOut = Utils.deflator.compress(inerpreter.packetInterpreter(data));
+                    byte[] byteOut = Utils.deflator.compress(interpreter.packetInterpreter(data));
                     
                     var packetOut = new DatagramPacket(byteOut , byteOut.length, address, port);
 
@@ -64,16 +68,24 @@ public class SERVER extends Thread{
                     System.out.println("[" + Utils.getHour() +"] " +address + " -> this:45670  || this -> " +address + ":" + port);
                     //*/
                 }).start();
-                
-                
-            } catch (IOException ex) {
+            } catch (SocketException ex ) {
+                System.out.println("Socket closed!");
+            } catch (IOException ex ) {
                 Logger.getLogger(SERVER.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            
-            
         }
         
     }
+
+    void close() {
+        running = false;
+        socket.close();
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+    
+    
     
 }

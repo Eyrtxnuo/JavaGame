@@ -13,10 +13,12 @@ import org.json.JSONObject;
 public class ServerNetInterpreter{
     
     ServerNetInterface netInterface;
+    SERVER server;
 
     public ServerNetInterpreter(ServerNetInterface netInterface) {
         this.netInterface = netInterface;
-        new SERVER(this).start();
+        server = new SERVER(this);
+        server.start();
     }
     
     public byte[] packetInterpreter(byte[] packet){
@@ -38,6 +40,9 @@ public class ServerNetInterpreter{
             case 4 ->{//Disconnection
                 responseData = netInterface.playerDisconnection(uuid, data);
             }
+            case 5 ->{//Map Data request
+                responseData = netInterface.mapLoad(uuid, data);
+            }
             default ->{
                 return new byte[1500];
             }
@@ -53,7 +58,10 @@ public class ServerNetInterpreter{
     }
           
     
-    
+    public void stop(){
+        if(server==null)return;
+        server.close();
+    }
     
     
     

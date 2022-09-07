@@ -2,6 +2,7 @@ package entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import main.Game;
 import static main.Game.*;
@@ -80,4 +81,20 @@ public abstract class Entity {
     public void die(){
         
     }
+    
+    public Point.Float getPosition(){
+        return new Point.Float(getHitbox().x, getHitbox().y);
+    }
+    
+    public void setPosition(Point.Float point){
+        hitbox.x = point.x;
+        hitbox.y = point.y;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+    
+    
 }

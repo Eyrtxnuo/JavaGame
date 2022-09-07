@@ -36,11 +36,10 @@ public class Triplet<U, V, T>
         }
  
         Triplet triplet = (Triplet) o;
- 
         // chiama il metodo `equals()` degli oggetti sottostanti
-        if (!first.equals(triplet.first) ||
-                !second.equals(triplet.second) ||
-                !third.equals(triplet.third)) {
+        if (!(first == triplet.first || triplet.first.getClass() == any.class || first.equals(triplet.first)) ||
+                !(second == triplet.second || triplet.second.getClass() == any.class || second.equals(triplet.second)) ||
+                !(third == triplet.third || triplet.third.getClass() == any.class || third.equals(triplet.third)) ) {
             return false;
         }
  
@@ -69,6 +68,26 @@ public class Triplet<U, V, T>
         return new Triplet <>(a, b, c);
     }
 
+    public Triplet<U, any, any> getEqualFirst(){
+        return Triplet.of(first, new any(), new any());
+    }
+    
+    public Triplet<any, V, any> getEqualSecond(){
+        return Triplet.of(new any(), second, new any());
+    }
+    
+    public Triplet<any, any, T> getEqualThird(){
+        return Triplet.of(new any(), new any(), third);
+    }
+    
+    private class any{
+        @Override
+        public boolean equals(Object o)
+        {
+            return true;
+        }
+    }
+    
     public U getFirst() {
         return first;
     }
@@ -92,7 +111,6 @@ public class Triplet<U, V, T>
     public void setThird(T third) {
         this.third = third;
     }
-    
     
 }
  

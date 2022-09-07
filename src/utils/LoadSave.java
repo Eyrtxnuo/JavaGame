@@ -17,7 +17,6 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -54,7 +53,7 @@ public class LoadSave {
 
     public static final String URM_BUTTONS = "urm_buttons.png";
     
-    public static final Font MC_FONT = createFont("minecraft-gnu-font.otf");
+    public static final Font FONT = createFont("minecraft-gnu-font.otf");
 
     /** load sprite form local path
      * @param atlas altlas path
@@ -105,7 +104,7 @@ public class LoadSave {
         int[][] lvlData = GetLevelData(levelN);
         var enemies = new LinkedList<Enemy>();
         BufferedImage img = GetSpriteAtlas (LEVELS_DATA[levelN]);
-        
+        int idCounter = 0;
         for (int j = 0; j < img.getHeight(); j++)
             for (int i = 0; i < img.getWidth(); i++) {
                 Color color = new Color(img.getRGB(i, j));
@@ -115,16 +114,16 @@ public class LoadSave {
                 Enemy en;
                 switch(value){
                     case 1 -> {
-                        en = new PassiveEnemy(i*Game.TILES_DEFAULT_SIZE, j*Game.TILES_DEFAULT_SIZE);
+                        en = new PassiveEnemy(i*Game.TILES_DEFAULT_SIZE, j*Game.TILES_DEFAULT_SIZE, idCounter++);
                     }
                     case 2 -> {
-                        en = new FollowEnemy(i*Game.TILES_DEFAULT_SIZE, j*Game.TILES_DEFAULT_SIZE);
+                        en = new FollowEnemy(i*Game.TILES_DEFAULT_SIZE, j*Game.TILES_DEFAULT_SIZE, idCounter++);
                     }
                     case 3 -> {
-                        en = new Sniper(i*Game.TILES_DEFAULT_SIZE, j*Game.TILES_DEFAULT_SIZE);
+                        en = new Sniper(i*Game.TILES_DEFAULT_SIZE, j*Game.TILES_DEFAULT_SIZE, idCounter++);
                     }
                     case 4 -> {
-                        en = new Boss(i*Game.TILES_DEFAULT_SIZE, j*Game.TILES_DEFAULT_SIZE);
+                        en = new Boss(i*Game.TILES_DEFAULT_SIZE, j*Game.TILES_DEFAULT_SIZE, idCounter++);
                     }
                     default ->{
                         continue;
@@ -146,6 +145,17 @@ public class LoadSave {
         return new levels.Level(GetLevelData(levelN),em , new ProjectileManager(playing),playing.getPlayer(), GetSpriteAtlas(LEVELS_BACKGROUND[levelN]));
     }
 
+    public static levels.Level createCustomLevel(int[][] lvlData, Playing playing, EnemyManager em ){
+        return new levels.Level(lvlData, em, new ProjectileManager(playing), playing.player, GetSpriteAtlas(LEVELS_BACKGROUND[0]));
+    }
+    
+    
+    /**
+     * Loads and register a font from the file path 
+     * 
+     * @param PathToFont path to the font file (*.otf and *.ttf are supported)
+     * @return the newly created font reference, this Font can now be used in Graphics
+     */
     private static Font createFont(String PathToFont) {
         try {
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();

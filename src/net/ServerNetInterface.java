@@ -14,6 +14,8 @@ public interface ServerNetInterface {
     public JSONObject updateResponse(UUID Puuid, JSONObject da);
     
     public JSONObject playerConnection(UUID Puuid, JSONObject data);
+    
+    public JSONObject mapLoad(UUID Puuid, JSONObject data);
 
     public JSONObject playerDisconnection(UUID Puuid, JSONObject data);
 
