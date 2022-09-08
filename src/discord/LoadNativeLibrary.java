@@ -21,7 +21,13 @@ public class LoadNativeLibrary
          */
         static File library;
     
-        
+        /**
+         * Loads Discord library from file, and copies it to temp system folder, if the file loading fails, the library is downloaded with @JnCrMx's code
+         * 
+         * @author matti
+         * @return
+         * @throws IOException 
+         */
         public static File getDiscordLibrary() throws IOException{
             if(library!=null)return library;
             try {
@@ -68,7 +74,7 @@ public class LoadNativeLibrary
          * 
          * @author JnCrMx
          * @return temporary file reference
-         * @throws IOException 
+         * @throws IOException on temp folder write error
          */
 	private static File downloadDiscordLibrary() throws IOException
 	{

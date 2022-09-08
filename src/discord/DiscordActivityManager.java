@@ -7,6 +7,7 @@ package discord;
 import de.jcm.discordgamesdk.Core;
 import de.jcm.discordgamesdk.CreateParams;
 import de.jcm.discordgamesdk.DiscordEventAdapter;
+import de.jcm.discordgamesdk.GameSDKException;
 import de.jcm.discordgamesdk.activity.Activity;
 
 import java.io.IOException;
@@ -46,11 +47,12 @@ public class DiscordActivityManager {
     /**
      * Async syncronized lock
      */
-    private static Object syncLock=new Object();
+    private static final Object syncLock = new Object();
    
     /**
      * Discord Game SDK Core initialization,
-     * Downloads the discord native SDK library, if it fails, the core is not initialize
+     * Loads the discord native SDK library, if it fails, download it, if even this fails, the core is not initialized
+     * The core initialization failes even if discord is not running(Flags.NO_REQUIRE_DISCORD)
      */
     public static void initializeCore() {
         new Thread(()->{
@@ -59,7 +61,7 @@ public class DiscordActivityManager {
                     Core.init(LoadNativeLibrary.getDiscordLibrary());
                     CreateParams params = new CreateParams();
                     params.setClientID(ApplicationClientID);
-                    params.setFlags(CreateParams.getDefaultFlags());
+                    params.setFlags(CreateParams.Flags.NO_REQUIRE_DISCORD);
                     params.registerEventHandler(new DiscordEventAdapter() {
                         @Override
                         public void onActivityJoin(String secret) {
@@ -85,6 +87,8 @@ public class DiscordActivityManager {
                 } catch (IOException ex) {
                     Logger.getLogger(DiscordActivityManager.class.getName()).log(Level.SEVERE, null, ex);
                     System.out.println("Discord Game SDK Core initalization failed!");
+                } catch (GameSDKException ex){
+                    System.out.println("Discord binding failed!");
                 }
             }
         }).start();
@@ -94,6 +98,7 @@ public class DiscordActivityManager {
      * Set the current activity to Menù
      */
     public static void setMenuActivity() {
+        if(core==null)return;
         new Thread(()->{
             synchronized (syncLock) {
                 Activity activity = new Activity();
@@ -120,6 +125,7 @@ public class DiscordActivityManager {
      * Set the current activity to Singleplayer Game
      */
     public static void setPlayingSingleplayerActivity() {
+        if(core==null)return;
         new Thread(()->{
             synchronized (syncLock) {
                 Activity activity = new Activity();
@@ -146,6 +152,7 @@ public class DiscordActivityManager {
      * Set the current activity to Multiplayer Server
      */
     public static void setPlayingMultiplayerServerActivity() {
+        if(core==null)return;
         new Thread(()->{
             synchronized (syncLock) {
                 Activity activity = new Activity();
@@ -168,7 +175,11 @@ public class DiscordActivityManager {
                 activity.party().size().setCurrentSize(currentSize);
 
                 // Make a "cool" image show up
-                activity.assets().setLargeImage("gameicon");
+                activity.assets().setLargeImage("gameiconmulti");
+                
+                
+                activity.assets().setSmallImage("small-char-s");
+                activity.assets().setSmallText("Server");
 
                 // Setting a join secret and a party ID causes an "Ask to Join" button to appear
                 String ip = net.RemoteTools.getPublicIP().toString();
@@ -184,7 +195,7 @@ public class DiscordActivityManager {
      * Set the current activity to Multiplayer Client
      */
     public static void setPlayingMultiplayerClientActivity() {
-        
+        if(core==null)return;
         new Thread(()->{
             synchronized (syncLock) {
                 Activity activity = new Activity();
@@ -208,7 +219,10 @@ public class DiscordActivityManager {
                 activity.party().size().setCurrentSize(currentSize);
 
                 // Make a "cool" image show up
-                activity.assets().setLargeImage("gameicon");
+                activity.assets().setLargeImage("gameiconmulti");
+                
+                activity.assets().setSmallImage("small-char-c");
+                activity.assets().setSmallText("Client");
 
                 // Setting a join secret and a party ID causes an "Ask to Join" button to appear
                 String ip = JoinedActivitySecret;
