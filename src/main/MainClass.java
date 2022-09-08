@@ -27,9 +27,7 @@ public class MainClass {
     public static void main(String[] args) {
         /*
         /*/
-            new Thread(()->{
-                discord.DiscordActivityManager.initializeCore();
-            }).start();
+            discord.DiscordActivityManager.initializeCore();
             boolean fullscreen =true;
             Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
             System.out.println("Screen: " + screen.width + "*" + screen.height +", " + Game.FPS_SET + " Hz");

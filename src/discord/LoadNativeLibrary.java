@@ -8,20 +8,71 @@ import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 
 /**
  * A class to automatically download, extract and load Discord's native library.
- * @author JnCrMx
+ * @author JnCrMx, matti
  */
-public class DownloadNativeLibrary
+public class LoadNativeLibrary
 {
-    
+        /**
+         * Cached library file, it is not redownloaded if it is present
+         */
         static File library;
     
-	public static File downloadDiscordLibrary() throws IOException
-	{
+        
+        public static File getDiscordLibrary() throws IOException{
             if(library!=null)return library;
+            try {
+                
+            String osName = System.getProperty("os.name").toLowerCase(Locale.ROOT);
+                if(!osName.contains("windows"))
+                {
+                    throw new UnsupportedOperationException();
+                } 
+                String name = "discord_game_sdk";
+                String suffix = ".dll";
+                /*
+                Some systems report "amd64" (e.g. Windows and Linux), some "x86_64" (e.g. Mac OS).
+                 */
+                String arch = System.getProperty("os.arch").toLowerCase(Locale.ROOT);
+                if(arch.equals("amd64"))
+                        arch = "x86_64";
 
+                File tempDir = new File(System.getProperty("java.io.tmpdir"), "java-"+name+System.nanoTime());
+                if(!tempDir.mkdir())
+                        throw new IOException("Cannot create temporary directory");
+                
+                tempDir.deleteOnExit();
+                
+                File temp = new File(tempDir, name+suffix);
+                temp.deleteOnExit();
+                
+                // Copy the file into our temporary file
+                URL URLpath = LoadNativeLibrary.class.getResource("/dslibs/discord_game_sdk_"+arch+suffix);
+                if(URLpath==null)
+                    throw new URISyntaxException("", "is null");
+                
+                File load = new File(URLpath.toURI());
+                
+                Files.copy(load.toPath(), temp.toPath());
+                library = temp;
+                return temp;
+            } catch (URISyntaxException | UnsupportedOperationException ex) {
+                return downloadDiscordLibrary();
+            }
+        }
+        
+        /**
+         * 
+         * @author JnCrMx
+         * @return temporary file reference
+         * @throws IOException 
+         */
+	private static File downloadDiscordLibrary() throws IOException
+	{
+            System.out.println("Discord Game SDK lib not found, downloading it...");
             // Find out which name Discord's library has (.dll for Windows, .so for Linux)
             String name = "discord_game_sdk";
             String suffix;
@@ -86,9 +137,10 @@ public class DownloadNativeLibrary
                             zin.close();
                             
                             //Save the file per future uses @Eyrtxnuo
-                            
                             library = temp;
                             
+                             System.out.println("Discord Game SDK lib downloaded!");
+                             
                             // Return our temporary file
                             return temp;
                     }
@@ -99,50 +151,4 @@ public class DownloadNativeLibrary
             // We couldn't find the library inside the ZIP
             return null;
 	}
-
-	/*public static void main(String[] args)
-	{
-		try
-		{
-			File discordLibrary = downloadDiscordLibrary();
-			if(discordLibrary == null)
-			{
-				System.err.println("Error downloading Discord SDK.");
-				System.exit(-1);
-			}
-			// Initialize the Core
-			Core.init(discordLibrary);
-
-			// Set parameters for the Core
-			try(CreateParams params = new CreateParams())
-			{
-				params.setClientID(698611073133051974L);
-				params.setFlags(CreateParams.getDefaultFlags());
-				// Create the Core
-				try(Core core = new Core(params))
-				{
-					// Run callbacks forever
-					while(true)
-					{
-						core.runCallbacks();
-						try
-						{
-							// Sleep a bit to save CPU
-							Thread.sleep(16);
-						}
-						catch(InterruptedException e)
-						{
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-			System.err.println("Error downloading Discord SDK.");
-			System.exit(-1);
-		}
-	}*/
 }

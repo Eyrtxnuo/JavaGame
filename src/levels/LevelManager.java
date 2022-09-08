@@ -33,7 +33,6 @@ public class LevelManager {
 
     /**
      * Constructor, needs game reference
-     * @param game 
      */
     public LevelManager() {
         importOutsideSprites();

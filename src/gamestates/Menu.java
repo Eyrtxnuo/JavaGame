@@ -35,8 +35,6 @@ public class Menu extends State implements Statemethods {
 
     /**
      * Default menu constructor
-     *
-     * @param game
      */
     public Menu() {
         loadButtons();
