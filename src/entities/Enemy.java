@@ -93,7 +93,7 @@ public abstract class Enemy extends Entity{
     /** ATLAS_TYPE enemy constructor, 
  
  Initialize enemy object, declaring the type
- calls the {@link entities.Enemy#Enemy(float, float) default constructor}
+ calls the {@link entities.Enemy#Enemy(float, float, int) default constructor}
     * @param x X coordinate of enemy
     * @param y Y coordinate of enemy
     * @param id enemy id

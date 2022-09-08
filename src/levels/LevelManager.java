@@ -23,8 +23,6 @@ import static utils.LoadSave.LEVELS_NUMBER;
 
 public class LevelManager {
  
-    /** game reference */
-    private Game game;
     /** level data as image - rgb decoding */
     private BufferedImage[] levelSprite; 
     /** debug only variables, list of collision checked tiles */
@@ -37,10 +35,9 @@ public class LevelManager {
      * Constructor, needs game reference
      * @param game 
      */
-    public LevelManager(Game game) {
-        this.game = game;
+    public LevelManager() {
         importOutsideSprites();
-        loadedLevel = LoadSave.getLevel(Game.playing.getCurrentLevel(), game.getPlaying());
+        loadedLevel = LoadSave.getLevel(Game.playing.getCurrentLevel(), Game.getPlaying());
     }
     
     /**
@@ -49,7 +46,7 @@ public class LevelManager {
      * @throws NullPointerException if level does not exist
      */
     public void loadLevel(int levelN){
-        loadedLevel = LoadSave.getLevel(levelN, game.getPlaying());
+        loadedLevel = LoadSave.getLevel(levelN, Game.getPlaying());
         loadedLevel.reload();
     }
     

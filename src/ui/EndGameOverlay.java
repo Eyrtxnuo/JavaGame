@@ -72,6 +72,7 @@ public class EndGameOverlay {
                     plCast.disconnect();
                 }
                 Gamestate.state = Gamestate.MENU;
+                discord.DiscordActivityManager.setMenuActivity();
                 //playing.unpauseGame();
                 startMusic = true;
             }

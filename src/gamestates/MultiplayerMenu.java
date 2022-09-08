@@ -22,8 +22,8 @@ public class MultiplayerMenu extends State implements Statemethods{
     
     private int menuX, menuY, menuWidth, menuHeight;
     
-    public MultiplayerMenu(Game game) {
-        super(game);
+    public MultiplayerMenu() {
+        super();
         loadButtons();
     }
     
@@ -118,8 +118,9 @@ public class MultiplayerMenu extends State implements Statemethods{
         buttons[0] = new MultiplayerButton((int) ((Game.GAME_WIDTH-B_WIDTH)/2), (int) (Game.GAME_HEIGHT/2-(150*Game.SCALE)), 3, Gamestate.PLAYING) {
             @Override
             public boolean onClick(MouseEvent e) {
-                game.initPlaying(new PlayingMultiplayerServer(game));
+                Game.initPlaying(new PlayingMultiplayerServer());
                 Game.playing.loadLevel(0);
+                discord.DiscordActivityManager.setPlayingMultiplayerServerActivity();
                 return true;
             }
         };
@@ -127,7 +128,8 @@ public class MultiplayerMenu extends State implements Statemethods{
             @Override
             public boolean onClick(MouseEvent e) {
                 try {
-                    game.initPlaying(new PlayingMultiplayerClient(game, textIP.getText(), 45670));
+                    Game.initPlaying(new PlayingMultiplayerClient(textIP.getText(), 45670));
+                    discord.DiscordActivityManager.setPlayingMultiplayerClientActivity();
                     //Game.playing.loadLevel(0);
                     
                 } catch (SocketException | UnknownHostException | SocketTimeoutException ex) {

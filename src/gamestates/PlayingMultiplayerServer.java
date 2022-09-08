@@ -30,14 +30,16 @@ public class PlayingMultiplayerServer extends Playing implements ServerNetInterf
     final Object gameStartLock = new Object();
 
     Map<UUID, Triplet<Player, String, Boolean>> connectedPlayers;
+    LinkedList<UUID> disconnectedPlayers;
     LinkedList<Projectile> clientsProjectiles;
 
     ServerNetInterpreter server;
 
-    public PlayingMultiplayerServer(Game game) {
-        super(game);
+    public PlayingMultiplayerServer() {
+        super();
         doPauseBlock = false;
         connectedPlayers = new HashMap<>();
+        disconnectedPlayers = new LinkedList<>();
         clientsProjectiles = new LinkedList<>();
         //connPlayers.put(UUID.fromString("cbcf1463-acce-47e4-bb91-3e3cffe6a971"), new Player(20, 50));
         server = new ServerNetInterpreter(this);
@@ -63,6 +65,8 @@ public class PlayingMultiplayerServer extends Playing implements ServerNetInterf
         pl.setUsername(username);
         pl.loadLvlData(levelManager.getLoadedLevel().getLvlData());
         connectedPlayers.put(Puuid, Triplet.of(pl, username, true));
+        disconnectedPlayers.remove(Puuid);
+        discord.DiscordActivityManager.setPlayingMultiplayerServerActivity();
         return new JSONObject().put("uuid", Puuid).put("username", username);
     }
 
@@ -101,6 +105,9 @@ public class PlayingMultiplayerServer extends Playing implements ServerNetInterf
             if(id.equals(filter))return;
             players.put(new JSONObject().put("uuid",id).put("info", tr.getFirst().toJSONObject()));
         });
+        disconnectedPlayers.forEach((var id)->{
+            players.put(new JSONObject().put("uuid",id));
+        });
         JSONObject response = new JSONObject();
         response.put("players", players);
         
@@ -127,6 +134,8 @@ public class PlayingMultiplayerServer extends Playing implements ServerNetInterf
             return null;
         }
         connectedPlayers.remove(Puuid);
+        disconnectedPlayers.add(Puuid);
+        discord.DiscordActivityManager.setPlayingMultiplayerServerActivity();
         return new JSONObject();
     }
 
@@ -236,4 +245,10 @@ public class PlayingMultiplayerServer extends Playing implements ServerNetInterf
     public void stopServer(){
         server.stop();
     }
+
+    public int getConnectedPlayersNumber() {
+        return connectedPlayers.size();
+    }
+    
+    
 }

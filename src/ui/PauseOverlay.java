@@ -152,6 +152,7 @@ public class PauseOverlay {
                     plCast.disconnect();
                 }
                 Gamestate.state = Gamestate.MENU;
+                discord.DiscordActivityManager.setMenuActivity();
                 //playing.unpauseGame();
                 somethingGotCLicked = true;
             }

@@ -134,6 +134,7 @@ public class DeathOverlay {
                     plCast.disconnect();
                 }
                 Gamestate.state = Gamestate.MENU;
+                discord.DiscordActivityManager.setMenuActivity();
                 
                 startMusic = true;
             }

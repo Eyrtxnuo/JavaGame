@@ -38,8 +38,7 @@ public class Menu extends State implements Statemethods {
      *
      * @param game
      */
-    public Menu(Game game) {
-        super(game);
+    public Menu() {
         loadButtons();
         loadBackground();
     }
@@ -154,8 +153,9 @@ public class Menu extends State implements Statemethods {
         buttons[0] = new MenuButton((int) (Game.GAME_WIDTH / 2), (int) (150 * Game.SCALE), 0, Gamestate.PLAYING) {
             @Override
             public boolean onClick(MouseEvent e) {
-                game.initPlaying(new Playing(game));
+                Game.initPlaying(new Playing());
                 Game.playing.loadLevel(0);
+                discord.DiscordActivityManager.setPlayingSingleplayerActivity();
                 return true;
             }
         };

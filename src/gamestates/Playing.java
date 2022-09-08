@@ -116,10 +116,9 @@ public class Playing extends State implements Statemethods {
     /**
      * Default constructor
      *
-     * @param game
      */
-    public Playing(Game game) {
-        super(game);
+    public Playing() {
+        super();
         initClasses();
     }
 
@@ -140,7 +139,7 @@ public class Playing extends State implements Statemethods {
      *
      */
     public void initLevelManager() {
-        levelManager = new LevelManager(game);
+        levelManager = new LevelManager();
         connectLevel();
     }
     
@@ -566,7 +565,7 @@ public class Playing extends State implements Statemethods {
             enemies.stopAllThreads();
         }
         levelManager.loadLevelWIthData(lvlData, enemies);
-        this.currentLevel = 3;
+        this.currentLevel = lvlNumber;
         this.enemies = enemies;
         connectLevel();
         player.reset();

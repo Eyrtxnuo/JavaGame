@@ -60,8 +60,9 @@ public class ClientNetInterpreter {
             notResp++;
             if(notResp>30){
                 System.err.println("Server is not responding since 30 ticks, disconnecting");
-                disconnection();
+                new Thread(()->{disconnection();}).start();
                 Gamestate.state = Gamestate.MENU;
+                discord.DiscordActivityManager.setMenuActivity();
             }
             return new JSONObject().put("players", new JSONArray());
         }

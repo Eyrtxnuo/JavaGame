@@ -13,19 +13,7 @@ import ui.MultiplayerButton;
  */
 public abstract class State {
 
-    /**
-     * Game object
-     */
-    protected Game game;
-
-    /**
-     * Default constructor
-     *
-     * @param game
-     */
-    public State(Game game) {
-        this.game = game;
-    }
+    
 
     /**
      * Return if the mouse is in an hitbox
@@ -46,13 +34,6 @@ public abstract class State {
         return bo.contains(e.getX(), e.getY());
     }
 
-    /**
-     * Return game object
-     *
-     * @return game object
-     */
-    public Game getGame() {
-        return game;
-    }
+    
 
 }

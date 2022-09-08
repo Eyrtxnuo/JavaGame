@@ -29,19 +29,19 @@ public class PlayingMultiplayerClient extends Playing {
     public UUID myUUID;
 
     Map<UUID, Triplet<Player, String, Boolean>> connectedPlayers;
+    int connectedNumber;
     LinkedList<Projectile> serverProjectiles;
 
     /**
      * Multiplayer Client playing 
-     * @param game Game reference
      * @param ip Server IP to connect to
      * @param port Server Port
      * @throws SocketException Thrown when there was an error on creating the connection
      * @throws UnknownHostException Trown when the IP argument is not valid, or is not convertible in a IPv4 address 
      * @throws SocketTimeoutException Thrown when the server did not respond in Timeout time
      */
-    public PlayingMultiplayerClient(Game game, String ip, int port) throws SocketException, UnknownHostException, SocketTimeoutException {
-        super(game);
+    public PlayingMultiplayerClient(String ip, int port) throws SocketException, UnknownHostException, SocketTimeoutException {
+        super();
         doPauseBlock = false;
         connectedPlayers = new HashMap<>();
         serverProjectiles = new LinkedList();
@@ -71,6 +71,11 @@ public class PlayingMultiplayerClient extends Playing {
             update.getJSONArray("players").forEach((var PlaObj) -> {
                 UUID uuid = UUID.fromString(((JSONObject) PlaObj).getString("uuid"));
                 if(uuid.equals(myUUID))return;
+                if(((JSONObject) PlaObj).isNull("info")){
+                    connectedPlayers.remove(uuid);
+                    discord.DiscordActivityManager.setPlayingMultiplayerClientActivity();
+                    return;
+                }
                 Player pl;
                 if (connectedPlayers.containsKey(uuid)) {
                     pl = connectedPlayers.get(uuid).getFirst();
@@ -79,7 +84,9 @@ public class PlayingMultiplayerClient extends Playing {
                 }
                 pl.loadLvlData(Game.playing.levelManager.getLoadedLevel().getLvlData());
                 pl.updateWithJson(((JSONObject) PlaObj).getJSONObject("info"));
-                connectedPlayers.put(uuid, Triplet.of(pl, "next", true));
+                if(connectedPlayers.put(uuid, Triplet.of(pl, "next", true))==null){
+                    discord.DiscordActivityManager.setPlayingMultiplayerClientActivity();
+                }
             });
             if(update.has("enemies")){
                 update.getJSONArray("enemies").forEach((var EneObj) -> {
@@ -177,5 +184,7 @@ public class PlayingMultiplayerClient extends Playing {
         interpreter.disconnection();
     }
     
-    
+    public int getConnectedPlayersNumber() {
+        return connectedPlayers.size();
+    }
 }

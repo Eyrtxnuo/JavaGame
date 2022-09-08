@@ -6,6 +6,7 @@ package main;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.time.Instant;
 import java.util.Arrays;
 import utils.AudioPlayer;
 
@@ -15,6 +16,8 @@ import utils.AudioPlayer;
  * @author matti
  */
 public class MainClass {
+    
+    public static final Instant startTime = Instant.now();
 
     /**
      * program execution point
@@ -24,6 +27,9 @@ public class MainClass {
     public static void main(String[] args) {
         /*
         /*/
+            new Thread(()->{
+                discord.DiscordActivityManager.initializeCore();
+            }).start();
             boolean fullscreen =true;
             Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
             System.out.println("Screen: " + screen.width + "*" + screen.height +", " + Game.FPS_SET + " Hz");

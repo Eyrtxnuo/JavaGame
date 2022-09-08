@@ -96,9 +96,9 @@ public class Game implements Runnable {
     
     /** initialises classes */
     private void initClasses() {
-        menu=new Menu(this);
-        multiplayermenu=new MultiplayerMenu(this);
-        initPlaying(new Playing(this));
+        menu=new Menu();
+        multiplayermenu=new MultiplayerMenu();
+        initPlaying(new Playing());
         
         /*
         playing=new PlayingMultiplayerServer(this);
@@ -209,17 +209,20 @@ public class Game implements Runnable {
         }
     }
 
-    /** get menu reference */
+    /** get menu reference
+     @return menu reference */
     public Menu getMenu() {
         return menu;
     }
 
-    /** get playing reference */
-    public Playing getPlaying() {
+    /** get playing reference
+     * @return playing reference */
+    public static Playing getPlaying() {
         return playing;
     }
     
-    /** get multiplayer menu reference*/
+    /** get multiplayer menu reference
+     * @return */
     public MultiplayerMenu getMultiplayerMenu(){
         return multiplayermenu;
     }
@@ -230,7 +233,7 @@ public class Game implements Runnable {
         gamePanel.repaint();
     }
 
-    public void initPlaying(Playing playing) {
+    public static void initPlaying(Playing playing) {
         Game.playing = playing;
         Game.playing.initLevelManager();
         Game.playing.afterCreationInit();
