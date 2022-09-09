@@ -75,6 +75,7 @@ public class PlayingMultiplayerServer extends Playing implements ServerNetInterf
         //Elaborate recived data
         JSONObject RecPlayer = data.getJSONObject("player");
         connectedPlayers.get(Puuid).getFirst().updateWithJson(RecPlayer);
+        connectedPlayers.get(Puuid).setThird(connectedPlayers.get(Puuid).getFirst().getLives()>0);
         JSONArray upEnemies = data.getJSONArray("enemies");
         upEnemies.forEach((t) -> {
             JSONObject en = (JSONObject)t;

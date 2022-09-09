@@ -23,9 +23,9 @@ import utils.Updater;
 import gamestates.Gamestate;
 import gamestates.PlayingMultiplayerClient;
 import gamestates.PlayingMultiplayerServer;
-
 /**
- *
+ * Discord GameSDK activity manager class,
+ * all the methods are asyncronous, but they are syncronized, since the GameSDK library is *not* thread safe
  * @author matti
  */
 public class DiscordActivityManager {
@@ -82,7 +82,7 @@ public class DiscordActivityManager {
                     core = new Core(params);
                     setMenuActivity();
 
-                    (new Updater(()->{core.runCallbacks();return null;}, 60)).startThreadAsync();
+                    (new Updater(()->{core.runCallbacks();return null;}, 60)).startThread();
                     System.out.println("Discord Game SDK Core initialized");
                 } catch (IOException ex) {
                     Logger.getLogger(DiscordActivityManager.class.getName()).log(Level.SEVERE, null, ex);
