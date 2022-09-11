@@ -126,6 +126,7 @@ public class PlayingMultiplayerServer extends Playing implements ServerNetInterf
             projectiles.put(en.toJSONObject());
         });
         response.put("projectiles", projectiles);
+        response.put("levelNumber", currentLevel);
         return response;
     }
     
@@ -211,8 +212,8 @@ public class PlayingMultiplayerServer extends Playing implements ServerNetInterf
         JSONObject response = currentDataResponse(Puuid);
         JSONObject level = new JSONObject();
         
-        level.put("levelN", Game.playing.getCurrentLevel());
-        int[][] dataArr = Game.playing.levelManager.getLoadedLevel().getLvlData();
+        level.put("levelN", getCurrentLevel());
+        int[][] dataArr = levelManager.getLoadedLevel().getLvlData();
         
         level.put("mapData", new JSONArray(dataArr));
         

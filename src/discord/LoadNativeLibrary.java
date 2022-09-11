@@ -2,6 +2,7 @@ package discord;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.Locale;
@@ -56,13 +57,11 @@ public class LoadNativeLibrary
                 temp.deleteOnExit();
                 
                 // Copy the file into our temporary file
-                URL URLpath = LoadNativeLibrary.class.getResource("/dslibs/discord_game_sdk_"+arch+suffix);
-                if(URLpath==null)
+                InputStream is = LoadNativeLibrary.class.getResourceAsStream("/dslibs/discord_game_sdk_"+arch+suffix);
+                if(is==null)
                     throw new URISyntaxException("", "is null");
                 
-                File load = new File(URLpath.toURI());
-                
-                Files.copy(load.toPath(), temp.toPath());
+                Files.copy(is, temp.toPath());
                 library = temp;
                 return temp;
             } catch (URISyntaxException | UnsupportedOperationException ex) {

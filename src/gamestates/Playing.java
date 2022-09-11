@@ -106,7 +106,15 @@ public class Playing extends State implements Statemethods {
      */
     protected int currentLevel = 0;
     
+    /**
+     * If the pause stops updates, false in multiplayer
+     */
     public boolean doPauseBlock = true;
+    
+    /**
+     * If the player can load a new level, disabled in client multiplayer
+     */
+    public boolean newLevelPermitted = true;
     
     /**
      * Data for eventual custom level load
@@ -208,12 +216,14 @@ public class Playing extends State implements Statemethods {
             endGameOverlay.update();
             return;
         }
-        if (player.getHitbox().x > (levelManager.getLoadedLevel().getWidthInTiles() - 4) * Game.TILES_DEFAULT_SIZE
-                && currentLevel + 1 < LEVELS_NUMBER) {
-            loadLevel(++currentLevel);
-            return;
+        if(newLevelPermitted){
+            if (player.getHitbox().x > (levelManager.getLoadedLevel().getWidthInTiles() - 4) * Game.TILES_DEFAULT_SIZE
+                    && currentLevel + 1 < LEVELS_NUMBER) {
+                loadLevel(currentLevel+1);
+                currentLevel++;
+                return;
+            }
         }
-
         if (Constants.DEBUG && manualFrameAdvancing) {
             enemies.updateAll();
         }
@@ -226,6 +236,7 @@ public class Playing extends State implements Statemethods {
         //enemies.updateAll();
     }
 
+    
     /**
      * Draw the game panel
      *

@@ -63,8 +63,9 @@ public class LevelManager {
     */
      public void drawWorld(Graphics g, float offsetX, float offsetY){
         
-         drawBackground(g, offsetX, offsetY);
-        if(Game.playing.getCurrentLevel()+1 < LEVELS_NUMBER){
+        drawBackground(g, offsetX, offsetY);
+        
+        if(Game.playing.newLevelPermitted && Game.playing.getCurrentLevel()+1 < LEVELS_NUMBER){
             g.setColor(new Color(255, 160, 0, 128));
             g.fillRect((int)((loadedLevel.getWidthInTiles()-4)*Game.TILES_SIZE+offsetX), (int)(0+offsetY),(int)(4*Game.TILES_SIZE), (int) Game.GAME_HEIGHT);
         }

@@ -29,7 +29,6 @@ public class PlayingMultiplayerClient extends Playing {
     public UUID myUUID;
 
     Map<UUID, Triplet<Player, String, Boolean>> connectedPlayers;
-    int connectedNumber;
     LinkedList<Projectile> serverProjectiles;
 
     /**
@@ -43,6 +42,7 @@ public class PlayingMultiplayerClient extends Playing {
     public PlayingMultiplayerClient(String ip, int port) throws SocketException, UnknownHostException, SocketTimeoutException {
         super();
         doPauseBlock = false;
+        newLevelPermitted = false;
         connectedPlayers = new HashMap<>();
         serverProjectiles = new LinkedList();
         interpreter = new ClientNetInterpreter();
@@ -86,6 +86,9 @@ public class PlayingMultiplayerClient extends Playing {
                 pl.updateWithJson(((JSONObject) PlaObj).getJSONObject("info"));
                 if(connectedPlayers.put(uuid, Triplet.of(pl, "next", true))==null){
                     discord.DiscordActivityManager.setPlayingMultiplayerClientActivity();
+                }
+                if(update.getInt("levelNumber")!=currentLevel){
+                    interpreter.requestMapData(myUUID);
                 }
             });
             if(update.has("enemies")){
