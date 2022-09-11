@@ -134,6 +134,7 @@ public class Menu extends State implements Statemethods {
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            loadPlaying();
             Gamestate.state = Gamestate.PLAYING;
         }
     }
@@ -151,9 +152,7 @@ public class Menu extends State implements Statemethods {
         buttons[0] = new MenuButton((int) (Game.GAME_WIDTH / 2), (int) (150 * Game.SCALE), 0, Gamestate.PLAYING) {
             @Override
             public boolean onClick(MouseEvent e) {
-                Game.initPlaying(new Playing());
-                Game.playing.loadLevel(0);
-                discord.DiscordActivityManager.setPlayingSingleplayerActivity();
+                loadPlaying();
                 return true;
             }
         };
@@ -184,4 +183,11 @@ public class Menu extends State implements Statemethods {
         menuY = (int) (45 * Game.SCALE);
     }
 
+    
+    private void loadPlaying(){
+        Game.initPlaying(new Playing());
+        Game.playing.loadLevel(0);
+        discord.DiscordActivityManager.setPlayingSingleplayerActivity();
+        System.gc();
+    }
 }

@@ -118,9 +118,7 @@ public class MultiplayerMenu extends State implements Statemethods{
         buttons[0] = new MultiplayerButton((int) ((Game.GAME_WIDTH-B_WIDTH)/2), (int) (Game.GAME_HEIGHT/2-(150*Game.SCALE)), 3, Gamestate.PLAYING) {
             @Override
             public boolean onClick(MouseEvent e) {
-                Game.initPlaying(new PlayingMultiplayerServer());
-                Game.playing.loadLevel(0);
-                discord.DiscordActivityManager.setPlayingMultiplayerServerActivity();
+                loadPlayingServer();
                 return true;
             }
         };
@@ -128,10 +126,7 @@ public class MultiplayerMenu extends State implements Statemethods{
             @Override
             public boolean onClick(MouseEvent e) {
                 try {
-                    Game.initPlaying(new PlayingMultiplayerClient(textIP.getText(), 45670));
-                    discord.DiscordActivityManager.setPlayingMultiplayerClientActivity();
-                    //Game.playing.loadLevel(0);
-                    
+                    loadPlayingClient();
                 } catch (SocketException | UnknownHostException | SocketTimeoutException ex) {
                     //Logger.getLogger(MultiplayerMenu.class.getName()).log(Level.WARNING, "Connection error: {0}", ex.getMessage());
                     System.err.println("Connection error: "+ ex.getMessage());
@@ -151,5 +146,18 @@ public class MultiplayerMenu extends State implements Statemethods{
         for (MultiplayerButton mb : buttons) {
             mb.resetBools();
         }
+    }
+    
+    private void loadPlayingServer(){
+        Game.initPlaying(new PlayingMultiplayerServer());
+        Game.playing.loadLevel(0);
+        discord.DiscordActivityManager.setPlayingMultiplayerServerActivity();
+        System.gc();
+    }
+    
+    private void loadPlayingClient() throws SocketException, UnknownHostException, SocketTimeoutException{
+        Game.initPlaying(new PlayingMultiplayerClient(textIP.getText(), 45670));
+        discord.DiscordActivityManager.setPlayingMultiplayerClientActivity();
+        System.gc();
     }
 }

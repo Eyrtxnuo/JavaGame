@@ -183,8 +183,13 @@ public class Playing extends State implements Statemethods {
         currentLevel = levelN;
         levelManager.loadLevel(levelN);
         connectLevel();
+        discordUpdate();
     }
 
+    protected void discordUpdate(){
+        discord.DiscordActivityManager.setPlayingSingleplayerActivity();
+    }
+    
     /**
      * Do an update cycle
      *

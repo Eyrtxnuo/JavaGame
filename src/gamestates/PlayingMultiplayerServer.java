@@ -251,5 +251,8 @@ public class PlayingMultiplayerServer extends Playing implements ServerNetInterf
         return connectedPlayers.size();
     }
     
-    
+    @Override
+    protected void discordUpdate(){
+        discord.DiscordActivityManager.setPlayingMultiplayerServerActivity();
+    }
 }

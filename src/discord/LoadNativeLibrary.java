@@ -71,6 +71,7 @@ public class LoadNativeLibrary
         }
         
         /**
+         * @JnCrMx's code, downloads the discord JDK and extract the right version for the host OS
          * 
          * @author JnCrMx
          * @return temporary file reference

@@ -187,4 +187,9 @@ public class PlayingMultiplayerClient extends Playing {
     public int getConnectedPlayersNumber() {
         return connectedPlayers.size();
     }
+    
+    @Override
+    protected void discordUpdate(){
+        discord.DiscordActivityManager.setPlayingMultiplayerClientActivity();
+    }
 }
